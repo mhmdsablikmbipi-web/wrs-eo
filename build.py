@@ -10,6 +10,7 @@ Isi website diedit di konten.py, tampilan di assets/style.css.
 Hasil build ada di folder docs/ (folder inilah yang dipublikasikan GitHub Pages).
 """
 
+import hashlib
 import json
 import re
 import shutil
@@ -129,6 +130,12 @@ IKON_WA = (
 )
 
 
+def versi(nama: str) -> str:
+    """Kode pendek dari isi file di assets/. Berubah setiap file diedit, sehingga browser
+    tidak memakai style.css/app.js lama yang tersimpan (cache)."""
+    return hashlib.md5((BASE / "assets" / nama).read_bytes()).hexdigest()[:8]
+
+
 def kerangka(kode: str, judul: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
     logo = img_url(K.PERUSAHAAN["logo"], 512)
     aktif_file = FILE[kode]
@@ -161,7 +168,7 @@ def kerangka(kode: str, judul: str, deskripsi: str, isi: str, jsonld: str = "") 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Instrument+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v={versi('style.css')}">
 {ld}
 </head>
 <body>
@@ -170,8 +177,8 @@ def kerangka(kode: str, judul: str, deskripsi: str, isi: str, jsonld: str = "") 
 {isi}
 </main>
 <div class="foot">{escape(K.FOOTER)}</div>
-<a class="wa-float" href="{escape(WA_URL)}" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{IKON_WA}"/></svg></a>
-<script src="assets/app.js" defer></script>
+<a class="wa-float" href="{escape(WA_URL)}" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="{IKON_WA}"/></svg></a>
+<script src="assets/app.js?v={versi('app.js')}" defer></script>
 </body>
 </html>
 """
