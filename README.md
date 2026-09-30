@@ -21,3 +21,24 @@ Pertama kali: `pip install -r requirements.txt`.
 ## Domain sendiri (opsional)
 Di Settings > Pages > Custom domain, isi domain Anda. GitHub membuat file `docs/CNAME`; file ini aman dari build berikutnya.
 Lalu atur DNS di registrar sesuai petunjuk GitHub dan aktifkan Enforce HTTPS.
+
+## Animasi dan interaksi
+Website memakai animasi ringan tanpa library tambahan: bagian yang muncul perlahan saat di-scroll,
+angka yang menghitung naik, navbar yang mengecil saat digulir dan hamburger di HP, tombol WhatsApp
+melayang, dan foto yang bisa diklik untuk diperbesar (geser dengan tombol panah atau usap di HP).
+Semua animasi otomatis mati bagi pengunjung yang mengaktifkan pengaturan "kurangi gerakan".
+
+Kode animasi ada di bagian paling bawah `assets/style.css` dan di `assets/app.js`.
+
+### Angka di bawah hero (Home)
+Secara bawaan angkanya dihitung otomatis: tahun pengalaman (tahun sekarang dikurangi 2003),
+jumlah mal di daftar, dan jumlah jenis event. Untuk mengubahnya, tambahkan ke `konten.py` (opsional):
+
+    TAHUN_BERDIRI = 2003
+    STATISTIK = [            # (angka, akhiran, label)
+        (23, "", "tahun pengalaman"),
+        (107, "", "lokasi mal mitra"),
+        (4, "", "jenis event andalan"),
+    ]
+
+Kalau `STATISTIK` tidak ditulis, angka bawaan dipakai.

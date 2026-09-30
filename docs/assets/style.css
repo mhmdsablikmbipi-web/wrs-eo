@@ -199,3 +199,105 @@ img{max-width:100%}
 .kontak .form button{padding:12px 28px;border-radius:999px;color:var(--espresso);font:inherit;
   font-weight:600;cursor:pointer}
 @media (max-width:820px){.kontak .cols{grid-template-columns:1fr;gap:32px}}
+
+/* ================= ANIMASI & INTERAKSI ================= */
+
+/* navbar: mengecil dan sedikit blur saat halaman digulir */
+.nav{transition:padding .25s ease,background .25s ease,box-shadow .25s ease}
+.nav img{transition:height .25s ease,width .25s ease}
+.nav.scrolled{padding-top:6px;padding-bottom:6px;background:rgba(27,17,8,.88);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.28)}
+.nav.scrolled img{height:36px;width:36px}
+
+/* tombol hamburger (hanya tampil di HP) */
+.burger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:44px;height:44px;padding:0;border:0;background:transparent;cursor:pointer}
+.burger span{display:block;width:24px;height:2px;border-radius:2px;background:var(--gold-lt);
+  transition:transform .25s ease,opacity .2s ease}
+.nav.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav.open .burger span:nth-child(2){opacity:0}
+.nav.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* strip angka di bawah hero */
+.stats{padding:46px clamp(20px,6vw,96px);background:var(--espresso);
+  border-top:1px solid rgba(217,152,43,.35);border-bottom:1px solid rgba(217,152,43,.35)}
+.stats .inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:28px}
+.stat{text-align:center}
+.stat b{display:block;font-family:'Fraunces',serif;font-weight:800;line-height:1.05;
+  font-size:clamp(2.3rem,5vw,3.6rem);background:linear-gradient(180deg,#FFF1BF 0%,#E3A537 60%,#9A6414 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;margin-top:8px;color:#EBD9B4;font-size:1rem}
+
+/* efek hover */
+img.mo,img.gal-img,img.foto-about,img.potret{cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease}
+img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(27,17,8,.28)}
+.marquee{padding:8px 0}
+.mal{transition:background .15s ease,transform .2s ease,box-shadow .2s ease}
+.mal:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(27,17,8,.15)}
+
+/* tombol WhatsApp melayang */
+.wa-float{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:998;
+  display:flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:50%;
+  background:#25D366;box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .2s ease}
+.wa-float:hover{transform:scale(1.08)}
+.wa-float svg{width:32px;height:32px;fill:#fff}
+
+/* lightbox foto */
+.lb{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;padding:24px;background:rgba(15,9,4,.96);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.lb.open{display:flex}
+.lb-img{max-width:min(94vw,1200px);max-height:78vh;object-fit:contain;border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.lb-cap{margin:0;min-height:1.4em;max-width:40em;text-align:center;color:#EBD9B4}
+.lb button{position:absolute;display:flex;align-items:center;justify-content:center;width:48px;height:48px;
+  border:0;border-radius:50%;background:rgba(255,247,227,.14);color:var(--gold-lt);font-size:1.7rem;
+  line-height:1;cursor:pointer}
+.lb button:hover{background:rgba(255,247,227,.28)}
+.lb .lb-x{top:16px;right:16px}
+.lb .lb-p{left:16px;top:50%;translate:0 -50%}
+.lb .lb-n{right:16px;top:50%;translate:0 -50%}
+
+/* menu HP: hamburger membuka daftar menu */
+@media (max-width:820px){
+  .burger{display:flex}
+  .nav .links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;
+    padding:8px clamp(16px,5vw,64px) 16px;background:rgba(27,17,8,.98);
+    border-bottom:1px solid rgba(217,152,43,.4)}
+  .nav.open .links{display:flex}
+  .nav .links a{padding:14px 4px;font-size:1rem;border-bottom:1px solid rgba(217,152,43,.18)}
+  .nav .links a.on{border-bottom-color:var(--gold)}
+  .wa-float{width:54px;height:54px;right:16px}
+  .lb .lb-p{left:8px}.lb .lb-n{right:8px}
+}
+
+/* animasi masuk dan muncul saat di-scroll (dimatikan bagi yang memilih "kurangi gerakan") */
+@media (prefers-reduced-motion:no-preference){
+  .hero>div>*,.phead .inner>*{animation:naik .8s cubic-bezier(.2,.7,.2,1) backwards}
+  .hero>div>:nth-child(2),.phead .inner>:nth-child(2){animation-delay:.12s}
+  .hero>div>:nth-child(3){animation-delay:.24s}
+  .hero>div>:nth-child(4){animation-delay:.3s}
+  .hero .logo{animation:muncul 1s ease .2s backwards}
+  .wa-float::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;
+    animation:denyut 2.4s ease-out infinite}
+
+  .js :is(.stat,.two>*,.pendiri>*,.vals .val,.misi li,.sec>.inner>h2,.band .inner>h2,.art,.kel,.cari,
+    .marquee,.kontak .cols>div,.kontak .inner>h2,.form){
+    transition:opacity .7s ease var(--d,0s),translate .7s cubic-bezier(.2,.7,.2,1) var(--d,0s),
+      transform .25s ease,box-shadow .25s ease}
+  .js :is(.stat,.two>*,.pendiri>*,.vals .val,.misi li,.sec>.inner>h2,.band .inner>h2,.art,.kel,.cari,
+    .marquee,.kontak .cols>div,.kontak .inner>h2,.form):not(.in){opacity:0;translate:0 26px}
+
+  .stats .stat:nth-child(2),.vals .val:nth-child(2),.two>:nth-child(2),.misi li:nth-child(even){--d:.12s}
+  .stats .stat:nth-child(3),.vals .val:nth-child(3){--d:.24s}
+  .pendiri>:nth-child(2),.kontak .cols>div:nth-child(2){--d:.15s}
+}
+@keyframes naik{from{opacity:0;transform:translateY(22px)}}
+@keyframes muncul{from{opacity:0;transform:scale(.94)}}
+@keyframes denyut{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .marquee .track{animation:none!important}
+}
