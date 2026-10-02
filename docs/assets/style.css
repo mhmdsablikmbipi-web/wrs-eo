@@ -281,16 +281,16 @@ img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:t
   .wa-float::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;
     animation:denyut 2.4s ease-out infinite}
 
-  .js :is(.stat,.two>*,.pendiri>*,.vals .val,.misi li,.sec>.inner>h2,.band .inner>h2,.art,.kel,.cari,
+  .js :is(.stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari,
     .marquee,.kontak .cols>div,.kontak .inner>h2,.form){
     transition:opacity .7s ease var(--d,0s),translate .7s cubic-bezier(.2,.7,.2,1) var(--d,0s),
       transform .25s ease,box-shadow .25s ease}
-  .js :is(.stat,.two>*,.pendiri>*,.vals .val,.misi li,.sec>.inner>h2,.band .inner>h2,.art,.kel,.cari,
+  .js :is(.stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari,
     .marquee,.kontak .cols>div,.kontak .inner>h2,.form):not(.in){opacity:0;translate:0 26px}
 
-  .stats .stat:nth-child(2),.vals .val:nth-child(2),.two>:nth-child(2),.misi li:nth-child(even){--d:.12s}
-  .stats .stat:nth-child(3),.vals .val:nth-child(3){--d:.24s}
-  .pendiri>:nth-child(2),.kontak .cols>div:nth-child(2){--d:.15s}
+  .stats .stat:nth-child(2),.vm-kartu:nth-child(2),.split>:nth-child(2),.misi li:nth-child(even){--d:.12s}
+  .stats .stat:nth-child(3),.vm-kartu:nth-child(3){--d:.24s}
+  .kontak .cols>div:nth-child(2){--d:.15s}
 }
 @keyframes naik{from{opacity:0;transform:translateY(22px)}}
 @keyframes muncul{from{opacity:0;transform:scale(.94)}}
@@ -300,4 +300,52 @@ img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:t
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
     transition-duration:.01ms!important;scroll-behavior:auto!important}
   .marquee .track{animation:none!important}
+}
+
+/* ================= BERANDA: TATA LETAK BARU (warna lebih lembut) ================= */
+:root{--pasir:#F3E5C2;--kartu:#FFFBF1;--garis:rgba(140,90,20,.28)}
+
+/* profil: teks di kiri, foto di kanan */
+.profil .split{display:grid;grid-template-columns:1.05fr 1fr;gap:64px;align-items:center}
+.split-teks h2{margin-bottom:22px}
+.split .foto-about{margin-top:0;aspect-ratio:5/4;border-radius:22px}
+
+/* pendiri: kartu gelap senada dengan hero */
+.kartu-pendiri{gap:48px;padding:44px;border-radius:26px;
+  background:radial-gradient(circle at 88% 12%,#3d2610 0%,var(--espresso) 68%);
+  box-shadow:0 18px 44px rgba(27,17,8,.22)}
+.kartu-pendiri .potret{border-radius:18px;box-shadow:none}
+.kartu-pendiri h2{margin-bottom:6px;color:var(--gold-lt)}
+.kartu-pendiri .jab{margin-bottom:20px;color:var(--gold)}
+.kartu-pendiri p{color:#EBD9B4}
+
+/* visi dan misi: latar pasir lembut, kartu terang */
+.visimisi{background:var(--pasir);border-top:1px solid var(--garis);border-bottom:1px solid var(--garis)}
+.visimisi h2{margin:0}
+.vm-sub{margin:44px 0 18px;font-size:1.25rem;font-weight:600;color:var(--bronze)}
+.vm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.vm-kartu{padding:26px 26px 28px;border-radius:18px;background:var(--kartu);
+  border:1px solid var(--garis);border-top:3px solid var(--gold)}
+.vm-kartu h3{margin:0 0 8px;font-size:1.4rem;font-weight:600;color:var(--maroon)}
+.vm-kartu p{margin:0;font-size:1rem}
+.misi{grid-template-columns:repeat(2,1fr);gap:20px}
+.misi li{padding:24px 26px 26px 76px;border-radius:18px;background:var(--kartu);
+  border:1px solid var(--garis);font-size:1rem}
+.misi li::before{left:24px;top:24px}
+
+/* latar belakang: dua kolom teks */
+.latar h2{margin:0}
+.latar-teks{columns:2;column-gap:56px;margin-top:26px}
+.latar-teks p{max-width:none;break-inside:avoid}
+
+@media (max-width:820px){
+  .profil .split{grid-template-columns:1fr;gap:28px}
+  .kartu-pendiri{gap:24px;padding:24px;border-radius:20px}
+  .misi{grid-template-columns:1fr}
+  .misi li{padding:22px 20px 22px 66px}
+  .misi li::before{left:18px;top:22px}
+  .latar-teks{columns:1}
+  .stats{padding:34px 16px}
+  .stats .inner{grid-template-columns:repeat(3,1fr);gap:12px}
+  .stat span{font-size:.9rem}
 }

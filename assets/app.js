@@ -28,7 +28,7 @@
 
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
-  var REVEAL = ".stat,.two>*,.pendiri>*,.vals .val,.misi li,.sec>.inner>h2,.band .inner>h2,.art,.kel,.cari," +
+  var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
     ".marquee,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {

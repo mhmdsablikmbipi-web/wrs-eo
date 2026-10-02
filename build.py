@@ -198,7 +198,7 @@ def halaman_home() -> str:
         f'<figure class="gal">{foto(f, "gal-img", ket, lazy=False)}<figcaption>{escape(ket)}</figcaption></figure>'
         for f, ket in K.GALERI_HOME
     )
-    visi = "".join(f'<div class="val"><h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for j, t in K.VISI)
+    visi = "".join(f'<div class="vm-kartu"><h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for j, t in K.VISI)
     misi = "".join(f"<li>{escape(m)}</li>" for m in K.MISI)
     return f"""
 <div class="hero"><div>
@@ -209,27 +209,30 @@ def halaman_home() -> str:
 
 {bagian_statistik()}
 
-<section class="sec"><div class="inner two">
-<h2>{escape(K.PROFIL['judul'])}</h2>
-<div>{paragraf(K.PROFIL['paragraf'])}{foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}</div>
+<section class="sec profil"><div class="inner split">
+<div class="split-teks"><h2>{escape(K.PROFIL['judul'])}</h2>{paragraf(K.PROFIL['paragraf'])}</div>
+{foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}
 </div></section>
 
-<section class="sec" style="padding-top:0"><div class="inner pendiri">
+<section class="sec" style="padding-top:0"><div class="inner">
+<div class="pendiri kartu-pendiri">
 {foto(K.PENDIRI['foto'], 'potret', K.PENDIRI['nama'])}
 <div><h2>{escape(K.PENDIRI['nama'])}</h2>
 <p class="jab">{escape(K.PENDIRI['jabatan'])}</p>{paragraf(K.PENDIRI['cerita'])}</div>
+</div>
 </div></section>
 
-<section class="sec band"><div class="inner">
-<h2>Visi kami</h2>
-<div class="vals">{visi}</div>
-<h2 style="margin-top:64px">Misi kami</h2>
+<section class="sec visimisi"><div class="inner">
+<h2>Visi dan misi</h2>
+<h3 class="vm-sub">Visi</h3>
+<div class="vm-grid">{visi}</div>
+<h3 class="vm-sub">Misi</h3>
 <ul class="misi">{misi}</ul>
 </div></section>
 
-<section class="sec"><div class="inner two">
+<section class="sec latar"><div class="inner">
 <h2>{escape(K.LATAR['judul'])}</h2>
-<div>{paragraf(K.LATAR['paragraf'])}</div>
+<div class="latar-teks">{paragraf(K.LATAR['paragraf'])}</div>
 </div></section>
 
 <section class="sec" style="padding-top:0"><div class="inner">

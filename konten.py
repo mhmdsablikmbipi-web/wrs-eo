@@ -72,7 +72,7 @@ MISI = [
 ]
 
 LATAR = {
-    "judul": "Latar belakang perusahaan",
+    "judul": "Latar Belakang Perusahaan",
     "paragraf": [
         "PT Wahana Rezeki Sempurna, atau WRS, didirikan pada sekitar 2003 dan bergerak di "
         "bidang Exhibition Organizer dan jasa penyelenggaraan pameran/promosi. Namun, akar "
