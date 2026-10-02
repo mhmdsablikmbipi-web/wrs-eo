@@ -42,3 +42,20 @@ jumlah mal di daftar, dan jumlah jenis event. Untuk mengubahnya, tambahkan ke `k
     ]
 
 Kalau `STATISTIK` tidak ditulis, angka bawaan dipakai.
+
+## Dua bahasa (Indonesia dan Inggris)
+Website punya dua versi: Indonesia di alamat utama dan Inggris di `/en/`. Tombol **ID | EN** di navbar
+memindahkan pengunjung ke halaman yang sama dalam bahasa lain.
+
+- Teks bahasa Indonesia: `konten.py` (seperti biasa).
+- Teks bahasa Inggris: `konten_en.py`. File ini hanya berisi teks yang perlu diterjemahkan. Daftar mal, kontak,
+  sosial media, nomor WhatsApp, dan nama file foto diambil otomatis dari `konten.py`, jadi tidak perlu ditulis dua kali.
+- Kalau teks Indonesia diubah, ubah juga terjemahannya di `konten_en.py`.
+- Label tombol dan form (di luar konten) ada di `build.py`, pada kamus `UI`.
+- Tidak ingin versi Inggris? Hapus `konten_en.py`, lalu jalankan `python build.py`. Tombol bahasa otomatis hilang.
+- Setelah `SITE_URL` diisi di `konten.py`, build ikut membuat tag `hreflang` dan sitemap untuk kedua bahasa.
+
+## Video YouTube
+Video ada di bagian bawah Home, diatur di `video.py`. Cukup tempel link video dari kanal YouTube WRS.
+Isi `mulai` dan `selesai` (dalam detik) untuk menjadikannya klip singkat, misalnya mulai 30 dan selesai 60.
+Pemutar baru dimuat saat gambar diklik, jadi halaman tetap ringan. Kosongkan daftar `VIDEO` untuk menyembunyikan bagian ini.

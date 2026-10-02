@@ -2,6 +2,11 @@
    pencarian mal (halaman Lokasi), dan form WhatsApp (halaman Contact). */
 (function () {
   var doc = document;
+  var T = {};  /* teks antarmuka sesuai bahasa halaman (diisi saat build) */
+  try { T = JSON.parse(doc.body.getAttribute("data-t") || "{}"); } catch (e) { T = {}; }
+  function isi(templat, nilai) {
+    return String(templat || "").replace(/\{(\w+)\}/g, function (_, k) { return nilai[k]; });
+  }
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---- navbar: mengecil saat scroll + hamburger di HP ---- */
@@ -29,7 +34,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -86,12 +91,12 @@
     lb.className = "lb";
     lb.setAttribute("role", "dialog");
     lb.setAttribute("aria-modal", "true");
-    lb.setAttribute("aria-label", "Tampilan foto");
+    lb.setAttribute("aria-label", T.lb_label || "Photo viewer");
     lb.innerHTML =
-      '<button class="lb-x" type="button" aria-label="Tutup">&times;</button>' +
-      '<button class="lb-p" type="button" aria-label="Foto sebelumnya">&#8249;</button>' +
+      '<button class="lb-x" type="button" aria-label="' + (T.lb_tutup || "Close") + '">&times;</button>' +
+      '<button class="lb-p" type="button" aria-label="' + (T.lb_sebelum || "Previous") + '">&#8249;</button>' +
       '<img class="lb-img" alt=""><p class="lb-cap"></p>' +
-      '<button class="lb-n" type="button" aria-label="Foto berikutnya">&#8250;</button>';
+      '<button class="lb-n" type="button" aria-label="' + (T.lb_sesudah || "Next") + '">&#8250;</button>';
     doc.body.appendChild(lb);
     lbFoto = lb.querySelector(".lb-img");
     lbKet = lb.querySelector(".lb-cap");
@@ -131,6 +136,20 @@
     });
   }
 
+  /* ---- video YouTube: pemutar baru dimuat saat gambar diklik ---- */
+  doc.addEventListener("click", function (e) {
+    var tombol = e.target.closest ? e.target.closest(".vid-btn") : null;
+    if (!tombol) return;
+    var f = doc.createElement("iframe");
+    f.className = "vid-frame";
+    f.src = tombol.getAttribute("data-embed");
+    f.title = tombol.getAttribute("data-judul") || "Video";
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    f.setAttribute("allowfullscreen", "");
+    f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    tombol.parentNode.replaceChild(f, tombol);
+  });
+
   /* ---- pencarian mal (halaman Lokasi) ---- */
   var cari = document.getElementById("cari");
   if (cari) {
@@ -152,7 +171,7 @@
         w.hidden = !w.querySelector(".kel:not([hidden])");
       });
       kosong.hidden = tampil > 0;
-      jumlah.textContent = q ? tampil + " dari " + total + " lokasi" : total + " lokasi";
+      jumlah.textContent = q ? isi(T.jumlah_saring, { n: tampil, total: total }) : isi(T.jumlah, { total: total });
     });
   }
 
@@ -161,10 +180,10 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var d = new FormData(form);
-      var usaha = d.get("usaha") ? " dari " + d.get("usaha") : "";
+      var usaha = d.get("usaha") ? (T.wa_dari || " - ") + d.get("usaha") : "";
       var teks =
-        "Halo WRS, saya " + d.get("nama") + usaha + ".\n" +
-        "Kebutuhan: " + d.get("butuh") + "\n\n" + d.get("pesan");
+        (T.wa_awal || "") + d.get("nama") + usaha + ".\n" +
+        (T.wa_butuh || "") + d.get("butuh") + "\n\n" + d.get("pesan");
       var url = "https://wa.me/" + form.getAttribute("data-wa") + "?text=" + encodeURIComponent(teks);
       window.open(url, "_blank", "noopener");
     });
