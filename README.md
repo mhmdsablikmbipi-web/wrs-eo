@@ -59,3 +59,42 @@ memindahkan pengunjung ke halaman yang sama dalam bahasa lain.
 Video ada di bagian bawah Home, diatur di `video.py`. Cukup tempel link video dari kanal YouTube WRS.
 Isi `mulai` dan `selesai` (dalam detik) untuk menjadikannya klip singkat, misalnya mulai 30 dan selesai 60.
 Pemutar baru dimuat saat gambar diklik, jadi halaman tetap ringan. Kosongkan daftar `VIDEO` untuk menyembunyikan bagian ini.
+
+## Update event mingguan (halaman Artikel Event)
+Di bagian atas halaman Artikel Event ada daftar **Update event terbaru**: tiap event punya periode, mal, kota,
+penjelasan, dan foto dokumentasi. Ada filter jenis event (otomotif, bazaar, dst.), status otomatis
+(Akan datang / Sedang berlangsung / Selesai, mengikuti tanggal hari ini di perangkat pengunjung), dan tombol
+"Tampilkan event sebelumnya" kalau event sudah banyak. Foto diklik untuk diperbesar dan digeser per event.
+
+**Satu event = satu folder di `update/`**, berisi `info.txt` dan foto-foto. Tanpa coding:
+
+    update/
+      2026-09-28_ambassador-mall/
+        info.txt
+        01.jpg  02.jpg  03.jpg ...
+
+Isi `info.txt`:
+
+    judul: Event Ambassador
+    kategori: otomotif
+    mal: Mall Ambassador
+    kota: Jakarta Selatan
+    periode: 28 September sd 4 Oktober 2026
+    deskripsi: Pameran otomotif di Mall Ambassador ...
+
+- Template ada di `update/_TEMPLATE/`. Folder berawalan `_` diabaikan (cocok untuk template atau draf).
+- Penulisan periode fleksibel: `28 September sd 4 Oktober 2026`, `28-09-2026 s/d 04-10-2026`, `12 Oktober 2026` (satu hari).
+- Foto: JPG, PNG, atau WebP (HEIC bila `pip install pillow-heif`). Nama file bebas, urutan mengikuti nama file.
+  Foto dari HP otomatis ditegakkan dan dikecilkan; tidak perlu diedit dulu.
+- Versi Inggris opsional: `judul_en:` dan `deskripsi_en:`.
+- Setelah `python build.py`, pesan `PERHATIAN:` di layar menjelaskan folder yang dilewati dan alasannya.
+- Panduan untuk staf (bahasa awam) ada di `update/PANDUAN-STAF.txt`.
+- Opsional di `konten.py`: `UPDATE_PER_HALAMAN = 6` (jumlah event per tampilan) dan `UPDATE_FOTO_TAMPIL = 6` (foto yang langsung tampil per event).
+
+### Staf mengunggah lewat GitHub, website memperbarui diri
+File `.github/workflows/build.yml` menjalankan `python build.py` otomatis setiap ada perubahan di repository
+(selain di folder `docs/`), lalu menyimpan hasilnya ke `docs/`. Jadi staf cukup menyeret folder event ke
+`update/` lewat situs github.com, tanpa Python dan tanpa Git. Syaratnya:
+1. Staf ditambahkan sebagai kolaborator: Settings > Collaborators (hak akses Write).
+2. Di GitHub: Settings > Actions > General > Workflow permissions, pilih "Read and write permissions".
+3. Sebelum `git push` dari komputer Anda, jalankan `git pull` dulu, karena robot GitHub ikut menyimpan perubahan ke `docs/`.

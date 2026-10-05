@@ -22,12 +22,18 @@ import json
 import re
 import shutil
 import sys
-from datetime import date
+from datetime import date, datetime
 from html import escape
 from pathlib import Path
 from urllib.parse import quote_plus
 
-from PIL import Image
+from PIL import Image, ImageOps
+
+try:  # foto iPhone berformat HEIC (opsional): pip install pillow-heif
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+except Exception:
+    pass
 
 import konten as KID
 
@@ -44,6 +50,8 @@ BASE = Path(__file__).resolve().parent
 OUT = BASE / "docs"
 IMG = OUT / "images"
 
+FOLDER_UPDATE = BASE / "update"   # satu folder per event: info.txt + foto-foto dokumentasi
+EKSTENSI_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif"}
 FILE = {"home": "index.html", "event": "event.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
 SITE = (KID.SITE_URL.rstrip("/") + "/") if KID.SITE_URL else ""
 
@@ -93,6 +101,18 @@ UI = {
         "lb_sebelum": "Foto sebelumnya",
         "lb_sesudah": "Foto berikutnya",
         "lb_label": "Tampilan foto",
+        "upd_judul": "Update event terbaru",
+        "upd_sub": "Jadwal dan dokumentasi pameran WRS dari minggu ke minggu di berbagai mal.",
+        "jenis_judul": "Jenis event WRS",
+        "semua": "Semua",
+        "filter": "Saring berdasarkan jenis event",
+        "st_akan": "Akan datang",
+        "st_jalan": "Sedang berlangsung",
+        "st_selesai": "Selesai",
+        "lagi": "Tampilkan event sebelumnya",
+        "foto_lihat": "Lihat semua foto ({n})",
+        "foto_tutup": "Tampilkan lebih sedikit",
+        "foto_segera": "Foto dokumentasi segera hadir.",
         "wa_awal": "Halo WRS, saya ",
         "wa_dari": " dari ",
         "wa_butuh": "Kebutuhan: ",
@@ -138,6 +158,18 @@ UI = {
         "lb_sebelum": "Previous photo",
         "lb_sesudah": "Next photo",
         "lb_label": "Photo viewer",
+        "upd_judul": "Latest event updates",
+        "upd_sub": "Weekly schedule and photo documentation of WRS exhibitions across partner malls.",
+        "jenis_judul": "WRS event types",
+        "semua": "All",
+        "filter": "Filter by event type",
+        "st_akan": "Upcoming",
+        "st_jalan": "Ongoing",
+        "st_selesai": "Finished",
+        "lagi": "Show earlier events",
+        "foto_lihat": "See all photos ({n})",
+        "foto_tutup": "Show fewer",
+        "foto_segera": "Photo documentation coming soon.",
         "wa_awal": "Hello WRS, I'm ",
         "wa_dari": " from ",
         "wa_butuh": "Need: ",
@@ -145,7 +177,7 @@ UI = {
 }
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
-            "wa_awal", "wa_dari", "wa_butuh"]
+            "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup"]
 
 # Bahasa yang sedang dibangun (diatur oleh pakai())
 K = KID
@@ -205,7 +237,7 @@ def img_url(nama: str, sisi: int = 1200) -> str:
         HILANG.append(nama)
         _cache[nama] = ""
         return ""
-    im = Image.open(src)
+    im = ImageOps.exif_transpose(Image.open(src))  # foto dari HP sering tersimpan miring
     im.thumbnail((sisi, sisi))
     if punya_transparansi(im):
         nama_out = f"{slug(nama)}.png"
@@ -366,6 +398,287 @@ def kepala(judul: str, sub: str) -> str:
 
 
 # =============================================================================
+# UPDATE EVENT: satu folder di update/ = satu event (info.txt + foto dokumentasi)
+# =============================================================================
+
+PERINGATAN: list = []
+UPDATE: list = []
+
+BULAN = {
+    "januari": 1, "jan": 1, "january": 1, "februari": 2, "pebruari": 2, "feb": 2, "february": 2,
+    "maret": 3, "mar": 3, "march": 3, "april": 4, "apr": 4, "mei": 5, "may": 5,
+    "juni": 6, "jun": 6, "june": 6, "juli": 7, "jul": 7, "july": 7,
+    "agustus": 8, "agu": 8, "agt": 8, "aug": 8, "august": 8,
+    "september": 9, "sep": 9, "sept": 9, "oktober": 10, "okt": 10, "oct": 10, "october": 10,
+    "november": 11, "nov": 11, "nop": 11, "desember": 12, "des": 12, "dec": 12, "december": 12,
+}
+BULAN_NAMA = {
+    "id": ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+           "September", "Oktober", "November", "Desember"],
+    "en": ["January", "February", "March", "April", "May", "June", "July", "August",
+           "September", "October", "November", "December"],
+}
+KATEGORI = {
+    "otomotif": {"id": "Otomotif", "en": "Automotive"},
+    "multiproduk": {"id": "Multi produk", "en": "Multi-product"},
+    "furniture": {"id": "Furniture", "en": "Furniture"},
+    "bazaar": {"id": "Bazaar", "en": "Bazaar"},
+    "lainnya": {"id": "Lainnya", "en": "Other"},
+}
+ALIAS_KATEGORI = {"automotive": "otomotif", "multiproduct": "multiproduk", "bazar": "bazaar"}
+KUNCI_INFO = {
+    "judul": "judul", "title": "judul", "nama_event": "judul", "nama": "judul",
+    "judul_en": "judul_en", "title_en": "judul_en",
+    "kategori": "kategori", "category": "kategori", "jenis": "kategori",
+    "mal": "mal", "mall": "mal", "lokasi": "mal", "kota": "kota", "city": "kota",
+    "periode": "periode", "period": "periode", "tanggal": "periode",
+    "mulai": "mulai", "start": "mulai", "selesai": "selesai", "end": "selesai",
+    "deskripsi": "deskripsi", "description": "deskripsi", "keterangan": "deskripsi",
+    "deskripsi_en": "deskripsi_en", "description_en": "deskripsi_en",
+}
+
+
+def urut_alami(p: Path) -> list:
+    """Urutan nama file yang wajar: foto2 sebelum foto10."""
+    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", p.name.lower())]
+
+
+def slug_teks(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-") or "event"
+
+
+def baca_teks(path: Path) -> str:
+    data = path.read_bytes()
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return data.decode("cp1252", errors="replace")
+
+
+def baca_info(path: Path) -> dict:
+    """info.txt: baris 'kunci: isi'. Baris tanpa kunci melanjutkan isi sebelumnya;
+    baris kosong memisahkan paragraf (untuk deskripsi)."""
+    mentah, kunci = {}, None
+    for baris in baca_teks(path).splitlines():
+        if baris.lstrip().startswith("#"):   # baris catatan, diabaikan
+            continue
+        m = re.match(r"^\s*([A-Za-z_ ]{2,20}?)\s*[:=]\s*(.*)$", baris)
+        if m:
+            k = KUNCI_INFO.get(re.sub(r"[\s_]+", "_", m.group(1).strip().lower()))
+            if k:
+                kunci = k
+                mentah[k] = [m.group(2).strip()]
+                continue
+        if kunci is not None:
+            mentah[kunci].append(baris.strip())
+    hasil = {}
+    for k, baris in mentah.items():
+        paras, cur = [], []
+        for x in baris:
+            if x:
+                cur.append(x)
+            elif cur:
+                paras.append(" ".join(cur))
+                cur = []
+        if cur:
+            paras.append(" ".join(cur))
+        hasil[k] = paras
+    return hasil
+
+
+def urai_tanggal(s: str) -> tuple:
+    """(hari, bulan, tahun); bagian yang tidak ditulis bernilai None."""
+    s = s.strip()
+    m = re.match(r"^(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})$", s)
+    if m:
+        a, b_, c = (int(x) for x in m.groups())
+        return (c, b_, a) if len(m.group(1)) == 4 else (a, b_, c)
+    tahun = re.search(r"\b(\d{4})\b", s)
+    sisa = s.replace(tahun.group(1), " ") if tahun else s
+    hari = re.search(r"\b(\d{1,2})\b", sisa)
+    bulan = next((BULAN[w.lower()] for w in re.findall(r"[A-Za-z]+", s) if w.lower() in BULAN), None)
+    return (int(hari.group(1)) if hari else None, bulan, int(tahun.group(1)) if tahun else None)
+
+
+PEMISAH_PERIODE = re.compile(
+    r"\s*(?:\bs\s*/\s*d\b\.?|\bs\.\s*d\.?|\bsd\b|\bsampai\b|\bhingga\b|\bto\b|\buntil\b|\s-\s|–|—)\s*", re.I
+)
+
+
+def urai_periode(teks: str) -> tuple:
+    """'28 September sd 4 Oktober 2026' -> (date, date). Bulan/tahun yang hilang di awal dilengkapi."""
+    bagian = [p for p in PEMISAH_PERIODE.split(teks.strip()) if p.strip()]
+    if not bagian or len(bagian) > 2:
+        raise ValueError("format periode tidak dikenali")
+    kiri = list(urai_tanggal(bagian[0]))
+    kanan = list(urai_tanggal(bagian[-1]))
+    if len(bagian) == 1:
+        kanan = kiri[:]
+    if kanan[0] is None:
+        raise ValueError("tanggal akhir tidak terbaca")
+    kanan[2] = kanan[2] or kiri[2]
+    kanan[1] = kanan[1] or kiri[1]
+    if kanan[1] is None or kanan[2] is None or kiri[0] is None:
+        raise ValueError("bulan atau tahun belum ditulis")
+    if kiri[1] is None:                       # contoh "28 - 4 Oktober 2026" -> September
+        kiri[1] = kanan[1] - 1 if kiri[0] > kanan[0] else kanan[1]
+        if kiri[1] == 0:
+            kiri[1], kiri[2] = 12, (kiri[2] or kanan[2]) - 1
+    if kiri[2] is None:
+        kiri[2] = kanan[2] - 1 if kiri[1] > kanan[1] else kanan[2]
+    try:
+        a, b_ = date(kiri[2], kiri[1], kiri[0]), date(kanan[2], kanan[1], kanan[0])
+    except ValueError:
+        raise ValueError("ada tanggal yang tidak ada di kalender")
+    if a > b_:
+        raise ValueError("tanggal selesai lebih awal dari tanggal mulai")
+    return a, b_
+
+
+def format_periode(a: date, b_: date, bahasa: str) -> str:
+    n = BULAN_NAMA[bahasa]
+    if a == b_:
+        return f"{a.day} {n[a.month - 1]} {a.year}"
+    if (a.year, a.month) == (b_.year, b_.month):
+        return f"{a.day} – {b_.day} {n[a.month - 1]} {a.year}"
+    if a.year == b_.year:
+        return f"{a.day} {n[a.month - 1]} – {b_.day} {n[b_.month - 1]} {a.year}"
+    return f"{a.day} {n[a.month - 1]} {a.year} – {b_.day} {n[b_.month - 1]} {b_.year}"
+
+
+def simpan_foto_update(src: Path, awalan: str, nomor: int):
+    """Simpan dua ukuran: kecil (kisi di halaman) dan besar (saat foto diklik)."""
+    try:
+        im = ImageOps.exif_transpose(Image.open(src))
+        hasil = []
+        for sisi, akhir in ((640, "-k"), (1400, "")):
+            x = im.copy()
+            x.thumbnail((sisi, sisi))
+            nama = f"u-{awalan}-{nomor:02d}{akhir}.webp"
+            x.convert("RGB").save(IMG / nama, "WEBP", quality=80, method=4)
+            hasil.append(f"images/{nama}")
+        return tuple(hasil)
+    except Exception as e:
+        PERINGATAN.append(f"Foto {src.parent.name}/{src.name} tidak bisa dibaca ({type(e).__name__}); dilewati. "
+                          "Simpan ulang sebagai JPG atau PNG.")
+        return None
+
+
+def muat_update() -> list:
+    """Baca semua folder event di update/. Folder berawalan _ atau . diabaikan (untuk template/draf)."""
+    if not FOLDER_UPDATE.is_dir():
+        return []
+    hasil = []
+    for folder in sorted(p for p in FOLDER_UPDATE.iterdir() if p.is_dir() and not p.name.startswith(("_", "."))):
+        nama = folder.name
+        txt = sorted((f for f in folder.iterdir() if f.suffix.lower() == ".txt"), key=urut_alami)
+        if not txt:
+            PERINGATAN.append(f"Folder update/{nama} dilewati: tidak ada file info.txt di dalamnya.")
+            continue
+        info = baca_info(txt[0])
+        try:
+            if info.get("periode"):
+                mulai, selesai = urai_periode(" ".join(info["periode"]))
+            elif info.get("mulai"):
+                mulai = urai_periode(" ".join(info["mulai"]))[0]
+                selesai = urai_periode(" ".join(info["selesai"]))[0] if info.get("selesai") else mulai
+                if selesai < mulai:
+                    raise ValueError("tanggal selesai lebih awal dari tanggal mulai")
+            else:
+                raise ValueError("baris 'periode:' belum diisi")
+        except ValueError as e:
+            PERINGATAN.append(f"Folder update/{nama} dilewati: {e}. Contoh yang benar -> periode: 28 September sd 4 Oktober 2026")
+            continue
+        judul = " ".join(info.get("judul", [])).strip() or re.sub(
+            r"^\d{4}-\d{2}-\d{2}[ _-]*", "", nama).replace("-", " ").replace("_", " ").strip().title()
+        k_mentah = " ".join(info.get("kategori", [])).strip()
+        k_norm = re.sub(r"[^a-z]", "", k_mentah.lower())
+        k_norm = ALIAS_KATEGORI.get(k_norm, k_norm) or "lainnya"
+        label = KATEGORI.get(k_norm) or {"id": k_mentah.title(), "en": k_mentah.title()}
+        awalan = slug_teks(nama)
+        fotos = []
+        berkas = sorted((f for f in folder.iterdir() if f.suffix.lower() in EKSTENSI_FOTO), key=urut_alami)
+        for i, f in enumerate(berkas, 1):
+            sudah = simpan_foto_update(f, awalan, i)
+            if sudah:
+                fotos.append(sudah)
+        hasil.append({
+            "id": awalan,
+            "judul": {"id": judul, "en": " ".join(info.get("judul_en", [])).strip() or judul},
+            "kat": k_norm, "label": label,
+            "mal": " ".join(info.get("mal", [])).strip(), "kota": " ".join(info.get("kota", [])).strip(),
+            "mulai": mulai, "selesai": selesai,
+            "isi": {"id": info.get("deskripsi", []), "en": info.get("deskripsi_en") or info.get("deskripsi", [])},
+            "foto": fotos,
+        })
+    hasil.sort(key=lambda u: (u["mulai"], u["selesai"], u["id"]), reverse=True)
+    return hasil
+
+
+def status_update(u: dict, hari: date) -> str:
+    return "akan" if hari < u["mulai"] else ("selesai" if hari > u["selesai"] else "jalan")
+
+
+def kartu_update(u: dict, hari: date) -> str:
+    judul = u["judul"][LANG]
+    lokasi = " · ".join(x for x in (u["mal"], u["kota"]) if x)
+    st = status_update(u, hari)
+    batas = int(getattr(KID, "UPDATE_FOTO_TAMPIL", 6))
+    foto_html = "".join(
+        f'<img class="upd-img{" extra" if i >= batas else ""}" src="{aset(t)}" data-besar="{aset(b_)}" '
+        f'data-grup="{u["id"]}" alt="{escape(judul + (" - " + u["mal"] if u["mal"] else ""))}" loading="lazy">'
+        for i, (t, b_) in enumerate(u["foto"])
+    )
+    if foto_html:
+        n = len(u["foto"])
+        lebih = (
+            f'<button class="upd-lebih" type="button" data-n="{n}" aria-expanded="false">'
+            f'{escape(T["foto_lihat"].format(n=n))}</button>' if n > batas else ""
+        )
+        galeri = f'<div class="upd-foto" data-n="{min(n, 3)}">{foto_html}</div>{lebih}'
+    else:
+        galeri = f'<p class="upd-kosong">{escape(T["foto_segera"])}</p>'
+    return (
+        f'<article class="upd" id="update-{u["id"]}" data-kat="{u["kat"]}" '
+        f'data-mulai="{u["mulai"].isoformat()}" data-selesai="{u["selesai"].isoformat()}">'
+        f'<div class="upd-kepala"><span class="badge st-{st}">{escape(T["st_" + st])}</span>'
+        f'<span class="upd-tag">{escape(u["label"][LANG])}</span></div>'
+        f'<h3>{escape(judul)}</h3>'
+        f'<p class="upd-meta"><span>{escape(format_periode(u["mulai"], u["selesai"], LANG))}</span>'
+        f'{"<span>" + escape(lokasi) + "</span>" if lokasi else ""}</p>'
+        f'{paragraf(u["isi"][LANG])}{galeri}</article>'
+    )
+
+
+def bagian_update() -> str:
+    if not UPDATE:
+        return ""
+    hari = date.today()
+    urut = []
+    for u in UPDATE:
+        if all(u["kat"] != k for k, _ in urut):
+            urut.append((u["kat"], u["label"][LANG]))
+    chips = ""
+    if len(urut) > 1:
+        chips = '<div class="chips" role="group" aria-label="' + escape(T["filter"]) + '">' + (
+            f'<button class="chip on" type="button" data-kat="semua" aria-pressed="true">{escape(T["semua"])}</button>'
+            + "".join(f'<button class="chip" type="button" data-kat="{k}" aria-pressed="false">{escape(lb)}</button>'
+                      for k, lb in urut)
+        ) + "</div>"
+    batch = int(getattr(KID, "UPDATE_PER_HALAMAN", 6))
+    kartu = "".join(kartu_update(u, hari) for u in UPDATE)
+    return f"""
+<section class="sec" style="padding-top:40px;padding-bottom:20px"><div class="inner">
+<h2>{escape(T['upd_judul'])}</h2>
+<p class="upd-sub">{escape(T['upd_sub'])}</p>
+{chips}
+<div class="upd-list" data-batch="{batch}">{kartu}</div>
+<div class="upd-lagi"><button class="btn-lagi" type="button" hidden>{escape(T['lagi'])}</button></div>
+</div></section>
+"""
+
+
+# =============================================================================
 # VIDEO YOUTUBE
 # =============================================================================
 
@@ -480,8 +793,9 @@ def artikel_event(i: int, e: dict) -> str:
 
 def halaman_event() -> str:
     artikel = "".join(artikel_event(i, e) for i, e in enumerate(K.EVENT_TIPE))
-    return kepala(K.EVENT_JUDUL, K.EVENT_DESKRIPSI) + (
-        f'<section class="sec" style="padding-top:40px"><div class="inner">{artikel}</div></section>'
+    judul_jenis = f'<h2 style="margin-bottom:8px">{escape(T["jenis_judul"])}</h2>' if UPDATE else ""
+    return kepala(K.EVENT_JUDUL, K.EVENT_DESKRIPSI) + bagian_update() + (
+        f'<section class="sec" style="padding-top:{20 if UPDATE else 40}px"><div class="inner">{judul_jenis}{artikel}</div></section>'
     )
 
 
@@ -646,6 +960,7 @@ def build() -> None:
         fav.thumbnail((192, 192))
         fav.save(IMG / "favicon.png", "PNG", optimize=True)
 
+    UPDATE[:] = muat_update()
     halaman = tulis_bahasa("id", OUT)
     bahasa = ["id"]
     if KEN:
@@ -665,6 +980,9 @@ def build() -> None:
         (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n", encoding="utf-8")
 
     print(f"Selesai: {halaman} halaman ({', '.join(bahasa)}), {len(list(IMG.glob('*')))} file gambar -> {OUT}")
+    print(f"Update event: {len(UPDATE)} event, {sum(len(u['foto']) for u in UPDATE)} foto dokumentasi")
+    for p in PERINGATAN:
+        print("PERHATIAN:", p)
     if V and getattr(V, "VIDEO", []):
         print(f"Video YouTube: {len(V.VIDEO)}")
     if HILANG:

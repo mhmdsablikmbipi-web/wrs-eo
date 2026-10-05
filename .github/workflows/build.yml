@@ -1,0 +1,46 @@
+# Membangun ulang website otomatis setiap ada perubahan (misalnya staf mengunggah foto event baru).
+# Hasilnya disimpan ke folder docs/, lalu GitHub Pages menayangkannya seperti biasa.
+name: Bangun website
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+      - "update/PANDUAN-STAF.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bangun-website
+  cancel-in-progress: false
+
+jobs:
+  bangun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pasang kebutuhan
+        run: |
+          pip install -r requirements.txt
+          pip install pillow-heif || true
+      - name: Bangun website
+        run: python build.py
+      - name: Simpan hasil ke folder docs
+        run: |
+          git config user.name "wrs-website-bot"
+          git config user.email "wrs-website-bot@users.noreply.github.com"
+          git add -A docs
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan pada docs."
+          else
+            git commit -m "Bangun ulang website otomatis"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

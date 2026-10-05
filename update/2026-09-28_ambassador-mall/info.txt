@@ -1,0 +1,11 @@
+# CONTOH EVENT. Ganti isinya dengan data asli, atau hapus folder ini kalau tidak dipakai.
+judul: Event Ambassador
+kategori: otomotif
+mal: Mall Ambassador
+kota: Jakarta Selatan
+periode: 28 September sd 4 Oktober 2026
+
+deskripsi: Pameran otomotif di Mall Ambassador, Jakarta Selatan, selama satu pekan. Foto dokumentasi kegiatan akan ditambahkan di sini.
+
+judul_en: Ambassador Event
+deskripsi_en: An automotive exhibition at Mall Ambassador, South Jakarta, running for one week. Photo documentation will be added here.

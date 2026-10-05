@@ -1,0 +1,25 @@
+# TEMPLATE UPDATE EVENT
+# Salin seluruh folder _TEMPLATE ini, ganti namanya (contoh: 2026-10-05_margo-city),
+# isi baris-baris di bawah, lalu masukkan foto dokumentasi ke dalam folder yang sama.
+# Baris yang diawali tanda # diabaikan. Cukup ganti tulisan SETELAH tanda titik dua (:).
+
+judul: Pameran Otomotif Margo City
+kategori: otomotif
+mal: Margo City
+kota: Depok
+periode: 5 Oktober sd 11 Oktober 2026
+
+deskripsi: Tulis penjelasan singkat event di sini: merek yang hadir, promo, atau acara pendukung.
+Kalimat boleh disambung ke baris berikutnya seperti ini.
+
+Baris kosong di atas membuat paragraf baru.
+
+# Pilihan kategori: otomotif, multi produk, furniture, bazaar
+# Contoh penulisan periode (semua benar):
+#   periode: 28 September sd 4 Oktober 2026
+#   periode: 28-09-2026 s/d 04-10-2026
+#   periode: 12 Oktober 2026        (untuk event satu hari)
+
+# OPSIONAL: versi bahasa Inggris. Kalau dikosongkan, halaman Inggris memakai teks Indonesia di atas.
+judul_en:
+deskripsi_en:

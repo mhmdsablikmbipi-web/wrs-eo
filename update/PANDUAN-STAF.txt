@@ -1,0 +1,60 @@
+PANDUAN STAF: MENAMBAH UPDATE EVENT DAN FOTO DOKUMENTASI
+=========================================================
+
+Anda tidak perlu bisa coding. Satu event = satu folder berisi foto dan satu file info.txt.
+Setelah folder diunggah ke GitHub, website memperbarui dirinya sendiri dalam 2-5 menit.
+
+
+A. SIAPKAN FOLDER EVENT DI KOMPUTER ATAU HP
+-------------------------------------------
+1. Salin folder  _TEMPLATE  (ada di dalam folder update), lalu ganti namanya.
+   Tulis tanggal mulai lalu nama mal, contoh:   2026-10-05_margo-city
+   (Pakai huruf, angka, dan tanda - saja. Jangan memakai simbol aneh.)
+
+2. Buka file info.txt di dalam folder itu dengan Notepad. Ganti tulisan SETELAH tanda titik dua:
+
+      judul: Pameran Otomotif Margo City
+      kategori: otomotif
+      mal: Margo City
+      kota: Depok
+      periode: 5 Oktober sd 11 Oktober 2026
+      deskripsi: Penjelasan singkat event...
+
+   - kategori diisi salah satu: otomotif, multi produk, furniture, bazaar
+   - periode ditulis seperti contoh di atas. Boleh juga 05-10-2026 s/d 11-10-2026
+   - Simpan file (Ctrl + S). Nama file boleh tetap info.txt.
+
+3. Masukkan foto dokumentasi ke dalam folder yang sama.
+   - Format JPG atau PNG. Nama file bebas.
+   - Urutan foto mengikuti nama file. Mau mengatur urutan? Beri nama 01.jpg, 02.jpg, 03.jpg, dst.
+   - Foto yang dikirim lewat WhatsApp sudah cukup kecil dan sangat cocok dipakai.
+     Foto asli dari kamera HP juga boleh, website mengecilkannya sendiri.
+   - Jumlah foto tidak dibatasi, tetapi 6 sampai 12 foto terbaik sudah cukup.
+
+
+B. UNGGAH KE GITHUB
+-------------------
+1. Buka repository website di github.com (masuk dengan akun yang sudah diberi akses).
+2. Klik folder  update.
+3. Klik tombol  Add file  >  Upload files.
+4. Seret (drag and drop) FOLDER EVENT tadi ke kotak upload. Folder dan isinya ikut terunggah.
+5. Tunggu semua file muncul di daftar, lalu klik  Commit changes  (tombol hijau di bawah).
+6. Selesai. Tunggu 2-5 menit, lalu buka website dan muat ulang (Ctrl + F5).
+   Kalau sudah lebih dari 10 menit dan belum muncul, buka tab Actions di GitHub. Tanda silang
+   merah berarti ada yang salah. Klik untuk melihat pesannya dan beri tahu admin website.
+
+
+C. MENGUBAH ATAU MENGHAPUS EVENT
+--------------------------------
+- Menambah foto ke event yang sudah ada: buka folder event itu di GitHub, Add file > Upload files.
+- Mengubah teks: klik file info.txt, klik ikon pensil, ubah isinya, lalu Commit changes.
+- Menghapus event: buka folder event, klik titik tiga (...) di kanan atas > Delete directory.
+- Menyembunyikan event tanpa menghapus: ganti nama folder dengan awalan garis bawah, contoh _2026-10-05_margo-city.
+
+
+D. YANG SERING SALAH
+--------------------
+- Event tidak muncul: periksa baris "periode:" (harus ada tanggal lengkap dengan tahun).
+- Tulisan aneh di file info.txt: simpan ulang dari Notepad dengan Save As > Encoding: UTF-8.
+- Foto tidak muncul: pastikan formatnya JPG atau PNG, dan foto berada DI DALAM folder event.
+- Status "Akan datang / Sedang berlangsung / Selesai" berubah sendiri sesuai tanggal. Tidak perlu diisi.

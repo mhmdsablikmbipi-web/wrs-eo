@@ -34,7 +34,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.vid,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.upd,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -68,15 +68,20 @@
   }
 
   /* ---- lightbox: klik foto untuk memperbesar ---- */
-  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret";
-  var foto = [].slice.call(doc.querySelectorAll(PILIH_FOTO)).filter(function (f) {
+  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img";
+  var semuaFoto = [].slice.call(doc.querySelectorAll(PILIH_FOTO)).filter(function (f) {
     return !f.closest("[aria-hidden='true']"); /* lewati salinan galeri yang bergerak */
   });
+  var foto = semuaFoto;  /* daftar yang sedang dijelajahi: satu event, atau foto umum halaman */
+  function pilihDaftar(img) {
+    var g = img.getAttribute("data-grup");
+    foto = semuaFoto.filter(function (f) { return g ? f.getAttribute("data-grup") === g : !f.getAttribute("data-grup"); });
+  }
   var lb, lbFoto, lbKet, kini = 0;
 
   function tampil(i) {
     kini = (i + foto.length) % foto.length;
-    lbFoto.src = foto[kini].src;
+    lbFoto.src = foto[kini].getAttribute("data-besar") || foto[kini].src;
     lbFoto.alt = foto[kini].alt;
     lbKet.textContent = foto[kini].alt;
   }
@@ -119,10 +124,11 @@
       if (e.key === "ArrowRight") tampil(kini + 1);
     });
   }
-  if (foto.length) {
+  if (semuaFoto.length) {
     doc.addEventListener("click", function (e) {
       var img = e.target.closest ? e.target.closest(PILIH_FOTO) : null;
       if (!img) return;
+      pilihDaftar(img);
       var i = foto.findIndex(function (f) { return f.src === img.src; });
       if (i < 0) return;
       siapkan();
@@ -133,6 +139,49 @@
       lb.classList.add("open");
       doc.documentElement.style.overflow = "hidden";
       lb.querySelector(".lb-x").focus();
+    });
+  }
+
+  /* ---- update event: status otomatis, saring jenis, tampilkan lebih banyak, foto ---- */
+  var kartuUpd = [].slice.call(doc.querySelectorAll(".upd"));
+  if (kartuUpd.length) {
+    var h = new Date();
+    var iso = h.getFullYear() + "-" + ("0" + (h.getMonth() + 1)).slice(-2) + "-" + ("0" + h.getDate()).slice(-2);
+    kartuUpd.forEach(function (k) {
+      var lencana = k.querySelector(".badge");
+      if (!lencana) return;
+      var st = iso < k.getAttribute("data-mulai") ? "akan" : (iso > k.getAttribute("data-selesai") ? "selesai" : "jalan");
+      lencana.className = "badge st-" + st;
+      lencana.textContent = T["st_" + st] || lencana.textContent;
+    });
+    var daftarUpd = doc.querySelector(".upd-list");
+    var batch = parseInt(daftarUpd.getAttribute("data-batch"), 10) || 6;
+    var tampilN = batch, kat = "semua", tombolLagi = doc.querySelector(".btn-lagi");
+    var terapkan = function () {
+      var cocok = kartuUpd.filter(function (k) { return kat === "semua" || k.getAttribute("data-kat") === kat; });
+      kartuUpd.forEach(function (k) { k.hidden = true; });
+      cocok.forEach(function (k, i) { k.hidden = i >= tampilN; });
+      tombolLagi.hidden = cocok.length <= tampilN;
+    };
+    doc.querySelectorAll(".chip").forEach(function (c) {
+      c.addEventListener("click", function () {
+        doc.querySelectorAll(".chip").forEach(function (x) {
+          x.classList.toggle("on", x === c);
+          x.setAttribute("aria-pressed", x === c ? "true" : "false");
+        });
+        kat = c.getAttribute("data-kat");
+        tampilN = batch;
+        terapkan();
+      });
+    });
+    tombolLagi.addEventListener("click", function () { tampilN += batch; terapkan(); });
+    terapkan();
+    doc.querySelectorAll(".upd-lebih").forEach(function (t) {
+      t.addEventListener("click", function () {
+        var buka = t.closest(".upd").classList.toggle("open");
+        t.setAttribute("aria-expanded", buka ? "true" : "false");
+        t.textContent = buka ? T.foto_tutup : isi(T.foto_lihat, { n: t.getAttribute("data-n") });
+      });
     });
   }
 

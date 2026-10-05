@@ -229,8 +229,8 @@ img{max-width:100%}
 .stat span{display:block;margin-top:8px;color:#EBD9B4;font-size:1rem}
 
 /* efek hover */
-img.mo,img.gal-img,img.foto-about,img.potret{cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease}
-img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:translateY(-4px);
+img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img{cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease}
+img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover,img.upd-img:hover{transform:translateY(-4px);
   box-shadow:0 14px 30px rgba(27,17,8,.28)}
 .marquee{padding:8px 0}
 .mal{transition:background .15s ease,transform .2s ease,box-shadow .2s ease}
@@ -282,11 +282,11 @@ img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:t
     animation:denyut 2.4s ease-out infinite}
 
   .js :is(.stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari,
-    .marquee,.vid,.kontak .cols>div,.kontak .inner>h2,.form){
+    .marquee,.vid,.upd,.kontak .cols>div,.kontak .inner>h2,.form){
     transition:opacity .7s ease var(--d,0s),translate .7s cubic-bezier(.2,.7,.2,1) var(--d,0s),
       transform .25s ease,box-shadow .25s ease}
   .js :is(.stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari,
-    .marquee,.vid,.kontak .cols>div,.kontak .inner>h2,.form):not(.in){opacity:0;translate:0 26px}
+    .marquee,.vid,.upd,.kontak .cols>div,.kontak .inner>h2,.form):not(.in){opacity:0;translate:0 26px}
 
   .stats .stat:nth-child(2),.vm-kartu:nth-child(2),.split>:nth-child(2),.misi li:nth-child(even){--d:.12s}
   .stats .stat:nth-child(3),.vm-kartu:nth-child(3){--d:.24s}
@@ -386,4 +386,44 @@ img.mo:hover,img.gal-img:hover,img.foto-about:hover,img.potret:hover{transform:t
   .lang a{padding:5px 10px}
   .vids,.vids.solo{grid-template-columns:1fr}
   .vid-play{width:64px;height:64px;margin:-32px 0 0 -32px}
+}
+
+/* ================= UPDATE EVENT (halaman Artikel Event) ================= */
+.upd-sub{margin:10px 0 0}
+.chips{display:none;flex-wrap:wrap;gap:10px;margin:26px 0 8px}
+.js .chips{display:flex}
+.chip{padding:8px 18px;border:1px solid var(--garis);border-radius:999px;background:transparent;color:var(--espresso);
+  font:inherit;font-weight:500;cursor:pointer;transition:background .2s ease,color .2s ease}
+.chip:hover{background:var(--pasir)}
+.chip.on{background:var(--espresso);border-color:var(--espresso);color:var(--gold-lt)}
+.upd-list{margin-top:26px}
+.upd{margin-bottom:22px;padding:28px;border:1px solid var(--garis);border-radius:22px;background:var(--kartu)}
+.upd-kepala{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:.82rem;font-weight:600}
+.badge.st-jalan{background:#DCEAD2;color:#2E5A27}
+.badge.st-akan{background:var(--pasir);color:var(--bronze)}
+.badge.st-selesai{background:#EFE6D2;color:#7a6a4a}
+.upd-tag{padding:4px 12px;border-radius:999px;background:var(--espresso);color:var(--gold-lt);font-size:.82rem;font-weight:600}
+.upd h3{margin:14px 0 8px;font-size:clamp(1.35rem,2.4vw,1.75rem);font-weight:600;color:var(--maroon)}
+.upd-meta{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0 0 14px;font-weight:600;color:var(--bronze)}
+.upd-meta span+span::before{content:"";display:inline-block;width:5px;height:5px;margin:0 12px 2px 0;border-radius:50%;background:var(--gold)}
+.upd p{max-width:48em}
+.upd-foto{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.upd-foto[data-n="1"]{grid-template-columns:minmax(0,560px)}
+.upd-foto[data-n="2"]{grid-template-columns:repeat(2,1fr)}
+.upd-img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:var(--pasir)}
+.js .upd:not(.open) .upd-img.extra{display:none}
+.upd-lebih{display:none}
+.js .upd-lebih{display:inline-block}
+.upd-lebih,.btn-lagi{margin-top:16px;padding:10px 22px;border:1.5px solid var(--espresso);border-radius:999px;background:transparent;
+  color:var(--espresso);font:inherit;font-weight:600;cursor:pointer;transition:background .2s ease,color .2s ease}
+.upd-lebih:hover,.btn-lagi:hover{background:var(--espresso);color:var(--gold-lt)}
+.upd-kosong{margin:14px 0 0;font-style:italic;color:#7a6a4a}
+.upd-lagi{margin-top:6px;text-align:center}
+@media (max-width:820px){
+  .upd-meta{flex-direction:column;gap:2px}
+  .upd-meta span+span::before{display:none}
+  .upd{padding:20px}
+  .upd-foto,.upd-foto[data-n="2"]{grid-template-columns:repeat(2,1fr)}
+  .upd-foto[data-n="1"]{grid-template-columns:1fr}
 }
