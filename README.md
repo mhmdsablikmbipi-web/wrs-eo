@@ -98,3 +98,20 @@ File `.github/workflows/build.yml` menjalankan `python build.py` otomatis setiap
 1. Staf ditambahkan sebagai kolaborator: Settings > Collaborators (hak akses Write).
 2. Di GitHub: Settings > Actions > General > Workflow permissions, pilih "Read and write permissions".
 3. Sebelum `git push` dari komputer Anda, jalankan `git pull` dulu, karena robot GitHub ikut menyimpan perubahan ke `docs/`.
+
+## Beranda yang lebih hidup
+Beranda memakai pola yang umum di situs event organizer profesional: hero dengan foto yang bergantian pelan,
+teks berjalan, penghitung angka, kartu spesialisasi bergambar, update event terbaru, alasan memilih WRS,
+alur kerja sama, baris mal mitra yang bergerak, galeri, video, dan ajakan kontak di akhir.
+Bilah emas tipis di atas layar menunjukkan seberapa jauh halaman sudah digulir.
+
+Yang bisa Anda atur:
+- **Foto hero:** otomatis memakai 5 foto pertama dari `GALERI_HOME`. Untuk memilih sendiri, tambahkan di `konten.py`:
+  `HERO_FOTO = ["otomotif-1.png", "bazaar-2.png", ...]`
+- **Kenapa memilih WRS dan Alur kerja sama:** teks bawaannya ada di `build.py` (kamus `BERANDA`, bahasa Indonesia dan Inggris).
+  Untuk menggantinya tanpa menyentuh `build.py`, tambahkan `ALASAN` atau `ALUR` di `konten.py` (dan `konten_en.py`):
+  `ALASAN = [("award", "Judul", "Penjelasan"), ...]` (ikon: award, pin, grafik, cek, naik, chat)
+  `ALUR = [("Judul langkah", "Penjelasan"), ...]`
+- **Teks berjalan** memakai nama keempat jenis event, tahun berdiri, jumlah mal, dan konsultasi gratis.
+- **Mal mitra** memakai nama-nama mal dari daftar `MAL` secara otomatis.
+- Kartu **Update event terbaru** di beranda mengambil 3 event terbaru dari folder `update/`; bagian ini hilang bila folder kosong.

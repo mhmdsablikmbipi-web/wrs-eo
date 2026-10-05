@@ -1,60 +1,83 @@
-PANDUAN STAF: MENAMBAH UPDATE EVENT DAN FOTO DOKUMENTASI
-=========================================================
+PANDUAN STAF: MENAMBAH UPDATE EVENT DAN FOTO DOKUMENTASI (LEWAT GITHUB)
+=======================================================================
 
-Anda tidak perlu bisa coding. Satu event = satu folder berisi foto dan satu file info.txt.
-Setelah folder diunggah ke GitHub, website memperbarui dirinya sendiri dalam 2-5 menit.
+Tidak perlu bisa coding dan tidak perlu menyiapkan folder di komputer.
+Semua dikerjakan di situs github.com. Setelah selesai, website memperbarui dirinya
+sendiri dalam 2-5 menit.
+
+Ada 2 bagian: (1) buat event, (2) tambah foto.
 
 
-A. SIAPKAN FOLDER EVENT DI KOMPUTER ATAU HP
--------------------------------------------
-1. Salin folder  _TEMPLATE  (ada di dalam folder update), lalu ganti namanya.
-   Tulis tanggal mulai lalu nama mal, contoh:   2026-10-05_margo-city
-   (Pakai huruf, angka, dan tanda - saja. Jangan memakai simbol aneh.)
+BAGIAN 1. BUAT EVENT BARU
+-------------------------
+1. Buka github.com dan masuk dengan akun Anda. Buka repository website WRS.
+2. Klik folder  update
+3. Klik tombol  Add file  lalu pilih  Create new file
+4. Di kolom nama file paling atas, ketik nama event seperti ini:
 
-2. Buka file info.txt di dalam folder itu dengan Notepad. Ganti tulisan SETELAH tanda titik dua:
+        2026-10-05_margo-city/info.txt
 
-      judul: Pameran Otomotif Margo City
-      kategori: otomotif
-      mal: Margo City
-      kota: Depok
-      periode: 5 Oktober sd 11 Oktober 2026
-      deskripsi: Penjelasan singkat event...
+   Aturan penulisan:
+   - Awali dengan tanggal mulai event: tahun-bulan-tanggal (contoh 2026-10-05)
+   - Lalu garis bawah _  dan nama mal tanpa spasi (pakai tanda -)
+   - Tanda garis miring / otomatis membuat folder baru. Jangan lupa menulis  /info.txt  di akhir.
 
-   - kategori diisi salah satu: otomotif, multi produk, furniture, bazaar
-   - periode ditulis seperti contoh di atas. Boleh juga 05-10-2026 s/d 11-10-2026
-   - Simpan file (Ctrl + S). Nama file boleh tetap info.txt.
+5. Di kotak besar di bawahnya, tulis isi event. Salin teks ini lalu ganti tulisan
+   SETELAH tanda titik dua:
 
-3. Masukkan foto dokumentasi ke dalam folder yang sama.
+        judul: Pameran Otomotif Margo City
+        kategori: otomotif
+        mal: Margo City
+        kota: Depok
+        periode: 5 Oktober sd 11 Oktober 2026
+        deskripsi: Tulis penjelasan singkat event di sini.
+
+   Pilihan kategori: otomotif, multi produk, furniture, bazaar
+   Contoh periode yang benar:
+        28 September sd 4 Oktober 2026
+        28-09-2026 s/d 04-10-2026
+        12 Oktober 2026          (untuk event satu hari)
+
+6. Klik tombol hijau  Commit changes...  di kanan atas, lalu klik  Commit changes
+   sekali lagi di jendela yang muncul.
+
+
+BAGIAN 2. TAMBAHKAN FOTO DOKUMENTASI
+------------------------------------
+7. Setelah tersimpan, buka folder event yang baru dibuat
+   (di dalam folder update, misalnya 2026-10-05_margo-city).
+8. Klik  Add file  lalu  Upload files
+9. Seret foto-fotonya dari komputer ke kotak yang muncul.
+   - Cukup fotonya saja, tidak perlu folder.
    - Format JPG atau PNG. Nama file bebas.
    - Urutan foto mengikuti nama file. Mau mengatur urutan? Beri nama 01.jpg, 02.jpg, 03.jpg, dst.
-   - Foto yang dikirim lewat WhatsApp sudah cukup kecil dan sangat cocok dipakai.
-     Foto asli dari kamera HP juga boleh, website mengecilkannya sendiri.
-   - Jumlah foto tidak dibatasi, tetapi 6 sampai 12 foto terbaik sudah cukup.
+   - Foto kiriman WhatsApp sudah cukup kecil dan cocok dipakai.
+   - 6 sampai 12 foto terbaik sudah cukup.
+10. Tunggu semua foto muncul di daftar, lalu klik  Commit changes
 
 
-B. UNGGAH KE GITHUB
--------------------
-1. Buka repository website di github.com (masuk dengan akun yang sudah diberi akses).
-2. Klik folder  update.
-3. Klik tombol  Add file  >  Upload files.
-4. Seret (drag and drop) FOLDER EVENT tadi ke kotak upload. Folder dan isinya ikut terunggah.
-5. Tunggu semua file muncul di daftar, lalu klik  Commit changes  (tombol hijau di bawah).
-6. Selesai. Tunggu 2-5 menit, lalu buka website dan muat ulang (Ctrl + F5).
-   Kalau sudah lebih dari 10 menit dan belum muncul, buka tab Actions di GitHub. Tanda silang
-   merah berarti ada yang salah. Klik untuk melihat pesannya dan beri tahu admin website.
+SELESAI
+-------
+Tunggu 2-5 menit, buka website, masuk ke halaman Artikel Event, lalu tekan Ctrl + F5.
+Event baru muncul paling atas. Status (Akan datang / Sedang berlangsung / Selesai)
+berubah sendiri sesuai tanggal, tidak perlu diisi.
 
 
-C. MENGUBAH ATAU MENGHAPUS EVENT
---------------------------------
-- Menambah foto ke event yang sudah ada: buka folder event itu di GitHub, Add file > Upload files.
-- Mengubah teks: klik file info.txt, klik ikon pensil, ubah isinya, lalu Commit changes.
-- Menghapus event: buka folder event, klik titik tiga (...) di kanan atas > Delete directory.
-- Menyembunyikan event tanpa menghapus: ganti nama folder dengan awalan garis bawah, contoh _2026-10-05_margo-city.
+MENGUBAH ATAU MENGHAPUS
+-----------------------
+- Mengubah teks: buka folder event, klik info.txt, klik ikon pensil di kanan atas,
+  ubah isinya, lalu Commit changes.
+- Menambah foto lagi: ulangi langkah 7 sampai 10.
+- Menghapus event: buka folder event, klik titik tiga (...) di kanan atas,
+  pilih Delete directory, lalu Commit changes.
+- Menyembunyikan event tanpa menghapus: ganti nama folder dengan awalan garis bawah,
+  contoh _2026-10-05_margo-city.
 
 
-D. YANG SERING SALAH
---------------------
-- Event tidak muncul: periksa baris "periode:" (harus ada tanggal lengkap dengan tahun).
-- Tulisan aneh di file info.txt: simpan ulang dari Notepad dengan Save As > Encoding: UTF-8.
-- Foto tidak muncul: pastikan formatnya JPG atau PNG, dan foto berada DI DALAM folder event.
-- Status "Akan datang / Sedang berlangsung / Selesai" berubah sendiri sesuai tanggal. Tidak perlu diisi.
+KALAU EVENT TIDAK MUNCUL
+------------------------
+- Tunggu sampai 10 menit, lalu tekan Ctrl + F5.
+- Periksa baris  periode:  Harus lengkap dengan tahun, contoh: 5 Oktober sd 11 Oktober 2026
+- Pastikan foto berada DI DALAM folder event, dan formatnya JPG atau PNG.
+- Buka tab  Actions  di GitHub. Tanda silang merah berarti ada yang salah:
+  klik untuk melihat pesannya dan beri tahu admin website.

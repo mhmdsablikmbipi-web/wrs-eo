@@ -12,7 +12,14 @@
   /* ---- navbar: mengecil saat scroll + hamburger di HP ---- */
   var nav = doc.querySelector(".nav");
   var burger = doc.querySelector(".burger");
-  function saatScroll() { nav.classList.toggle("scrolled", window.scrollY > 40); }
+  var progres = doc.querySelector(".progres");
+  function saatScroll() {
+    nav.classList.toggle("scrolled", window.scrollY > 40);
+    if (progres) {
+      var tinggi = doc.documentElement.scrollHeight - window.innerHeight;
+      progres.style.transform = "scaleX(" + (tinggi > 0 ? Math.min(window.scrollY / tinggi, 1) : 0) + ")";
+    }
+  }
   saatScroll();
   window.addEventListener("scroll", saatScroll, { passive: true });
   if (burger) {
@@ -34,7 +41,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.vid,.upd,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.upd,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -141,6 +148,19 @@
       lb.querySelector(".lb-x").focus();
     });
   }
+
+  /* ---- lencana status pada kartu update di beranda ---- */
+  (function () {
+    var h = new Date();
+    var iso = h.getFullYear() + "-" + ("0" + (h.getMonth() + 1)).slice(-2) + "-" + ("0" + h.getDate()).slice(-2);
+    doc.querySelectorAll(".upd-mini").forEach(function (k) {
+      var lencana = k.querySelector(".badge");
+      if (!lencana) return;
+      var st = iso < k.getAttribute("data-mulai") ? "akan" : (iso > k.getAttribute("data-selesai") ? "selesai" : "jalan");
+      lencana.className = "badge st-" + st;
+      lencana.textContent = T["st_" + st] || lencana.textContent;
+    });
+  })();
 
   /* ---- update event: status otomatis, saring jenis, tampilkan lebih banyak, foto ---- */
   var kartuUpd = [].slice.call(doc.querySelectorAll(".upd"));

@@ -113,6 +113,21 @@ UI = {
         "foto_lihat": "Lihat semua foto ({n})",
         "foto_tutup": "Tampilkan lebih sedikit",
         "foto_segera": "Foto dokumentasi segera hadir.",
+        "scroll": "Gulir",
+        "tk_sejak": "Sejak 2003",
+        "tk_mal": "{total} mal mitra",
+        "tk_konsul": "Konsultasi strategi gratis",
+        "spes_judul": "Spesialisasi kami",
+        "spes_sub": "Empat jenis event yang rutin kami selenggarakan di mal mitra.",
+        "baca": "Baca selengkapnya",
+        "upd_home_sub": "Pameran yang sedang dan baru berlangsung di mal mitra kami.",
+        "lihat_update": "Lihat semua update event",
+        "alasan_judul": "Kenapa memilih WRS",
+        "alur_judul": "Alur kerja sama",
+        "mitra_judul": "Mal mitra kami",
+        "lihat_lokasi": "Lihat semua lokasi mal",
+        "cta_judul": "Siap tampil di mal?",
+        "cta_sub": "Ceritakan kebutuhan Anda. Konsultasi strategi dari tim WRS tanpa biaya.",
         "wa_awal": "Halo WRS, saya ",
         "wa_dari": " dari ",
         "wa_butuh": "Kebutuhan: ",
@@ -170,6 +185,21 @@ UI = {
         "foto_lihat": "See all photos ({n})",
         "foto_tutup": "Show fewer",
         "foto_segera": "Photo documentation coming soon.",
+        "scroll": "Scroll",
+        "tk_sejak": "Since 2003",
+        "tk_mal": "{total} partner malls",
+        "tk_konsul": "Free strategy consultation",
+        "spes_judul": "What we do",
+        "spes_sub": "Four types of events we regularly run in partner malls.",
+        "baca": "Read more",
+        "upd_home_sub": "Exhibitions running now and recently at our partner malls.",
+        "lihat_update": "See all event updates",
+        "alasan_judul": "Why choose WRS",
+        "alur_judul": "How it works",
+        "mitra_judul": "Our partner malls",
+        "lihat_lokasi": "See all mall locations",
+        "cta_judul": "Ready to be in a mall?",
+        "cta_sub": "Tell us what you need. A strategy consultation with the WRS team is free.",
         "wa_awal": "Hello WRS, I'm ",
         "wa_dari": " from ",
         "wa_butuh": "Need: ",
@@ -178,6 +208,52 @@ UI = {
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
             "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup"]
+
+# Ikon (gaya garis) untuk bagian "Kenapa memilih WRS"
+IKON = {
+    "award": '<circle cx="12" cy="8" r="6"/><path d="M15.5 12.9 17 22l-5-3-5 3 1.5-9.1"/>',
+    "pin": '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    "grafik": '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+    "cek": '<path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><polyline points="22 4 12 14 9 11"/>',
+    "naik": '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    "chat": '<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>',
+}
+# (ikon, judul, isi). Teks diambil dari isi website WRS sebelumnya; sesuaikan bila perlu.
+BERANDA = {
+    "id": {
+        "alasan": [
+            ("award", "Berpengalaman sejak 2003", "Puluhan ribu bisnis dan pameran di berbagai industri sudah kami bantu tampil di mal."),
+            ("pin", "Jaringan mal mitra luas", "Pilih lokasi dan jadwal di Jabodetabek dan kota-kota besar di berbagai pulau."),
+            ("grafik", "Analisa yang matang", "Setiap event kami mulai dengan analisa yang detail dan menyeluruh."),
+            ("cek", "Eksekusi yang rapi", "Tim profesional kami menjalankan setiap proyek dengan persiapan yang matang."),
+            ("naik", "Biaya jadi investasi", "Kami berupaya agar setiap biaya yang Anda keluarkan menjadi investasi yang menguntungkan."),
+            ("chat", "Konsultasi strategi gratis", "Baru pertama kali ikut pameran di mal? Tim kami siap membantu menyusun strategi terbaik tanpa biaya."),
+        ],
+        "alur": [
+            ("Konsultasi", "Ceritakan produk dan target Anda. Konsultasi strategi dari tim WRS tanpa biaya."),
+            ("Pilih mal dan tanggal", "Tentukan lokasi dan jadwal di antara mal mitra WRS."),
+            ("Persiapan dan penataan", "Tim kami menyiapkan area, penataan, dan promosi event."),
+            ("Event berlangsung", "Pameran berjalan, dan dokumentasinya kami tampilkan di website."),
+        ],
+    },
+    "en": {
+        "alasan": [
+            ("award", "Experienced since 2003", "We have helped tens of thousands of businesses and exhibitions across many industries show up in malls."),
+            ("pin", "A wide partner mall network", "Choose locations and dates in Greater Jakarta and major cities across several islands."),
+            ("grafik", "Thorough analysis", "Every event starts with a detailed and comprehensive analysis."),
+            ("cek", "Neat execution", "Our professional team runs every project with careful preparation."),
+            ("naik", "Costs become investments", "We work so that every cost you spend becomes a profitable investment."),
+            ("chat", "Free strategy consultation", "First time exhibiting in a mall? Our team is ready to help you plan the best strategy at no cost."),
+        ],
+        "alur": [
+            ("Consultation", "Tell us about your product and goals. A strategy consultation with the WRS team is free."),
+            ("Choose mall and dates", "Pick a location and schedule among WRS partner malls."),
+            ("Preparation and layout", "Our team prepares the area, layout, and event promotion."),
+            ("Event day", "The exhibition runs, and we publish the documentation on the website."),
+        ],
+    },
+}
+
 
 # Bahasa yang sedang dibangun (diatur oleh pakai())
 K = KID
@@ -230,23 +306,25 @@ def img_url(nama: str, sisi: int = 1200) -> str:
         return ""
     if nama.startswith(("http://", "https://")):
         return nama
-    if nama in _cache:
-        return _cache[nama]
+    kunci = (nama, sisi)
+    if kunci in _cache:
+        return _cache[kunci]
     src = cari_file(nama)
     if not src:
         HILANG.append(nama)
-        _cache[nama] = ""
+        _cache[kunci] = ""
         return ""
     im = ImageOps.exif_transpose(Image.open(src))  # foto dari HP sering tersimpan miring
     im.thumbnail((sisi, sisi))
+    ekor = "" if sisi == 1200 else f"-{sisi}"
     if punya_transparansi(im):
-        nama_out = f"{slug(nama)}.png"
+        nama_out = f"{slug(nama)}{ekor}.png"
         im.convert("RGBA").save(IMG / nama_out, "PNG", optimize=True)
     else:
-        nama_out = f"{slug(nama)}.webp"
-        im.convert("RGB").save(IMG / nama_out, "WEBP", quality=82, method=6)
-    _cache[nama] = f"images/{nama_out}"
-    return _cache[nama]
+        nama_out = f"{slug(nama)}{ekor}.webp"
+        im.convert("RGB").save(IMG / nama_out, "WEBP", quality=80, method=6)
+    _cache[kunci] = f"images/{nama_out}"
+    return _cache[kunci]
 
 
 def aset(url: str) -> str:
@@ -381,6 +459,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 {ld}
 </head>
 <body data-t="{data_js}">
+<div class="progres" aria-hidden="true"></div>
 <div class="nav"><a class="brand" href="index.html"><img src="{logo}" alt="Logo {escape(NAMA)}"><span>{escape(NAMA)}</span></a><nav class="links" id="menu-utama">{tautan}</nav>{tombol_bahasa(kode)}<button class="burger" type="button" aria-label="{escape(T['buka_menu'])}" aria-expanded="false" aria-controls="menu-utama"><span></span><span></span><span></span></button></div>
 <main>
 {isi}
@@ -728,6 +807,156 @@ def bagian_video() -> str:
 # HALAMAN
 # =============================================================================
 
+# =============================================================================
+# BAGIAN BERANDA YANG BARU (hero foto, teks berjalan, spesialisasi, dst.)
+# =============================================================================
+
+def hero_foto() -> tuple:
+    """Latar hero: foto-foto bergantian (crossfade) dengan gerak zoom pelan."""
+    nama = getattr(K, "HERO_FOTO", None) or [f for f, _ in K.GALERI_HOME[:5]]
+    urls = [u for u in (img_url(n, 1600) for n in nama) if u]
+    if not urls:
+        return "", ""
+    n = len(urls)
+    kf = ""
+    if n > 1:
+        e = 100 / n
+        kf = (
+            "<style>@keyframes herogeser{0%{opacity:0;transform:scale(1)}5%{opacity:1}"
+            f"{e:.2f}%{{opacity:1}}{e + 5:.2f}%{{opacity:0;transform:scale(1.1)}}100%{{opacity:0;transform:scale(1.1)}}}}</style>"
+        )
+    per = 7
+    slide = "".join(
+        f'<i style="background-image:url(\'{aset(u)}\');animation-delay:{k * per}s"></i>' for k, u in enumerate(urls)
+    )
+    return f'<span class="hero-bg" aria-hidden="true" style="--total:{n * per}s">{slide}</span>', kf
+
+
+def bagian_ticker() -> str:
+    _, total = daftar_mal()
+    kata = [e["judul"] for e in K.EVENT_TIPE] + [
+        T["tk_sejak"], T["tk_mal"].format(total=total), T["tk_konsul"]]
+    himpunan = "".join(f'<span class="tk">{escape(k)}</span>' for k in kata * 2)
+    durasi = max(30, len(kata) * 2 * 4)
+    return (
+        f'<div class="ticker" aria-hidden="true"><div class="run" style="--dur:{durasi}s"><div class="run-track">'
+        f'<div class="run-set">{himpunan}</div><div class="run-set">{himpunan}</div></div></div></div>'
+    )
+
+
+def bagian_spesialisasi() -> str:
+    kartu = []
+    for e in K.EVENT_TIPE:
+        url = img_url(e["foto"][0]) if e.get("foto") else ""
+        gambar = f'<img src="{aset(url)}" alt="{escape(e["judul"])}" loading="lazy">' if url else ""
+        kartu.append(
+            f'<a class="spes-kartu" href="event.html#{slug(e["judul"])}">{gambar}'
+            f'<span class="spes-isi"><h3>{escape(e["judul"])}</h3><p>{escape(e["lead"])}</p>'
+            f'<span>{escape(T["baca"])} →</span></span></a>'
+        )
+    return f"""
+<section class="sec"><div class="inner">
+<h2>{escape(T['spes_judul'])}</h2>
+<p class="sub">{escape(T['spes_sub'])}</p>
+<div class="spes">{''.join(kartu)}</div>
+</div></section>
+"""
+
+
+def bagian_update_beranda() -> str:
+    if not UPDATE:
+        return ""
+    hari = date.today()
+    kartu = []
+    for u in UPDATE[:3]:
+        judul = u["judul"][LANG]
+        lokasi = " · ".join(x for x in (u["mal"], u["kota"]) if x)
+        if u["foto"]:
+            gambar = f'<img class="upd-mini-foto" src="{aset(u["foto"][0][0])}" alt="{escape(judul)}" loading="lazy">'
+        else:
+            gambar = f'<div class="upd-mini-foto">{escape(u["label"][LANG])}</div>'
+        st = status_update(u, hari)
+        kartu.append(
+            f'<a class="upd-mini" href="event.html#update-{u["id"]}" data-mulai="{u["mulai"].isoformat()}" '
+            f'data-selesai="{u["selesai"].isoformat()}">{gambar}<span class="upd-mini-isi">'
+            f'<span class="badge st-{st}">{escape(T["st_" + st])}</span><h3>{escape(judul)}</h3>'
+            f'<p class="upd-mini-meta">{escape(format_periode(u["mulai"], u["selesai"], LANG))}'
+            f'{" · " + escape(lokasi) if lokasi else ""}</p></span></a>'
+        )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['upd_judul'])}</h2>
+<p class="sub">{escape(T['upd_home_sub'])}</p>
+<div class="upd-mini-grid" data-n="{len(kartu)}">{''.join(kartu)}</div>
+<a class="lihat-semua" href="event.html">{escape(T['lihat_update'])} →</a>
+</div></section>
+"""
+
+
+def bagian_alasan() -> str:
+    data = getattr(K, "ALASAN", None) or BERANDA[LANG]["alasan"]
+    kartu = "".join(
+        f'<div class="alasan-kartu"><span class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON.get(ik, IKON["cek"])}</svg></span>'
+        f'<h3>{escape(j)}</h3><p>{escape(t)}</p></div>'
+        for ik, j, t in data
+    )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['alasan_judul'])}</h2>
+<div class="alasan">{kartu}</div>
+</div></section>
+"""
+
+
+def bagian_alur() -> str:
+    data = getattr(K, "ALUR", None) or BERANDA[LANG]["alur"]
+    langkah = "".join(
+        f'<div class="langkah"><b>{i}</b><h3>{escape(j)}</h3><p>{escape(t)}</p></div>'
+        for i, (j, t) in enumerate(data, 1)
+    )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['alur_judul'])}</h2>
+<div class="alur">{langkah}</div>
+</div></section>
+"""
+
+
+def bagian_mitra() -> str:
+    nama = []
+    for _, grup in K.MAL:
+        for _, _, daftar in grup:
+            nama += [m[0] if isinstance(m, tuple) else m for m in daftar[:3]]
+    nama = nama[:48]
+    baris = [nama[0::2], nama[1::2]]
+    rows = []
+    for i, isi in enumerate(baris):
+        chips = "".join(f'<span class="mitra-chip">{escape(n)}</span>' for n in isi)
+        balik = " balik" if i else ""
+        rows.append(
+            f'<div class="run{balik}" style="--dur:{max(40, len(isi) * 3)}s" aria-hidden="true"><div class="run-track">'
+            f'<div class="run-set">{chips}</div><div class="run-set">{chips}</div></div></div>'
+        )
+    return f"""
+<section class="sec mitra" style="padding-top:0"><div class="inner">
+<h2>{escape(T['mitra_judul'])}</h2>
+</div>
+{''.join(rows)}
+<div class="inner"><a class="lihat-semua" href="lokasi.html">{escape(T['lihat_lokasi'])} →</a></div>
+</section>
+"""
+
+
+def bagian_cta() -> str:
+    return f"""
+<section class="cta"><div class="inner">
+<h2>{escape(T['cta_judul'])}</h2>
+<p>{escape(T['cta_sub'])}</p>
+<div>{tombol(T['btn_wa'], wa_url(), 'wa')}{tombol(K.HERO['tombol_kedua'][0], K.HERO['tombol_kedua'][1], 'line')}</div>
+</div></section>
+"""
+
+
 def halaman_home() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
     galeri = "".join(
@@ -736,12 +965,17 @@ def halaman_home() -> str:
     )
     visi = "".join(f'<div class="vm-kartu"><h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for j, t in K.VISI)
     misi = "".join(f"<li>{escape(m)}</li>" for m in K.MISI)
-    return f"""
-<div class="hero"><div>
+    bg, kf = hero_foto()
+    kelas_hero = "hero hero-foto" if bg else "hero"
+    return f"""{kf}
+<div class="{kelas_hero}">{bg}<div>
 <h1>{escape(K.HERO['judul'])}</h1>
 <p>{escape(K.HERO['deskripsi'])}</p>
 {tombol(*K.HERO['tombol_utama'], 'gold')}{tombol(*K.HERO['tombol_kedua'], 'line')}
-</div><img class="logo" src="{logo}" alt="Logo {escape(NAMA)}"></div>
+</div><img class="logo" src="{logo}" alt="Logo {escape(NAMA)}">
+<a class="scroll-cue" href="#stat"><span>{escape(T['scroll'])}</span><i></i></a></div>
+
+{bagian_ticker()}
 
 {bagian_statistik()}
 
@@ -749,6 +983,14 @@ def halaman_home() -> str:
 <div class="split-teks"><h2>{escape(K.PROFIL['judul'])}</h2>{paragraf(K.PROFIL['paragraf'])}</div>
 {foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}
 </div></section>
+
+{bagian_spesialisasi()}
+
+{bagian_update_beranda()}
+
+{bagian_alasan()}
+
+{bagian_alur()}
 
 <section class="sec" style="padding-top:0"><div class="inner">
 <div class="pendiri kartu-pendiri">
@@ -771,13 +1013,16 @@ def halaman_home() -> str:
 <div class="latar-teks">{paragraf(K.LATAR['paragraf'])}</div>
 </div></section>
 
+{bagian_mitra()}
+
 <section class="sec" style="padding-top:0"><div class="inner">
 <h2 style="margin-bottom:36px">{escape(K.GALERI_JUDUL)}</h2>
 <div class="marquee" style="--dur:{len(K.GALERI_HOME) * K.GALERI_DETIK}s">
 <div class="track"><div class="set">{galeri}</div><div class="set" aria-hidden="true">{galeri}</div></div>
 </div>
 </div></section>
-{bagian_video()}"""
+{bagian_video()}
+{bagian_cta()}"""
 
 
 def artikel_event(i: int, e: dict) -> str:
@@ -843,7 +1088,7 @@ def bagian_statistik() -> str:
         f'<div class="stat"><b data-n="{n}" data-akhiran="{escape(a)}">{n}{escape(a)}</b><span>{escape(l)}</span></div>'
         for n, a, l in statistik()
     )
-    return f'<section class="stats"><div class="inner">{item}</div></section>'
+    return f'<section class="stats" id="stat"><div class="inner">{item}</div></section>'
 
 
 def halaman_lokasi() -> tuple:
