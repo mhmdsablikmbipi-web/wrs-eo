@@ -1,0 +1,6 @@
+judul: Pameran Otomotif Senayan City
+        kategori: otomotif
+        mal: Senayan City
+        kota: Jakarta Pusat
+        periode: 5 Oktober sd 11 Oktober 2026
+        deskripsi: Salah satu Event Otomotif yang berjalan pada pekan ini, di mal Senayan City

@@ -80,4 +80,8 @@ KALAU EVENT TIDAK MUNCUL
 - Periksa baris  periode:  Harus lengkap dengan tahun, contoh: 5 Oktober sd 11 Oktober 2026
 - Pastikan foto berada DI DALAM folder event, dan formatnya JPG atau PNG.
 - Buka tab  Actions  di GitHub. Tanda silang merah berarti ada yang salah:
+<<<<<<< HEAD
   klik untuk melihat pesannya dan beri tahu admin website.
+=======
+  klik untuk melihat pesannya dan beri tahu admin website.
+>>>>>>> 2abffbb38b43ed0e9cdc14f62b1e36317765e535

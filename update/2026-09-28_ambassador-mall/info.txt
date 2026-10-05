@@ -5,7 +5,7 @@ mal: Mall Ambassador
 kota: Jakarta Selatan
 periode: 28 September sd 4 Oktober 2026
 
-deskripsi: Pameran otomotif di Mall Ambassador, Jakarta Selatan, selama satu pekan. Foto dokumentasi kegiatan akan ditambahkan di sini.
+deskripsi: Pameran otomotif di Mall Ambassador, Jakarta Selatan, selama satu pekan.
 
 judul_en: Ambassador Event
 deskripsi_en: An automotive exhibition at Mall Ambassador, South Jakarta, running for one week. Photo documentation will be added here.
