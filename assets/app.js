@@ -13,8 +13,11 @@
   var nav = doc.querySelector(".nav");
   var burger = doc.querySelector(".burger");
   var progres = doc.querySelector(".progres");
+  var atas = doc.querySelector(".ke-atas");
+  if (atas) atas.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); });
   function saatScroll() {
     nav.classList.toggle("scrolled", window.scrollY > 40);
+    if (atas) atas.classList.toggle("tampak", window.scrollY > 700);
     if (progres) {
       var tinggi = doc.documentElement.scrollHeight - window.innerHeight;
       progres.style.transform = "scaleX(" + (tinggi > 0 ? Math.min(window.scrollY / tinggi, 1) : 0) + ")";
@@ -41,7 +44,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.vid,.upd,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.upd,.kartu-kontak,.faq-item,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -173,6 +176,7 @@
       var st = iso < k.getAttribute("data-mulai") ? "akan" : (iso > k.getAttribute("data-selesai") ? "selesai" : "jalan");
       lencana.className = "badge st-" + st;
       lencana.textContent = T["st_" + st] || lencana.textContent;
+      k.setAttribute("data-status", st);
     });
     var daftarUpd = doc.querySelector(".upd-list");
     var batch = parseInt(daftarUpd.getAttribute("data-batch"), 10) || 6;
@@ -345,7 +349,7 @@
 
     /* -- kartu miring 3D dan tombol magnetik (hanya untuk mouse) -- */
     if (halus) {
-      doc.querySelectorAll(".spes-kartu,.alasan-kartu,.upd-mini,.vm-kartu").forEach(function (k) {
+      doc.querySelectorAll(".spes-kartu,.alasan-kartu,.upd-mini,.vm-kartu,.kartu-kontak").forEach(function (k) {
         k.addEventListener("pointermove", function (e) {
           var r = k.getBoundingClientRect();
           var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
@@ -367,32 +371,187 @@
     }
   }
 
-  /* ---- pencarian mal (halaman Lokasi) ---- */
-  var cari = document.getElementById("cari");
-  if (cari) {
-    var total = parseInt(cari.parentNode.getAttribute("data-total"), 10) || 0;
-    var jumlah = document.getElementById("jumlah");
-    var kosong = document.getElementById("kosong");
-    cari.addEventListener("input", function () {
-      var q = cari.value.trim().toLowerCase();
-      var tampil = 0;
-      document.querySelectorAll(".mal").forEach(function (a) {
-        var ok = !q || a.getAttribute("data-cari").indexOf(q) !== -1;
-        a.hidden = !ok;
-        if (ok) tampil++;
+  /* ---- navigasi jenis event: penanda aktif mengikuti posisi scroll ---- */
+  var artikelJenis = [].slice.call(doc.querySelectorAll(".jenis-isi .art"));
+  if (artikelJenis.length && "IntersectionObserver" in window) {
+    var tautanJenis = [].slice.call(doc.querySelectorAll(".jenis-nav a"));
+    var aktifkanJenis = function (id) {
+      tautanJenis.forEach(function (a) {
+        var on = a.getAttribute("href") === "#" + id;
+        a.classList.toggle("on", on);
+        var w = a.parentNode;
+        if (on && w.scrollWidth > w.clientWidth) w.scrollTo({ left: a.offsetLeft - w.clientWidth / 2 + a.clientWidth / 2, behavior: reduce ? "auto" : "smooth" });
       });
-      document.querySelectorAll(".kel").forEach(function (k) {
-        k.hidden = !k.querySelector(".mal:not([hidden])");
-      });
-      document.querySelectorAll(".wilayah").forEach(function (w) {
-        w.hidden = !w.querySelector(".kel:not([hidden])");
-      });
-      kosong.hidden = tampil > 0;
-      jumlah.textContent = q ? isi(T.jumlah_saring, { n: tampil, total: total }) : isi(T.jumlah, { total: total });
-    });
+    };
+    aktifkanJenis(artikelJenis[0].id);
+    var pengamatJenis = new IntersectionObserver(function (d) {
+      d.forEach(function (x) { if (x.isIntersecting) aktifkanJenis(x.target.id); });
+    }, { rootMargin: "-35% 0px -55% 0px" });
+    artikelJenis.forEach(function (a) { pengamatJenis.observe(a); });
   }
 
-  var form = document.getElementById("form-wa");
+  /* ---- peta area mal (Leaflet, dimuat hanya di halaman Lokasi) ---- */
+  var petaEl = doc.getElementById("peta"), petaApi = null, petaObj = null, areaData = [];
+  if (petaEl) {
+    if (!window.L) {
+      petaEl.innerHTML = '<p class="peta-gagal">' + (T.peta_gagal || "") + "</p>";
+    } else {
+      try { areaData = JSON.parse(doc.getElementById("peta-data").textContent); } catch (e) { areaData = []; }
+      petaObj = L.map(petaEl, { scrollWheelZoom: false, minZoom: 4, maxZoom: 17, zoomSnap: 0.5, dragging: !L.Browser.mobile, tap: false })
+        .setView([-2.5, 118], 5);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      }).addTo(petaObj);
+      petaObj.on("focus", function () { petaObj.scrollWheelZoom.enable(); });
+      petaObj.on("blur", function () { petaObj.scrollWheelZoom.disable(); });
+      var lapis = L.layerGroup().addTo(petaObj);
+      var aktifArea = [];
+      var isiPopup = function (it) {
+        var d = doc.createElement("div"); d.className = "pop";
+        var h = doc.createElement("h4"); h.textContent = it.a.n + " · " + isi(T.n_mal, { n: it.mal.length }); d.appendChild(h);
+        var ul = doc.createElement("ul");
+        it.mal.forEach(function (m) {
+          var li = doc.createElement("li"), a = doc.createElement("a");
+          a.href = m.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = m.nama;
+          li.appendChild(a); ul.appendChild(li);
+        });
+        d.appendChild(ul);
+        return d;
+      };
+      var gambarPeta = function () {
+        lapis.clearLayers();
+        var kel = [];
+        aktifArea.forEach(function (it) {
+          var p = petaObj.latLngToContainerPoint([it.a.lat, it.a.lng]), g = null;
+          for (var i = 0; i < kel.length; i++) {
+            var dx = kel[i].x - p.x, dy = kel[i].y - p.y;
+            if (dx * dx + dy * dy < 1600) { g = kel[i]; break; }
+          }
+          if (g) {
+            var n = g.m.length;
+            g.x = (g.x * n + p.x) / (n + 1); g.y = (g.y * n + p.y) / (n + 1); g.m.push(it);
+          } else { kel.push({ x: p.x, y: p.y, m: [it] }); }
+        });
+        kel.forEach(function (g) {
+          var jumlah = g.m.reduce(function (s, it) { return s + it.mal.length; }, 0);
+          if (g.m.length === 1) {
+            var it = g.m[0];
+            L.marker([it.a.lat, it.a.lng], { icon: L.divIcon({ className: "pin", html: "<b>" + jumlah + "</b>", iconSize: [36, 36] }), title: it.a.n })
+              .bindPopup(isiPopup(it), { maxWidth: 280 })
+              .bindTooltip(it.a.n, { direction: "top", offset: [0, -16] })
+              .addTo(lapis);
+          } else {
+            var titik = g.m.map(function (it) { return [it.a.lat, it.a.lng]; });
+            L.marker(petaObj.containerPointToLatLng([g.x, g.y]), { icon: L.divIcon({ className: "pin pin-klaster", html: "<b>" + jumlah + "</b>", iconSize: [46, 46] }), title: g.m.length + " area" })
+              .on("click", function () { petaObj.fitBounds(L.latLngBounds(titik), { padding: [70, 70], maxZoom: 12 }); })
+              .addTo(lapis);
+          }
+        });
+      };
+      petaObj.on("zoomend", gambarPeta);
+      var muatSemua = function (animasi) {
+        if (!aktifArea.length) { gambarPeta(); return; }
+        petaObj.fitBounds(L.latLngBounds(aktifArea.map(function (it) { return [it.a.lat, it.a.lng]; })), { padding: [40, 40], maxZoom: 8, animate: !!animasi && !reduce });
+        gambarPeta();
+      };
+      petaApi = {
+        perbarui: function (perArea, animasi) {
+          aktifArea = areaData.filter(function (a) { return perArea[a.k] && perArea[a.k].length; })
+            .map(function (a) { return { a: a, mal: perArea[a.k] }; });
+          muatSemua(animasi);
+        },
+        semua: function () { muatSemua(true); }
+      };
+      doc.body.classList.add("peta-ok");
+      var tombolSemua = doc.getElementById("peta-semua");
+      if (tombolSemua) tombolSemua.addEventListener("click", function () { petaApi.semua(); });
+      doc.querySelectorAll(".ke-peta").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var ks = btn.getAttribute("data-areas").split(",");
+          var titik = areaData.filter(function (a) { return ks.indexOf(a.k) >= 0; }).map(function (a) { return [a.lat, a.lng]; });
+          if (!titik.length) return;
+          petaEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+          petaObj.flyToBounds(L.latLngBounds(titik), { padding: [80, 80], maxZoom: 11, duration: reduce ? 0 : 1.2 });
+        });
+      });
+    }
+  }
+
+  /* ---- pencarian dan penyaringan wilayah mal (halaman Lokasi) ---- */
+  var cari = doc.getElementById("cari");
+  if (cari) {
+    var total = parseInt(cari.parentNode.getAttribute("data-total"), 10) || 0;
+    var jumlah = doc.getElementById("jumlah");
+    var kosong = doc.getElementById("kosong");
+    var wil = "semua";
+    var terapkan = function (animasi) {
+      var q = cari.value.trim().toLowerCase(), tampil = 0, perArea = {};
+      doc.querySelectorAll(".mal").forEach(function (a) {
+        var ok = (!q || a.getAttribute("data-cari").indexOf(q) !== -1) && (wil === "semua" || a.getAttribute("data-wil") === wil);
+        a.hidden = !ok;
+        if (!ok) return;
+        tampil++;
+        var k = a.getAttribute("data-area");
+        if (k) (perArea[k] = perArea[k] || []).push({ nama: a.lastChild.textContent, url: a.href });
+      });
+      doc.querySelectorAll(".kel").forEach(function (k) { k.hidden = !k.querySelector(".mal:not([hidden])"); });
+      doc.querySelectorAll(".wilayah").forEach(function (w) { w.hidden = !w.querySelector(".kel:not([hidden])"); });
+      kosong.hidden = tampil > 0;
+      jumlah.textContent = (q || wil !== "semua") ? isi(T.jumlah_saring, { n: tampil, total: total }) : isi(T.jumlah, { total: total });
+      if (petaApi) petaApi.perbarui(perArea, animasi);
+    };
+    cari.addEventListener("input", function () { terapkan(true); });
+    doc.querySelectorAll(".chip-wil").forEach(function (c) {
+      c.addEventListener("click", function () {
+        doc.querySelectorAll(".chip-wil").forEach(function (x) {
+          x.classList.toggle("on", x === c);
+          x.setAttribute("aria-pressed", x === c ? "true" : "false");
+        });
+        wil = c.getAttribute("data-wil");
+        terapkan(true);
+      });
+    });
+    terapkan(false);
+  }
+
+  /* ---- salin nomor/email, pemberitahuan singkat ---- */
+  var toast = null;
+  var tampilToast = function (teks) {
+    if (!toast) {
+      toast = doc.createElement("div"); toast.className = "toast"; toast.setAttribute("role", "status");
+      doc.body.appendChild(toast);
+    }
+    toast.textContent = teks; toast.classList.add("tampak");
+    window.clearTimeout(toast._t);
+    toast._t = window.setTimeout(function () { toast.classList.remove("tampak"); }, 1800);
+  };
+  doc.querySelectorAll(".salin").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var nilai = btn.getAttribute("data-salin");
+      var sukses = function () { tampilToast(T.disalin || "Copied"); };
+      var cadangan = function () {
+        var t = doc.createElement("textarea");
+        t.value = nilai; t.style.position = "fixed"; t.style.opacity = "0";
+        doc.body.appendChild(t); t.select();
+        try { if (doc.execCommand("copy")) sukses(); } catch (e) { /* diabaikan */ }
+        doc.body.removeChild(t);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(nilai).then(sukses, cadangan);
+      else cadangan();
+    });
+  });
+
+  /* ---- FAQ ---- */
+  doc.querySelectorAll(".faq-tanya").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var buka = b.closest(".faq-item").classList.toggle("buka");
+      b.setAttribute("aria-expanded", buka ? "true" : "false");
+    });
+  });
+
+  /* ---- formulir WhatsApp ---- */
+  var form = doc.getElementById("form-wa");
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -402,7 +561,14 @@
         (T.wa_awal || "") + d.get("nama") + usaha + ".\n" +
         (T.wa_butuh || "") + d.get("butuh") + "\n\n" + d.get("pesan");
       var url = "https://wa.me/" + form.getAttribute("data-wa") + "?text=" + encodeURIComponent(teks);
+      var tombol = form.querySelector('button[type="submit"]');
+      if (tombol) { tombol.dataset.awal = tombol.dataset.awal || tombol.textContent; tombol.textContent = T.mengirim || "..."; tombol.classList.add("mengirim"); }
+      var info = form.querySelector(".form-info");
+      if (info) { info.hidden = false; info.querySelector("a").href = url; }
       window.open(url, "_blank", "noopener");
+      window.setTimeout(function () {
+        if (tombol) { tombol.textContent = tombol.dataset.awal; tombol.classList.remove("mengirim"); }
+      }, 4000);
     });
   }
 })();

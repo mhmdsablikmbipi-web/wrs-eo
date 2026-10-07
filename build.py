@@ -41,6 +41,10 @@ try:  # versi Inggris bersifat opsional: hapus konten_en.py kalau tidak diperluk
     import konten_en as KEN
 except ImportError:
     KEN = None
+try:  # data peta bersifat opsional (tanpa peta.py, halaman Lokasi tampil tanpa peta)
+    import peta as PT
+except ImportError:
+    PT = None
 try:  # video bersifat opsional
     import video as V
 except ImportError:
@@ -128,6 +132,37 @@ UI = {
         "lihat_lokasi": "Lihat semua lokasi mal",
         "cta_judul": "Siap tampil di mal?",
         "cta_sub": "Ceritakan kebutuhan Anda. Konsultasi strategi dari tim WRS tanpa biaya.",
+        "chip_gratis": "Konsultasi strategi gratis",
+        "chip_wa": "Balasan lewat WhatsApp",
+        "chip_event": "{n} jenis event",
+        "chip_area": "{n} area dan kota",
+        "chip_lokasi": "{n} lokasi mal",
+        "chip_update": "{n} update event",
+        "chip_berkala": "Diperbarui berkala",
+        "jenis_nav": "Jenis event",
+        "peta_judul": "Peta sebaran mal",
+        "peta_catatan": "Penanda menunjukkan area (kota atau wilayah), bukan titik persis tiap mal. Klik penanda untuk melihat daftar mal, lalu buka lokasi persisnya di Google Maps.",
+        "peta_semua": "Lihat semua area",
+        "ke_peta": "Lihat di peta",
+        "peta_gagal": "Peta tidak dapat dimuat. Gunakan daftar mal di bawah.",
+        "wilayah_semua": "Semua wilayah",
+        "n_mal": "{n} mal",
+        "k_wa_sub": "Cara tercepat untuk bertanya soal slot, mal, dan jadwal.",
+        "k_telp": "Telepon",
+        "k_email": "Email",
+        "k_alamat": "Kantor pusat",
+        "k_sosmed": "Ikuti kami",
+        "salin": "Salin",
+        "disalin": "Tersalin",
+        "rute": "Petunjuk arah",
+        "form_sub": "Isi singkat saja, percakapan dilanjutkan lewat WhatsApp.",
+        "mengirim": "Membuka WhatsApp...",
+        "wa_manual": "WhatsApp tidak terbuka? Klik di sini.",
+        "faq_judul": "Pertanyaan yang sering diajukan",
+        "ke_atas": "Kembali ke atas",
+        "foot_nav": "Menu",
+        "foot_kontak": "Kontak",
+        "foot_ikuti": "Ikuti kami",
         "wa_awal": "Halo WRS, saya ",
         "wa_dari": " dari ",
         "wa_butuh": "Kebutuhan: ",
@@ -200,6 +235,37 @@ UI = {
         "lihat_lokasi": "See all mall locations",
         "cta_judul": "Ready to be in a mall?",
         "cta_sub": "Tell us what you need. A strategy consultation with the WRS team is free.",
+        "chip_gratis": "Free strategy consultation",
+        "chip_wa": "Replies via WhatsApp",
+        "chip_event": "{n} event types",
+        "chip_area": "{n} areas and cities",
+        "chip_lokasi": "{n} mall locations",
+        "chip_update": "Event updates: {n}",
+        "chip_berkala": "Updated regularly",
+        "jenis_nav": "Event types",
+        "peta_judul": "Mall distribution map",
+        "peta_catatan": "Markers show areas (cities or regions), not the exact spot of each mall. Click a marker to see its malls, then open the exact location in Google Maps.",
+        "peta_semua": "See all areas",
+        "ke_peta": "Show on map",
+        "peta_gagal": "The map could not be loaded. Please use the mall list below.",
+        "wilayah_semua": "All regions",
+        "n_mal": "{n} malls",
+        "k_wa_sub": "The fastest way to ask about slots, malls, and schedules.",
+        "k_telp": "Phone",
+        "k_email": "Email",
+        "k_alamat": "Head office",
+        "k_sosmed": "Follow us",
+        "salin": "Copy",
+        "disalin": "Copied",
+        "rute": "Get directions",
+        "form_sub": "A short note is enough; we continue the conversation on WhatsApp.",
+        "mengirim": "Opening WhatsApp...",
+        "wa_manual": "WhatsApp did not open? Click here.",
+        "faq_judul": "Frequently asked questions",
+        "ke_atas": "Back to top",
+        "foot_nav": "Menu",
+        "foot_kontak": "Contact",
+        "foot_ikuti": "Follow us",
         "wa_awal": "Hello WRS, I'm ",
         "wa_dari": " from ",
         "wa_butuh": "Need: ",
@@ -207,7 +273,8 @@ UI = {
 }
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
-            "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup"]
+            "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup",
+            "disalin", "mengirim", "wa_manual", "n_mal", "peta_gagal"]
 
 # Ikon (gaya garis) untuk bagian "Kenapa memilih WRS"
 IKON = {
@@ -218,6 +285,27 @@ IKON = {
     "naik": '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
     "chat": '<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>',
 }
+IKON["telp"] = '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'
+IKON["surel"] = '<path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/>'
+IKON["bagi"] = '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>'
+
+FAQ = {
+    "id": [
+        ("Apakah konsultasi strategi berbayar?", "Tidak. Tim WRS siap membantu menyusun strategi terbaik untuk pameran Anda tanpa biaya."),
+        ("Jenis event apa saja yang diselenggarakan WRS?", "Pameran otomotif, pameran multi produk, pameran furniture, dan bazaar di mal mitra."),
+        ("Di mana saja lokasi mal mitra WRS?", "Di Jabodetabek dan kota-kota besar seperti Bandung, Palembang, Medan, Pekanbaru, dan Surabaya. Daftar lengkapnya ada di halaman Lokasi Mal."),
+        ("Bagaimana cara memesan slot atau menyewa space?", "Hubungi kami lewat WhatsApp atau formulir di halaman ini, lalu sebutkan jenis usaha, mal yang diminati, dan perkiraan tanggal. Tim kami membantu memilih lokasi dan jadwal."),
+        ("Apakah usaha kecil (UMKM) bisa ikut?", "Bisa. WRS berawal dari penyewaan ruang usaha bagi UMKM, dan bazaar serta sewa counter tersedia untuk usaha yang ingin mulai tampil di mal."),
+    ],
+    "en": [
+        ("Is the strategy consultation paid?", "No. The WRS team is ready to help you plan the best strategy for your exhibition at no cost."),
+        ("What kinds of events does WRS organize?", "Automotive exhibitions, multi-product exhibitions, furniture exhibitions, and bazaars in partner malls."),
+        ("Where are WRS partner malls located?", "In Greater Jakarta and major cities such as Bandung, Palembang, Medan, Pekanbaru, and Surabaya. The full list is on the Mall Locations page."),
+        ("How do I book a slot or rent space?", "Contact us via WhatsApp or the form on this page, then tell us your business type, the malls you are interested in, and your estimated dates. Our team helps you choose a location and schedule."),
+        ("Can small businesses (MSMEs) take part?", "Yes. WRS began by renting business space to MSMEs, and bazaars and counter rentals are available for businesses that want to start showing up in malls."),
+    ],
+}
+
 # (ikon, judul, isi). Teks diambil dari isi website WRS sebelumnya; sesuaikan bila perlu.
 BERANDA = {
     "id": {
@@ -440,6 +528,9 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
             )
         og += f'<meta property="og:url" content="{alamat}"><meta property="og:image" content="{SITE}{img_url(K.PERUSAHAAN["logo"], 512)}">'
     ld = f'<script type="application/ld+json">{jsonld}</script>' if jsonld else ""
+    pakai_peta = kode == "lokasi" and PT is not None
+    leaflet_css = f'<link rel="stylesheet" href="{PREFIX}assets/vendor/leaflet/leaflet.css">\n' if pakai_peta else ""
+    leaflet_js = f'<script src="{PREFIX}assets/vendor/leaflet/leaflet.js" defer></script>\n' if pakai_peta else ""
     data_js = escape(json.dumps({k: T[k] for k in KUNCI_JS}, ensure_ascii=False), quote=True)
     return f"""<!DOCTYPE html>
 <html lang="{LANG}">
@@ -456,7 +547,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Instrument+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="{PREFIX}assets/style.css?v={versi('style.css')}">
-{ld}
+{leaflet_css}{ld}
 </head>
 <body data-t="{data_js}">
 <div class="progres" aria-hidden="true"></div>
@@ -464,16 +555,37 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 <main>
 {isi}
 </main>
-<div class="foot">{escape(K.FOOTER)}</div>
+{footer_html()}
+<button class="ke-atas" type="button" aria-label="{escape(T['ke_atas'])}"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg></button>
 <a class="wa-float" href="{escape(wa_url())}" target="_blank" rel="noopener" aria-label="{escape(T['chat_wa'])}"><svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="{IKON_WA}"/></svg></a>
-<script src="{PREFIX}assets/app.js?v={versi('app.js')}" defer></script>
+{leaflet_js}<script src="{PREFIX}assets/app.js?v={versi('app.js')}" defer></script>
 </body>
 </html>
 """
 
 
-def kepala(judul: str, sub: str) -> str:
-    return f'<div class="phead" data-partikel><div class="inner"><h1>{escape(judul)}</h1><p>{escape(sub)}</p></div></div>'
+def footer_html() -> str:
+    logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
+    menu = "".join(f'<a href="{FILE[k]}">{escape(t)}</a>' for t, k in K.MENU)
+    alamat = "<br>".join(escape(x) for x in K.KONTAK["alamat"])
+    telepon = "<br>".join(tautan_telepon(x) for x in K.KONTAK["telepon"])
+    email = escape(K.KONTAK["email"])
+    sosmed = "".join(
+        f'<a href="{escape(u)}" target="_blank" rel="noopener">{escape(n)}</a>' for n, _, u in K.SOSMED)
+    return f"""<footer class="foot-besar"><div class="inner foot-grid">
+<div class="foot-merek"><a class="foot-logo" href="index.html"><img src="{logo}" alt="Logo {escape(NAMA)}"><span>{escape(NAMA)}</span></a>
+<p>{escape(K.HERO['deskripsi'])}</p></div>
+<div class="foot-kol"><h4>{escape(T['foot_nav'])}</h4>{menu}</div>
+<div class="foot-kol"><h4>{escape(T['foot_kontak'])}</h4><p>{alamat}</p><p>{telepon}</p><p><a href="mailto:{email}">{email}</a></p></div>
+<div class="foot-kol"><h4>{escape(T['foot_ikuti'])}</h4>{sosmed}</div>
+</div><div class="foot-bawah"><div class="inner"><span>{escape(K.FOOTER)}</span></div></div></footer>"""
+
+
+def kepala(judul: str, sub: str, chips=()) -> str:
+    baris = "".join(f'<span class="phead-chip">{escape(c)}</span>' for c in chips)
+    baris = f'<div class="phead-chips">{baris}</div>' if baris else ""
+    return (f'<div class="phead" data-partikel><div class="inner"><h1>{escape(judul)}</h1>'
+            f'<p>{escape(sub)}</p>{baris}</div></div>')
 
 
 # =============================================================================
@@ -718,7 +830,7 @@ def kartu_update(u: dict, hari: date) -> str:
     else:
         galeri = f'<p class="upd-kosong">{escape(T["foto_segera"])}</p>'
     return (
-        f'<article class="upd" id="update-{u["id"]}" data-kat="{u["kat"]}" '
+        f'<article class="upd" id="update-{u["id"]}" data-kat="{u["kat"]}" data-status="{st}" '
         f'data-mulai="{u["mulai"].isoformat()}" data-selesai="{u["selesai"].isoformat()}">'
         f'<div class="upd-kepala"><span class="badge st-{st}">{escape(T["st_" + st])}</span>'
         f'<span class="upd-tag">{escape(u["label"][LANG])}</span></div>'
@@ -1042,7 +1154,7 @@ def artikel_event(i: int, e: dict) -> str:
     fotos = "".join(foto(f, "mo", e["judul"]) for f in e["foto"])
     return (
         f'<article class="{kelas}" id="{slug(e["judul"])}">'
-        f'<div class="art-teks"><h2>{escape(e["judul"])}</h2>'
+        f'<div class="art-teks"><span class="art-no" aria-hidden="true">{i + 1:02d}</span><h2>{escape(e["judul"])}</h2>'
         f'<p class="lead">{escape(e["lead"])}</p>{paragraf(e["isi"])}</div>'
         f'<div class="mosaic">{fotos}</div></article>'
     )
@@ -1050,34 +1162,71 @@ def artikel_event(i: int, e: dict) -> str:
 
 def halaman_event() -> str:
     artikel = "".join(artikel_event(i, e) for i, e in enumerate(K.EVENT_TIPE))
-    judul_jenis = f'<h2 style="margin-bottom:8px">{escape(T["jenis_judul"])}</h2>' if UPDATE else ""
-    return kepala(K.EVENT_JUDUL, K.EVENT_DESKRIPSI) + bagian_update() + (
-        f'<section class="sec" style="padding-top:{20 if UPDATE else 40}px"><div class="inner">{judul_jenis}{artikel}</div></section>'
+    navigasi = "".join(
+        f'<a href="#{slug(e["judul"])}"><b>{i + 1:02d}</b><span>{escape(e["judul"])}</span></a>'
+        for i, e in enumerate(K.EVENT_TIPE)
     )
+    chips = [T["chip_event"].format(n=len(K.EVENT_TIPE))]
+    if UPDATE:
+        chips.insert(0, T["chip_update"].format(n=len(UPDATE)))
+    chips.append(T["chip_berkala"])
+    return kepala(K.EVENT_JUDUL, K.EVENT_DESKRIPSI, chips) + bagian_update() + (
+        f'<section class="sec" style="padding-top:{20 if UPDATE else 40}px"><div class="inner">'
+        f'<h2 style="margin-bottom:8px">{escape(T["jenis_judul"])}</h2>'
+        f'<div class="jenis"><nav class="jenis-nav" aria-label="{escape(T["jenis_nav"])}">{navigasi}</nav>'
+        f'<div class="jenis-isi">{artikel}</div></div></div></section>'
+    )
+
+
+AREA_DATA: list = []   # diisi oleh daftar_mal(): area yang punya mal, untuk peta
+
+
+def area_mal(nama: str, q: str, label: str):
+    if not PT:
+        return None
+    teks = f"{nama} {q}".lower()
+    for kata, kunci in PT.ATURAN:
+        if kata in teks:
+            return kunci
+    return PT.LABEL_AREA.get(label)
 
 
 def daftar_mal() -> tuple:
     nama_wilayah = getattr(K, "NAMA_WILAYAH", {})  # terjemahan nama wilayah (opsional)
-    total, hasil = 0, []
-    for wilayah, grup in K.MAL:
+    total, hasil, area_pakai = 0, [], {}
+    for idx, (wilayah, grup) in enumerate(K.MAL):
         w_tampil = nama_wilayah.get(wilayah, wilayah)
         kelompok = []
         for label, kueri, daftar in grup:
             l_tampil = nama_wilayah.get(label, label)
-            kartu = []
+            kartu, area_grup = [], []
             for m in daftar:
                 total += 1
                 nama, q = m if isinstance(m, tuple) else (m, f"{m} {kueri}".strip())
                 url = "https://www.google.com/maps/search/?api=1&query=" + quote_plus(q)
+                ak = area_mal(nama, q, label)
+                if ak and ak in PT.AREA:
+                    area_pakai[ak] = area_pakai.get(ak, 0) + 1
+                    if ak not in area_grup:
+                        area_grup.append(ak)
                 cari = f"{nama} {l_tampil} {w_tampil} {label} {wilayah}".lower()
                 kartu.append(
-                    f'<a class="mal" href="{escape(url)}" target="_blank" rel="noopener" data-cari="{escape(cari)}">'
-                    f'<span class="no">{total:02d}</span>{escape(nama)}</a>'
+                    f'<a class="mal" href="{escape(url)}" target="_blank" rel="noopener" data-cari="{escape(cari)}" '
+                    f'data-area="{ak or ""}" data-wil="w{idx}"><span class="no">{total:02d}</span>{escape(nama)}</a>'
                 )
+            ke_peta = ""
+            if area_grup:
+                ke_peta = (f'<button class="ke-peta" type="button" data-areas="{",".join(area_grup)}">'
+                           f'{escape(T["ke_peta"])}</button>')
             kelompok.append(
-                f'<div class="kel"><h3 class="grp">{escape(l_tampil)}</h3><div class="malgrid">{"".join(kartu)}</div></div>'
+                f'<div class="kel"><div class="grp-baris"><h3 class="grp">{escape(l_tampil)}</h3>{ke_peta}</div>'
+                f'<div class="malgrid">{"".join(kartu)}</div></div>'
             )
         hasil.append(f'<div class="wilayah"><h2 class="wil">{escape(w_tampil)}</h2>{"".join(kelompok)}</div>')
+    AREA_DATA[:] = [
+        {"k": k, "n": PT.AREA[k][0 if LANG == "id" else 1], "lat": PT.AREA[k][2], "lng": PT.AREA[k][3]}
+        for k in PT.AREA if k in area_pakai
+    ] if PT else []
     return "".join(hasil), total
 
 
@@ -1105,11 +1254,33 @@ def bagian_statistik() -> str:
 
 def halaman_lokasi() -> tuple:
     daftar, total = daftar_mal()
-    isi = kepala(T["lokasi_judul"], T["lokasi_sub"].format(total=total)) + f"""
+    n_area = len(AREA_DATA)
+    nama_wilayah = getattr(K, "NAMA_WILAYAH", {})
+    chips_wil = f'<button class="chip chip-wil on" type="button" data-wil="semua" aria-pressed="true">{escape(T["wilayah_semua"])}</button>' + "".join(
+        f'<button class="chip chip-wil" type="button" data-wil="w{i}" aria-pressed="false">{escape(nama_wilayah.get(w, w))}</button>'
+        for i, (w, _) in enumerate(K.MAL)
+    )
+    peta = ""
+    if PT and AREA_DATA:
+        data = json.dumps(AREA_DATA, ensure_ascii=False).replace("</", "<\\/")
+        peta = f"""
+<div class="peta-bungkus">
+<div id="peta" class="peta" role="region" aria-label="{escape(T['peta_judul'])}"></div>
+<div class="peta-aksi"><p class="peta-catatan">{escape(T['peta_catatan'])}</p>
+<button class="chip" id="peta-semua" type="button">{escape(T['peta_semua'])}</button></div>
+</div>
+<script type="application/json" id="peta-data">{data}</script>
+"""
+    chips = [T["chip_lokasi"].format(n=total)]
+    if n_area:
+        chips.append(T["chip_area"].format(n=n_area))
+    isi = kepala(T["lokasi_judul"], T["lokasi_sub"].format(total=total), chips) + f"""
 <section class="sec" style="padding-top:36px"><div class="inner">
+{peta}
 <div class="cari" data-total="{total}">
 <label for="cari">{escape(T['cari_label'])}</label>
 <input id="cari" type="search" placeholder="{escape(T['cari_hint'])}" autocomplete="off">
+<div class="chips" role="group">{chips_wil}</div>
 <p class="jumlah" id="jumlah" aria-live="polite">{escape(T['jumlah'].format(total=total))}</p>
 </div>
 {daftar}
@@ -1119,40 +1290,92 @@ def halaman_lokasi() -> tuple:
     return isi, total
 
 
+def ikon_svg(nama: str) -> str:
+    return f'<span class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON[nama]}</svg></span>'
+
+
+def nomor_dari(teks: str) -> str:
+    m = re.search(r"([+\d(][\d()\s+-]{7,}\d)", teks)
+    return m.group(1) if m else teks
+
+
+def rapikan_nomor(n: str) -> str:
+    """628161415671 -> +62 816 1415 671 (bentuk lain ditampilkan apa adanya dengan tanda +)."""
+    d = re.sub(r"\D", "", n)
+    if d.startswith("62") and len(d) >= 11:
+        return f"+62 {d[2:5]} {d[5:9]} {d[9:]}"
+    return "+" + d
+
+
+def tombol_salin(nilai: str) -> str:
+    return f'<button class="salin" type="button" data-salin="{escape(nilai)}">{escape(T["salin"])}</button>'
+
+
+def bagian_faq() -> str:
+    data = getattr(K, "FAQ", None) or FAQ[LANG]
+    item = "".join(
+        f'<div class="faq-item"><h3><button class="faq-tanya" type="button" aria-expanded="false">'
+        f'<span>{escape(q)}</span><i aria-hidden="true"></i></button></h3>'
+        f'<div class="faq-jawab"><div><p>{escape(a)}</p></div></div></div>'
+        for q, a in data
+    )
+    return f"""
+<section class="sec faq"><div class="inner">
+<h2>{escape(T['faq_judul'])}</h2>
+<div class="faq-daftar">{item}</div>
+</div></section>
+"""
+
+
 def halaman_kontak() -> str:
-    alamat = "<br>".join(escape(b) for b in K.KONTAK["alamat"])
-    telepon = "<br>".join(tautan_telepon(b) for b in K.KONTAK["telepon"])
-    sosmed = "<br>".join(
-        f'{escape(n)}: <a href="{escape(u)}" target="_blank" rel="noopener">{escape(t)}</a>' for n, t, u in K.SOSMED
+    alamat = "<br>".join(escape(x) for x in K.KONTAK["alamat"])
+    telp = "".join(
+        f'<div class="baris-salin"><span>{tautan_telepon(x)}</span>{tombol_salin(nomor_dari(x))}</div>'
+        for x in K.KONTAK["telepon"]
     )
     email = escape(K.KONTAK["email"])
-    opsi = "".join(f"<option>{escape(o)}</option>" for o in T["opsi"])
-    return kepala(K.KONTAK["judul"], K.KONTAK["deskripsi"]) + f"""
-<section class="kontak"><div class="inner cols">
+    sosmed = "".join(
+        f'<a class="pil" href="{escape(u)}" target="_blank" rel="noopener">{escape(n)}<span>{escape(t)}</span></a>'
+        for n, t, u in K.SOSMED
+    )
+    rute = "https://www.google.com/maps/dir/?api=1&destination=" + quote_plus(K.KANTOR_QUERY)
+    opsi = "".join(
+        f'<label class="opsi"><input type="radio" name="butuh" value="{escape(o)}"{" checked" if i == 0 else ""}>'
+        f'<span>{escape(o)}</span></label>'
+        for i, o in enumerate(T["opsi"])
+    )
+    kartu = f"""
+<section class="sec kartu-sec" style="padding-bottom:0"><div class="inner kartu-grid">
+<div class="kartu-kontak utama">{ikon_svg('chat')}<h3>WhatsApp</h3><p>{escape(T['k_wa_sub'])}</p>
+<p class="besar">{escape(rapikan_nomor(K.WA_NOMOR))}</p>{tombol(T['btn_wa'], wa_url(), 'wa')}</div>
+<div class="kartu-kontak">{ikon_svg('telp')}<h3>{escape(T['k_telp'])}</h3>{telp}</div>
+<div class="kartu-kontak">{ikon_svg('surel')}<h3>{escape(T['k_email'])}</h3>
+<div class="baris-salin"><span><a href="mailto:{email}">{email}</a></span>{tombol_salin(K.KONTAK['email'])}</div></div>
+<div class="kartu-kontak">{ikon_svg('pin')}<h3>{escape(T['k_alamat'])}</h3><p>{alamat}</p>
+{tombol(T['rute'], rute, 'gold')}</div>
+<div class="kartu-kontak lebar">{ikon_svg('bagi')}<h3>{escape(T['k_sosmed'])}</h3><div class="pils">{sosmed}</div></div>
+</div></section>
+"""
+    return kepala(K.KONTAK["judul"], K.KONTAK["deskripsi"], [T["chip_gratis"], T["chip_wa"]]) + kartu + f"""
+<section class="kontak" style="margin-top:80px"><div class="inner cols">
 <div>
-<p class="ci"><b>{escape(T['alamat'])}</b><br>{alamat}</p>
-<p class="ci"><b>{escape(T['telepon'])}</b><br>{telepon}</p>
-<p class="ci"><b>{escape(T['email'])}</b><br><a href="mailto:{email}">{email}</a></p>
-<p class="ci"><b>{escape(T['sosmed'])}</b><br>{sosmed}</p>
-{tombol(T['btn_wa'], wa_url(), "wa")}
-</div>
-<div>
-<iframe title="{escape(T['peta'])}" src="{escape(maps_embed())}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-{tombol(T['btn_maps'], maps_url(), "gold")}
-</div>
-</div>
-<div class="inner">
-<h2 style="margin-top:48px">{escape(T['form_judul'])}</h2>
+<h2>{escape(T['form_judul'])}</h2>
+<p class="form-sub">{escape(T['form_sub'])}</p>
 <form class="form" id="form-wa" data-wa="{escape(K.WA_NOMOR)}">
 <label>{escape(T['f_nama'])}<input name="nama" required autocomplete="name"></label>
 <label>{escape(T['f_usaha'])}<input name="usaha" autocomplete="organization"></label>
-<label>{escape(T['f_butuh'])}
-<select name="butuh">{opsi}</select></label>
+<fieldset class="opsi-grup"><legend>{escape(T['f_butuh'])}</legend>{opsi}</fieldset>
 <label>{escape(T['f_pesan'])}<textarea name="pesan" required></textarea></label>
 <button type="submit">{escape(T['f_kirim'])}</button>
+<p class="form-info" hidden><a href="#" target="_blank" rel="noopener">{escape(T['wa_manual'])}</a></p>
 </form>
 </div>
-</section>
+<div>
+<iframe title="{escape(T['peta'])}" src="{escape(maps_embed())}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+{tombol(T['btn_maps'], maps_url(), "gold")}{tombol(T['rute'], rute, "line")}
+</div>
+</div></section>
+{bagian_faq()}
 """
 
 

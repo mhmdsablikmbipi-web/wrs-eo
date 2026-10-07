@@ -130,3 +130,31 @@ Yang bisa Anda atur:
   di HP, koin tetap bergoyang dan bisa diketuk. Efek yang tidak terlihat di layar dihentikan agar hemat baterai.
 - Kode efek ada di bagian paling bawah `assets/style.css` dan di `assets/app.js` (bagian "efek 3D dan interaksi kursor").
   Mau mengurangi? Hapus bagian efek yang tidak diinginkan, misalnya kanvas partikel, tanpa memengaruhi isi website.
+
+## Halaman Lokasi, Event, dan Contact yang lebih hidup
+**Lokasi Mal**
+- **Peta interaktif** (Leaflet + peta OpenStreetMap, file Leaflet disimpan lokal di `assets/vendor/leaflet/`).
+  Penanda menunjukkan **area/kota**, bukan titik persis tiap mal: angka di penanda adalah jumlah mal di area itu.
+  Penanda yang berdekatan otomatis menggabung (warna maroon) dan memecah saat peta diperbesar. Klik penanda untuk
+  melihat daftar mal, lalu klik nama mal untuk membuka lokasi persisnya di Google Maps.
+- Pencarian dan chip wilayah (Semua / Jabodetabek / Luar kota) ikut menyaring penanda di peta.
+  Tombol "Lihat di peta" di setiap kelompok mal menerbangkan peta ke area itu.
+- Data area dan koordinat ada di `peta.py`. Menambah mal baru di `konten.py` biasanya tidak perlu mengubah `peta.py`
+  selama nama mal atau kelompoknya mengandung nama kota yang sudah ada. Untuk kota baru, tambahkan di `AREA` dan `ATURAN`.
+  Koordinat di `peta.py` adalah titik pusat kota yang dibulatkan; periksa di Google Maps bila ingin lebih presisi.
+- Peta memakai gambar peta dari openstreetmap.org (dengan atribusi). Itu layak untuk lalu lintas website company profile,
+  tetapi kalau pengunjung nanti sangat banyak, pertimbangkan penyedia peta berlangganan.
+
+**Artikel Event**
+- Update event tampil sebagai **garis waktu** (titik hijau berdenyut = sedang berlangsung).
+- Bagian "Jenis event WRS" punya **navigasi samping** yang menandai bagian yang sedang dibaca (di HP berupa tab yang bisa digeser),
+  dan nomor besar 01 sampai 04 di setiap artikel.
+
+**Contact**
+- Kartu kontak (WhatsApp, telepon, email, kantor pusat, sosial media) dengan tombol **Salin** dan **Petunjuk arah**.
+- Formulir memakai **pilihan kebutuhan berbentuk chip**, dan setelah dikirim tampil tautan cadangan kalau WhatsApp tidak terbuka.
+- **FAQ** yang bisa dibuka-tutup. Teks bawaan ada di `build.py` (kamus `FAQ`, bahasa Indonesia dan Inggris);
+  untuk menggantinya, tambahkan `FAQ = [("Pertanyaan", "Jawaban"), ...]` di `konten.py` (dan `konten_en.py`).
+
+**Semua halaman**
+- Footer lengkap (profil singkat, menu, kontak, sosial media), tombol kembali ke atas, dan chip ringkasan di kepala setiap halaman.
