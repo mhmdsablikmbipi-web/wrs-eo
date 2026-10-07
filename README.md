@@ -115,3 +115,18 @@ Yang bisa Anda atur:
 - **Teks berjalan** memakai nama keempat jenis event, tahun berdiri, jumlah mal, dan konsultasi gratis.
 - **Mal mitra** memakai nama-nama mal dari daftar `MAL` secara otomatis.
 - Kartu **Update event terbaru** di beranda mengambil 3 event terbaru dari folder `update/`; bagian ini hilang bila folder kosong.
+
+## Efek 3D dan interaksi (seluruh website)
+- **Logo koin emas 3D di hero:** miring mengikuti kursor, bergoyang pelan saat kursor diam atau di layar sentuh,
+  dan berputar 360 derajat kalau diklik atau diketuk. Tepinya tebal dan ada kilau yang bergeser mengikuti kemiringan.
+- **Cahaya dan partikel emas** di hero, kepala setiap halaman, dan ajakan akhir. Cahayanya mengikuti kursor,
+  partikelnya menghindari kursor.
+- **Kartu miring 3D** dengan kilau yang mengikuti kursor (spesialisasi, kenapa memilih WRS, visi, update event),
+  **tombol magnetik** yang sedikit tertarik ke kursor, dan **parallax** pada latar hero serta foto kartu spesialisasi.
+- **Kilau emas yang melintas di judul**, garis emas yang memanjang di bawah judul bagian, dan logo di navbar yang
+  berputar saat disentuh kursor.
+- **Transisi halus antarhalaman** (browser yang mendukung; yang lain berpindah seperti biasa).
+- Semua efek mati otomatis bagi pengunjung yang mengaktifkan "kurangi gerakan". Efek kursor hanya aktif untuk mouse;
+  di HP, koin tetap bergoyang dan bisa diketuk. Efek yang tidak terlihat di layar dihentikan agar hemat baterai.
+- Kode efek ada di bagian paling bawah `assets/style.css` dan di `assets/app.js` (bagian "efek 3D dan interaksi kursor").
+  Mau mengurangi? Hapus bagian efek yang tidak diinginkan, misalnya kanvas partikel, tanpa memengaruhi isi website.

@@ -219,6 +219,154 @@
     tombol.parentNode.replaceChild(f, tombol);
   });
 
+
+  /* ============ efek 3D dan interaksi kursor (dimatikan bila "kurangi gerakan") ============ */
+  var halus = !!(window.matchMedia && window.matchMedia("(hover:hover) and (pointer:fine)").matches);
+  var penunjuk = { x: -9999, y: -9999, waktu: 0 };
+  function batas(n, a, b) { return Math.max(a, Math.min(b, n)); }
+  if (!reduce) {
+    window.addEventListener("pointermove", function (e) {
+      penunjuk.x = e.clientX; penunjuk.y = e.clientY; penunjuk.waktu = performance.now();
+    }, { passive: true });
+
+    /* -- koin logo 3D: mengikuti kursor, melayang saat diam, klik untuk memutar -- */
+    var koin = doc.querySelector(".koin");
+    if (koin) {
+      var badan = koin.querySelector(".koin-badan");
+      var bayangan = koin.querySelector(".koin-bayangan");
+      var cur = { x: 0, y: 0 }, putar0 = null, koinTampak = true;
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (d) { koinTampak = d[0].isIntersecting; }).observe(koin);
+      }
+      koin.addEventListener("click", function () { if (putar0 === null) putar0 = performance.now(); });
+      var gerakKoin = function (t) {
+        window.requestAnimationFrame(gerakKoin);
+        if (!koinTampak || doc.hidden) return;
+        var tx, ty;
+        if (halus && t - penunjuk.waktu < 2500 && penunjuk.x > -9000) {
+          var r = koin.getBoundingClientRect();
+          var dx = (penunjuk.x - (r.left + r.width / 2)) / (window.innerWidth * 0.33);
+          var dy = (penunjuk.y - (r.top + r.height / 2)) / (window.innerHeight * 0.42);
+          ty = batas(dx, -1, 1) * 30; tx = -batas(dy, -1, 1) * 22;
+        } else {                      /* diam atau layar sentuh: bergoyang pelan */
+          tx = Math.sin(t / 1700) * 7; ty = Math.sin(t / 2300) * 18;
+        }
+        cur.x += (tx - cur.x) * 0.08; cur.y += (ty - cur.y) * 0.08;
+        var putar = 0;
+        if (putar0 !== null) {
+          var p = Math.min((t - putar0) / 1100, 1);
+          putar = 360 * (1 - Math.pow(1 - p, 3));
+          if (p >= 1) putar0 = null;
+        }
+        badan.style.transform = "rotateX(" + cur.x.toFixed(2) + "deg) rotateY(" + (cur.y + putar).toFixed(2) + "deg)";
+        koin.style.setProperty("--gx", (50 - cur.y * 1.5).toFixed(1) + "%");
+        koin.style.setProperty("--gy", (45 + cur.x * 1.6).toFixed(1) + "%");
+        if (bayangan) bayangan.style.transform = "translateX(" + (-cur.y * 1.4).toFixed(1) + "px) scaleX(" + (1 - Math.abs(cur.y) / 140).toFixed(3) + ")";
+      };
+      window.requestAnimationFrame(gerakKoin);
+    }
+
+    /* -- cahaya mengikuti kursor + partikel emas di hero, kepala halaman, dan ajakan akhir -- */
+    var wadahPartikel = [].slice.call(doc.querySelectorAll("[data-partikel]"));
+    var sistem = [];
+    wadahPartikel.forEach(function (w) {
+      var sorot = doc.createElement("span"); sorot.className = "sorot"; sorot.setAttribute("aria-hidden", "true");
+      var kanvas = doc.createElement("canvas"); kanvas.className = "partikel"; kanvas.setAttribute("aria-hidden", "true");
+      w.appendChild(sorot); w.appendChild(kanvas);
+      var ctx = kanvas.getContext("2d");
+      var S = { w: w, sorot: sorot, kanvas: kanvas, ctx: ctx, W: 0, H: 0, titik: [], tampak: false, dpr: Math.min(window.devicePixelRatio || 1, 2) };
+      var baru = function (acak) {
+        return { x: Math.random() * S.W, y: acak ? Math.random() * S.H : S.H + 10, r: Math.random() * 1.7 + 0.6,
+          v: Math.random() * 0.28 + 0.08, a: Math.random() * 6.28, k: Math.random() * 0.025 + 0.006 };
+      };
+      var ukur = function () {
+        var r = w.getBoundingClientRect();
+        S.W = r.width; S.H = r.height;
+        kanvas.width = Math.round(S.W * S.dpr); kanvas.height = Math.round(S.H * S.dpr);
+        ctx.setTransform(S.dpr, 0, 0, S.dpr, 0, 0);
+        var n = Math.round(Math.min(halus ? 46 : 22, (S.W * S.H) / 24000));
+        while (S.titik.length < n) S.titik.push(baru(true));
+        S.titik.length = n;
+      };
+      S.ukur = ukur; ukur();
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (d) { S.tampak = d[0].isIntersecting; }).observe(w);
+      } else { S.tampak = true; }
+      sistem.push(S);
+    });
+    window.addEventListener("resize", function () { sistem.forEach(function (S) { S.ukur(); }); });
+    var gambarPartikel = function (t) {
+      window.requestAnimationFrame(gambarPartikel);
+      if (doc.hidden) return;
+      sistem.forEach(function (S) {
+        if (!S.tampak) return;
+        var r = S.w.getBoundingClientRect();
+        var px = penunjuk.x - r.left, py = penunjuk.y - r.top;
+        if (halus && penunjuk.x > -9000) {
+          S.w.style.setProperty("--sx", px.toFixed(0) + "px");
+          S.w.style.setProperty("--sy", py.toFixed(0) + "px");
+        }
+        var c = S.ctx;
+        c.clearRect(0, 0, S.W, S.H);
+        S.titik.forEach(function (p) {
+          p.y -= p.v; p.a += p.k; p.x += Math.sin(p.a) * 0.18;
+          if (halus) {                 /* dihindari kursor */
+            var ddx = p.x - px, ddy = p.y - py, d2 = ddx * ddx + ddy * ddy;
+            if (d2 < 11000) { var f = (1 - d2 / 11000) * 1.6; var d = Math.sqrt(d2) || 1; p.x += (ddx / d) * f; p.y += (ddy / d) * f; }
+          }
+          if (p.y < -10) { p.y = S.H + 10; p.x = Math.random() * S.W; }
+          var alfa = 0.28 + 0.34 * (0.5 + 0.5 * Math.sin(p.a * 2.3));
+          c.beginPath(); c.arc(p.x, p.y, p.r * 3.2, 0, 6.2832); c.fillStyle = "rgba(232,144,30," + (alfa * 0.16).toFixed(3) + ")"; c.fill();
+          c.beginPath(); c.arc(p.x, p.y, p.r, 0, 6.2832); c.fillStyle = "rgba(246,217,138," + alfa.toFixed(3) + ")"; c.fill();
+        });
+      });
+    };
+    window.requestAnimationFrame(gambarPartikel);
+
+    /* -- parallax: latar hero bergeser pelan, foto kartu spesialisasi menyapu ke samping -- */
+    var heroBg = doc.querySelector(".hero-bg");
+    var fotoSpes = [].slice.call(doc.querySelectorAll(".spes-kartu img"));
+    var menunggu = false;
+    var parallax = function () {
+      menunggu = false;
+      var y = window.scrollY, vh = window.innerHeight;
+      if (heroBg && y < vh * 1.2) heroBg.style.transform = "translate3d(0," + (y * 0.2).toFixed(1) + "px,0) scale(1.06)";
+      fotoSpes.forEach(function (img) {
+        var r = img.parentNode.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        var p = batas((r.top + r.height / 2) / vh, 0, 1);
+        img.style.objectPosition = (28 + p * 44).toFixed(1) + "% 50%";
+      });
+    };
+    window.addEventListener("scroll", function () {
+      if (!menunggu) { menunggu = true; window.requestAnimationFrame(parallax); }
+    }, { passive: true });
+    parallax();
+
+    /* -- kartu miring 3D dan tombol magnetik (hanya untuk mouse) -- */
+    if (halus) {
+      doc.querySelectorAll(".spes-kartu,.alasan-kartu,.upd-mini,.vm-kartu").forEach(function (k) {
+        k.addEventListener("pointermove", function (e) {
+          var r = k.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+          k.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
+          k.style.setProperty("--my", (py * 100).toFixed(1) + "%");
+          k.style.transform = "perspective(900px) rotateX(" + ((0.5 - py) * 8).toFixed(2) + "deg) rotateY(" +
+            ((px - 0.5) * 10).toFixed(2) + "deg) translateY(-5px)";
+        });
+        k.addEventListener("pointerleave", function () { k.style.transform = ""; });
+      });
+      doc.querySelectorAll(".btn").forEach(function (t) {
+        t.addEventListener("pointermove", function (e) {
+          var r = t.getBoundingClientRect();
+          var x = (e.clientX - (r.left + r.width / 2)) * 0.28, y = (e.clientY - (r.top + r.height / 2)) * 0.32;
+          t.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
+        });
+        t.addEventListener("pointerleave", function () { t.style.transform = ""; });
+      });
+    }
+  }
+
   /* ---- pencarian mal (halaman Lokasi) ---- */
   var cari = document.getElementById("cari");
   if (cari) {

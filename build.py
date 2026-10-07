@@ -473,7 +473,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 
 
 def kepala(judul: str, sub: str) -> str:
-    return f'<div class="phead"><div class="inner"><h1>{escape(judul)}</h1><p>{escape(sub)}</p></div></div>'
+    return f'<div class="phead" data-partikel><div class="inner"><h1>{escape(judul)}</h1><p>{escape(sub)}</p></div></div>'
 
 
 # =============================================================================
@@ -832,6 +832,18 @@ def hero_foto() -> tuple:
     return f'<span class="hero-bg" aria-hidden="true" style="--total:{n * per}s">{slide}</span>', kf
 
 
+def koin_html(logo: str) -> str:
+    """Logo sebagai koin emas 3D: dua sisi + tepi bertumpuk. Digerakkan oleh app.js mengikuti kursor."""
+    tepi = "".join(f'<i style="--z:{z}px"></i>' for z in range(-8, 9))
+    return (
+        '<div class="koin-wrap"><div class="koin"><span class="koin-cahaya"></span><span class="koin-cincin"></span>'
+        f'<div class="koin-badan">{tepi}'
+        f'<img class="koin-belakang" src="{logo}" alt="">'
+        f'<img class="koin-muka" src="{logo}" alt="Logo {escape(NAMA)}">'
+        '<span class="koin-kilau"></span></div><span class="koin-bayangan"></span></div></div>'
+    )
+
+
 def bagian_ticker() -> str:
     _, total = daftar_mal()
     kata = [e["judul"] for e in K.EVENT_TIPE] + [
@@ -949,7 +961,7 @@ def bagian_mitra() -> str:
 
 def bagian_cta() -> str:
     return f"""
-<section class="cta"><div class="inner">
+<section class="cta" data-partikel><div class="inner">
 <h2>{escape(T['cta_judul'])}</h2>
 <p>{escape(T['cta_sub'])}</p>
 <div>{tombol(T['btn_wa'], wa_url(), 'wa')}{tombol(K.HERO['tombol_kedua'][0], K.HERO['tombol_kedua'][1], 'line')}</div>
@@ -968,11 +980,11 @@ def halaman_home() -> str:
     bg, kf = hero_foto()
     kelas_hero = "hero hero-foto" if bg else "hero"
     return f"""{kf}
-<div class="{kelas_hero}">{bg}<div>
+<div class="{kelas_hero}" data-partikel>{bg}<div>
 <h1>{escape(K.HERO['judul'])}</h1>
 <p>{escape(K.HERO['deskripsi'])}</p>
 {tombol(*K.HERO['tombol_utama'], 'gold')}{tombol(*K.HERO['tombol_kedua'], 'line')}
-</div><img class="logo" src="{logo}" alt="Logo {escape(NAMA)}">
+</div>{koin_html(logo)}
 <a class="scroll-cue" href="#stat"><span>{escape(T['scroll'])}</span><i></i></a></div>
 
 {bagian_ticker()}
