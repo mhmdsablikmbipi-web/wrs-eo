@@ -479,10 +479,31 @@ def slug(nama: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", Path(nama).stem.lower()).strip("-")
 
 
+PENGGANTI: list = []   # foto yang ditemukan dengan nama sedikit berbeda (huruf besar/kecil atau ekstensi)
+
+
 def cari_file(nama: str):
-    for folder in (BASE / "foto", BASE / "images", BASE):
+    """Cari foto di foto/, images/, atau folder utama. Tahan perbedaan huruf besar/kecil dan ekstensi:
+    Windows tidak membedakan "Pendiri.PNG" dan "pendiri.png", tetapi GitHub Actions (Linux) membedakannya,
+    sehingga foto yang tampil di komputer bisa hilang di website. Di sini keduanya dianggap sama."""
+    folders = (BASE / "foto", BASE / "images", BASE)
+    for folder in folders:
         if (folder / nama).is_file():
             return folder / nama
+    kecil = nama.lower()
+    stem = Path(nama).stem.lower()
+    for folder in folders:
+        if not folder.is_dir():
+            continue
+        berkas = [f for f in folder.iterdir() if f.is_file()]
+        for f in berkas:                                   # nama sama, huruf besar/kecil beda
+            if f.name.lower() == kecil:
+                PENGGANTI.append((nama, f.name))
+                return f
+        for f in sorted(berkas, key=lambda x: x.name.lower()):   # nama sama, ekstensi beda
+            if f.stem.lower() == stem and f.suffix.lower() in EKSTENSI_FOTO:
+                PENGGANTI.append((nama, f.name))
+                return f
     return None
 
 
@@ -1793,8 +1814,11 @@ def build() -> None:
               (f" + {len(V.VIDEO)} video pilihan" if getattr(V, "VIDEO", []) else ""))
     elif V and getattr(V, "VIDEO", []):
         print(f"Video YouTube: {len(V.VIDEO)} video pilihan")
+    for dicari, dipakai in sorted(set(PENGGANTI)):
+        print(f"Catatan: konten.py menulis \"{dicari}\", yang dipakai file \"{dipakai}\". Sebaiknya samakan namanya.")
     if HILANG:
-        print("Foto belum ada (tampil sebagai kotak penanda):", ", ".join(sorted(set(HILANG))))
+        print("FOTO TIDAK DITEMUKAN (tampil sebagai kotak putus-putus):", ", ".join(sorted(set(HILANG))))
+        print("  -> pastikan file-nya ada di folder foto/ pada GitHub dan namanya sama persis dengan di konten.py.")
     if "XXXX" in KID.WA_NOMOR:
         print("Peringatan: WA_NOMOR di konten.py belum diisi.")
 
