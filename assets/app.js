@@ -44,7 +44,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.vid,.upd,.kartu-kontak,.faq-item,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.upd,.kartu-kontak,.faq-item,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.lay-kartu,.pf-item,.industri,.jejak,.perj-item,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -78,14 +78,17 @@
   }
 
   /* ---- lightbox: klik foto untuk memperbesar ---- */
-  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img";
+  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img,img.pf-img";
   var semuaFoto = [].slice.call(doc.querySelectorAll(PILIH_FOTO)).filter(function (f) {
     return !f.closest("[aria-hidden='true']"); /* lewati salinan galeri yang bergerak */
   });
   var foto = semuaFoto;  /* daftar yang sedang dijelajahi: satu event, atau foto umum halaman */
   function pilihDaftar(img) {
     var g = img.getAttribute("data-grup");
-    foto = semuaFoto.filter(function (f) { return g ? f.getAttribute("data-grup") === g : !f.getAttribute("data-grup"); });
+    foto = semuaFoto.filter(function (f) {
+      var cocok = g ? f.getAttribute("data-grup") === g : !f.getAttribute("data-grup");
+      return cocok && !f.closest("[hidden]");  /* foto yang disaring (disembunyikan) dilewati */
+    });
   }
   var lb, lbFoto, lbKet, kini = 0;
 
@@ -205,6 +208,22 @@
         var buka = t.closest(".upd").classList.toggle("open");
         t.setAttribute("aria-expanded", buka ? "true" : "false");
         t.textContent = buka ? T.foto_tutup : isi(T.foto_lihat, { n: t.getAttribute("data-n") });
+      });
+    });
+  }
+
+  /* ---- galeri portofolio: saring berdasarkan jenis event ---- */
+  var chipPf = [].slice.call(doc.querySelectorAll(".pf-chip"));
+  if (chipPf.length) {
+    var kotakPf = [].slice.call(doc.querySelectorAll(".pf-item"));
+    chipPf.forEach(function (c) {
+      c.addEventListener("click", function () {
+        var kat = c.getAttribute("data-kat");
+        chipPf.forEach(function (x) {
+          x.classList.toggle("on", x === c);
+          x.setAttribute("aria-pressed", x === c ? "true" : "false");
+        });
+        kotakPf.forEach(function (k) { k.hidden = !(kat === "semua" || k.getAttribute("data-kat") === kat); });
       });
     });
   }
@@ -349,7 +368,7 @@
 
     /* -- kartu miring 3D dan tombol magnetik (hanya untuk mouse) -- */
     if (halus) {
-      doc.querySelectorAll(".spes-kartu,.alasan-kartu,.upd-mini,.vm-kartu,.kartu-kontak").forEach(function (k) {
+      doc.querySelectorAll(".spes-kartu,.alasan-kartu,.upd-mini,.vm-kartu,.kartu-kontak,.lay-kartu").forEach(function (k) {
         k.addEventListener("pointermove", function (e) {
           var r = k.getBoundingClientRect();
           var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;

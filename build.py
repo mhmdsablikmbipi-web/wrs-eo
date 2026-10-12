@@ -56,7 +56,8 @@ IMG = OUT / "images"
 
 FOLDER_UPDATE = BASE / "update"   # satu folder per event: info.txt + foto-foto dokumentasi
 EKSTENSI_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif"}
-FILE = {"home": "index.html", "event": "event.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
+FILE = {"home": "index.html", "event": "event.html", "portofolio": "portofolio.html",
+        "lokasi": "lokasi.html", "kontak": "kontak.html"}
 SITE = (KID.SITE_URL.rstrip("/") + "/") if KID.SITE_URL else ""
 
 # =============================================================================
@@ -75,7 +76,7 @@ UI = {
         "st_tahun": "tahun pengalaman",
         "st_mal": "lokasi mal mitra",
         "st_event": "jenis event andalan",
-        "video_judul": "Video kegiatan",
+        "video_judul": "Video terbaru WRS",
         "putar": "Putar video",
         "tonton": "Tonton di YouTube",
         "lokasi_judul": "Lokasi mal mitra WRS",
@@ -166,6 +167,32 @@ UI = {
         "wa_awal": "Halo WRS, saya ",
         "wa_dari": " dari ",
         "wa_butuh": "Kebutuhan: ",
+        "menu_porto": "Portofolio",
+        "eyebrow": "Event Organizer & Promotion",
+        "tk_eo": "Event Organizer & Promotion",
+        "lay_judul": "Layanan Event Organizer & Promotion",
+        "lay_sub": "Dari pameran di mal sampai promosi produk, WRS membantu bisnis Anda bertemu pembeli secara langsung.",
+        "lay_lihat": "Lihat portofolio lengkap",
+        "porto_judul": "Portofolio WRS",
+        "porto_sub": "Rekam jejak WRS sebagai Event Organizer dan Promotion Service di mal-mal Indonesia, dari pameran otomotif sampai bazaar UMKM.",
+        "porto_meta": "Portofolio PT. Wahana Rezeki Sempurna: pameran otomotif, multi produk, furniture, bazaar, dan promotion service di {total} mal mitra.",
+        "chip_eo": "Event Organizer & Promotion",
+        "chip_layanan": "{n} layanan",
+        "chip_industri": "{n} industri",
+        "st_event_doc": "event terdokumentasi",
+        "st_industri": "industri yang dilayani",
+        "gal_judul": "Galeri portofolio",
+        "gal_sub": "Dokumentasi pameran dan event WRS. Klik foto untuk memperbesar.",
+        "gal_filter": "Saring galeri berdasarkan jenis event",
+        "ind_judul": "Industri yang kami layani",
+        "jejak_judul": "Jejak lokasi WRS",
+        "jejak_sub": "Sebaran {total} mal mitra per wilayah.",
+        "jejak_peta": "Lihat peta dan daftar mal",
+        "per_judul": "Perjalanan WRS",
+        "video_sub": "Selalu menampilkan video terbaru dari kanal resmi YouTube WRS.",
+        "video_kanal": "Buka kanal YouTube WRS",
+        "video_pilihan": "Video pilihan",
+        "video_lain": "Video tidak muncul?",
     },
     "en": {
         "bahasa": "Language",
@@ -178,7 +205,7 @@ UI = {
         "st_tahun": "years of experience",
         "st_mal": "partner mall locations",
         "st_event": "signature event types",
-        "video_judul": "Event videos",
+        "video_judul": "Latest WRS videos",
         "putar": "Play video",
         "tonton": "Watch on YouTube",
         "lokasi_judul": "WRS partner mall locations",
@@ -269,6 +296,32 @@ UI = {
         "wa_awal": "Hello WRS, I'm ",
         "wa_dari": " from ",
         "wa_butuh": "Need: ",
+        "menu_porto": "Portfolio",
+        "eyebrow": "Event Organizer & Promotion",
+        "tk_eo": "Event Organizer & Promotion",
+        "lay_judul": "Event Organizer & Promotion services",
+        "lay_sub": "From mall exhibitions to product promotion, WRS helps your business meet buyers face to face.",
+        "lay_lihat": "See the full portfolio",
+        "porto_judul": "WRS portfolio",
+        "porto_sub": "WRS track record as an Event Organizer and Promotion Service in malls across Indonesia, from automotive exhibitions to MSME bazaars.",
+        "porto_meta": "PT. Wahana Rezeki Sempurna portfolio: automotive, multi-product and furniture exhibitions, bazaars, and promotion services in {total} partner malls.",
+        "chip_eo": "Event Organizer & Promotion",
+        "chip_layanan": "{n} services",
+        "chip_industri": "{n} industries",
+        "st_event_doc": "documented events",
+        "st_industri": "industries served",
+        "gal_judul": "Portfolio gallery",
+        "gal_sub": "Photo documentation of WRS exhibitions and events. Click a photo to enlarge it.",
+        "gal_filter": "Filter the gallery by event type",
+        "ind_judul": "Industries we serve",
+        "jejak_judul": "WRS locations",
+        "jejak_sub": "{total} partner malls, by region.",
+        "jejak_peta": "See the map and mall list",
+        "per_judul": "The WRS journey",
+        "video_sub": "Always shows the latest video from the official WRS YouTube channel.",
+        "video_kanal": "Open the WRS YouTube channel",
+        "video_pilihan": "Featured videos",
+        "video_lain": "Video not showing?",
     },
 }
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
@@ -287,10 +340,16 @@ IKON = {
 }
 IKON["telp"] = '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'
 IKON["surel"] = '<path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/>'
+IKON["pameran"] = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+IKON["promosi"] = '<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>'
+IKON["space"] = '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>'
+IKON["bazaar"] = '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>'
+IKON["kamera"] = '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>'
 IKON["bagi"] = '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>'
 
 FAQ = {
     "id": [
+        ("Layanan apa saja yang ditawarkan WRS?", "WRS adalah Event Organizer dan penyedia promotion service di mal: pameran otomotif, multi produk, dan furniture, bazaar, sewa space atau booth, serta dokumentasi event."),
         ("Apakah konsultasi strategi berbayar?", "Tidak. Tim WRS siap membantu menyusun strategi terbaik untuk pameran Anda tanpa biaya."),
         ("Jenis event apa saja yang diselenggarakan WRS?", "Pameran otomotif, pameran multi produk, pameran furniture, dan bazaar di mal mitra."),
         ("Di mana saja lokasi mal mitra WRS?", "Di Jabodetabek dan kota-kota besar seperti Bandung, Palembang, Medan, Pekanbaru, dan Surabaya. Daftar lengkapnya ada di halaman Lokasi Mal."),
@@ -298,6 +357,7 @@ FAQ = {
         ("Apakah usaha kecil (UMKM) bisa ikut?", "Bisa. WRS berawal dari penyewaan ruang usaha bagi UMKM, dan bazaar serta sewa counter tersedia untuk usaha yang ingin mulai tampil di mal."),
     ],
     "en": [
+        ("What services does WRS offer?", "WRS is an Event Organizer and promotion service provider in malls: automotive, multi-product and furniture exhibitions, bazaars, space or booth rental, and event documentation."),
         ("Is the strategy consultation paid?", "No. The WRS team is ready to help you plan the best strategy for your exhibition at no cost."),
         ("What kinds of events does WRS organize?", "Automotive exhibitions, multi-product exhibitions, furniture exhibitions, and bazaars in partner malls."),
         ("Where are WRS partner malls located?", "In Greater Jakarta and major cities such as Bandung, Palembang, Medan, Pekanbaru, and Surabaya. The full list is on the Mall Locations page."),
@@ -341,6 +401,53 @@ BERANDA = {
         ],
     },
 }
+
+
+# Data bawaan halaman Portofolio dan bagian Layanan. Boleh diganti lewat LAYANAN, INDUSTRI, PERJALANAN
+# di konten.py (tulis langsung daftar, atau kamus {"id": [...], "en": [...]} agar ikut dua bahasa).
+# "{n}" pada teks otomatis diganti jumlah mal mitra.
+PORTO = {
+    "id": {
+        "layanan": [
+            ("pameran", "Pameran di mal", "Pameran otomotif, multi produk, dan furniture di area publik mal. Kami mengatur penataan area dan alur pengunjung."),
+            ("promosi", "Promotion service", "Promosi event dan produk Anda langsung kepada pengunjung mal, media komunikasi promosi yang menjangkau target market luas."),
+            ("space", "Sewa space dan booth", "Pilih lokasi, tanggal, dan ukuran space di antara {n} mal mitra. Tim kami membantu memilihnya."),
+            ("bazaar", "Bazaar dan UMKM", "Counter dan kios terjangkau untuk fashion, F&B, aksesori, dan usaha kecil yang ingin mulai tampil di mal."),
+            ("kamera", "Dokumentasi event", "Foto kegiatan kami tampilkan di website dan di kanal resmi WRS: YouTube, Instagram, dan TikTok."),
+            ("chat", "Konsultasi strategi", "Ceritakan produk dan target Anda. Konsultasi strategi dari tim WRS tanpa biaya."),
+        ],
+        "industri": ["Otomotif", "Properti", "Teknologi", "Furniture", "Perbankan", "Travel", "Fashion", "F&B", "Aksesori"],
+        "perjalanan": [
+            ("Awal 2000-an", "Dari ruang usaha UMKM", "Rizal Mulyana mulai menekuni bisnis dengan mengelola penyewaan ruang usaha bagi UMKM di ITC Mangga Dua, Jakarta."),
+            ("Sekitar 2003", "WRS berdiri", "PT. Wahana Rezeki Sempurna berkembang menjadi Exhibition Organizer dan penyedia jasa pameran serta promosi."),
+            ("Kini", "{n} mal mitra", "Pameran dan bazaar WRS hadir di Jabodetabek dan kota-kota besar di berbagai pulau, dengan dokumentasi yang rutin diperbarui."),
+        ],
+    },
+    "en": {
+        "layanan": [
+            ("pameran", "Mall exhibitions", "Automotive, multi-product, and furniture exhibitions in public mall areas. We plan the area layout and visitor flow."),
+            ("promosi", "Promotion service", "Promote your event and products directly to mall visitors, a promotional channel that reaches a wide target market."),
+            ("space", "Space and booth rental", "Choose the location, dates, and space size among {n} partner malls. Our team helps you pick."),
+            ("bazaar", "Bazaars and MSMEs", "Affordable counters and kiosks for fashion, F&B, accessories, and small businesses starting out in malls."),
+            ("kamera", "Event documentation", "We publish event photos on the website and on WRS official channels: YouTube, Instagram, and TikTok."),
+            ("chat", "Strategy consultation", "Tell us about your product and goals. A strategy consultation with the WRS team is free."),
+        ],
+        "industri": ["Automotive", "Property", "Technology", "Furniture", "Banking", "Travel", "Fashion", "F&B", "Accessories"],
+        "perjalanan": [
+            ("Early 2000s", "From MSME business space", "Rizal Mulyana began in business by managing business-space rentals for MSMEs at ITC Mangga Dua, Jakarta."),
+            ("Around 2003", "WRS is founded", "PT. Wahana Rezeki Sempurna grows into an Exhibition Organizer and provider of exhibition and promotion services."),
+            ("Today", "{n} partner malls", "WRS exhibitions and bazaars run in Greater Jakarta and major cities across several islands, with documentation updated regularly."),
+        ],
+    },
+}
+
+
+def porto_data(kunci: str):
+    """Data dari konten.py kalau ada (daftar, atau kamus per bahasa); kalau tidak, data bawaan."""
+    data = getattr(K, kunci.upper(), None)
+    if isinstance(data, dict):
+        data = data.get(LANG)
+    return data or PORTO[LANG][kunci]
 
 
 # Bahasa yang sedang dibangun (diatur oleh pakai())
@@ -485,6 +592,16 @@ def versi(nama: str) -> str:
     return hashlib.md5((BASE / "assets" / nama).read_bytes()).hexdigest()[:8]
 
 
+def daftar_menu() -> list:
+    """Menu dari konten.py. Halaman Portofolio disisipkan otomatis setelah Artikel Event
+    (kecuali menu "portofolio" sudah ditulis sendiri di MENU)."""
+    menu = list(K.MENU)
+    if all(k != "portofolio" for _, k in menu):
+        pos = next((i for i, (_, k) in enumerate(menu) if k == "event"), len(menu) - 1)
+        menu.insert(pos + 1, (T["menu_porto"], "portofolio"))
+    return menu
+
+
 def alamat_halaman(kode: str, bahasa: str) -> str:
     """Alamat lengkap halaman (hanya dipakai kalau SITE_URL diisi)."""
     folder = "en/" if bahasa == "en" else ""
@@ -508,10 +625,10 @@ def tombol_bahasa(kode: str) -> str:
 
 def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
-    label = {k: t for t, k in K.MENU}[kode]
+    label = {k: t for t, k in daftar_menu()}[kode]
     judul_penuh = NAMA if kode == "home" else f"{label} | {NAMA}"
     on = ' class="on"'
-    tautan = "".join(f'<a href="{FILE[k]}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in K.MENU)
+    tautan = "".join(f'<a href="{FILE[k]}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in daftar_menu())
     og = (
         f'<meta property="og:type" content="website"><meta property="og:title" content="{escape(judul_penuh)}">'
         f'<meta property="og:description" content="{escape(deskripsi)}">'
@@ -566,7 +683,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 
 def footer_html() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
-    menu = "".join(f'<a href="{FILE[k]}">{escape(t)}</a>' for t, k in K.MENU)
+    menu = "".join(f'<a href="{FILE[k]}">{escape(t)}</a>' for t, k in daftar_menu())
     alamat = "<br>".join(escape(x) for x in K.KONTAK["alamat"])
     telepon = "<br>".join(tautan_telepon(x) for x in K.KONTAK["telepon"])
     email = escape(K.KONTAK["email"])
@@ -880,37 +997,75 @@ def id_youtube(s: str) -> str:
     return m.group(1) if m else s
 
 
+def url_kanal() -> str:
+    kanal = getattr(V, "KANAL_ID", "") if V else ""
+    manual = getattr(V, "KANAL_URL", "") if V else ""
+    if manual:
+        return manual
+    return f"https://www.youtube.com/channel/{kanal}/videos" if kanal else ""
+
+
+def kartu_video(v: dict) -> str:
+    vid = id_youtube(v["id"])
+    judul = teks_bahasa(v.get("judul", ""))
+    mulai, selesai = int(v.get("mulai") or 0), int(v.get("selesai") or 0)
+    embed = f"https://www.youtube-nocookie.com/embed/{vid}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+    watch = f"https://www.youtube.com/watch?v={vid}"
+    if mulai:
+        embed += f"&start={mulai}"
+        watch += f"&t={mulai}s"
+    if selesai:
+        embed += f"&end={selesai}"
+    thumb = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
+    putar = escape(f"{T['putar']}: {judul}")
+    return (
+        '<figure class="vid">'
+        f'<button class="vid-btn" type="button" data-embed="{escape(embed)}" data-judul="{escape(judul)}" aria-label="{putar}">'
+        f'<img src="{thumb}" alt="" loading="lazy" onerror="this.remove()">'
+        '<span class="vid-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></button>'
+        f'<figcaption><span>{escape(judul)}</span>'
+        f'<a href="{escape(watch)}" target="_blank" rel="noopener">{escape(T["tonton"])}</a></figcaption></figure>'
+    )
+
+
 def bagian_video() -> str:
-    daftar = getattr(V, "VIDEO", []) if V else []
-    if not daftar:
+    """Pemutar yang selalu memuat video TERBARU kanal YouTube WRS (lewat daftar putar "upload" kanal),
+    ditambah video pilihan manual dari video.py (opsional)."""
+    kanal = getattr(V, "KANAL_ID", "").strip() if V else ""
+    otomatis = bool(kanal) and bool(getattr(V, "VIDEO_TERBARU_OTOMATIS", True))
+    pilihan = list(getattr(V, "VIDEO", []) or []) if V else []
+    if not otomatis and not pilihan:
         return ""
-    kartu = []
-    for v in daftar:
-        vid = id_youtube(v["id"])
-        judul = teks_bahasa(v.get("judul", ""))
-        mulai, selesai = int(v.get("mulai") or 0), int(v.get("selesai") or 0)
-        embed = f"https://www.youtube-nocookie.com/embed/{vid}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
-        watch = f"https://www.youtube.com/watch?v={vid}"
-        if mulai:
-            embed += f"&start={mulai}"
-            watch += f"&t={mulai}s"
-        if selesai:
-            embed += f"&end={selesai}"
-        thumb = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
-        putar = escape(f"{T['putar']}: {judul}")
-        kartu.append(
-            '<figure class="vid">'
-            f'<button class="vid-btn" type="button" data-embed="{escape(embed)}" data-judul="{escape(judul)}" aria-label="{putar}">'
-            f'<img src="{thumb}" alt="" loading="lazy" onerror="this.remove()">'
-            '<span class="vid-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></button>'
-            f'<figcaption><span>{escape(judul)}</span>'
-            f'<a href="{escape(watch)}" target="_blank" rel="noopener">{escape(T["tonton"])}</a></figcaption></figure>'
+    utama = ""
+    if otomatis:
+        daftar_putar = "UU" + kanal[2:] if kanal.startswith("UC") else kanal   # UC... -> UU... = semua upload kanal
+        embed = (f"https://www.youtube-nocookie.com/embed/videoseries?list={escape(daftar_putar)}"
+                 "&rel=0&modestbranding=1&playsinline=1")
+        judul = T["video_judul"]
+        utama = (
+            '<div class="vids solo"><figure class="vid vid-otomatis">'
+            f'<iframe class="vid-frame" src="{embed}" title="{escape(judul)}" loading="lazy" '
+            'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen '
+            'referrerpolicy="strict-origin-when-cross-origin"></iframe>'
+            f'<figcaption><span>{escape(T["video_lain"])}</span>'
+            f'<a href="{escape(url_kanal())}" target="_blank" rel="noopener">{escape(T["tonton"])}</a></figcaption></figure></div>'
         )
-    solo = " solo" if len(kartu) == 1 else ""
+    manual = ""
+    if pilihan:
+        kartu = "".join(kartu_video(v) for v in pilihan)
+        solo = " solo" if len(pilihan) == 1 else ""
+        sub = f'<h3 class="vid-sub">{escape(T["video_pilihan"])}</h3>' if otomatis else ""
+        manual = f'{sub}<div class="vids{solo}">{kartu}</div>'
+    kanal_url = url_kanal()
+    tombol_kanal = (f'<p class="vid-kanal"><a class="btn gold" href="{escape(kanal_url)}" target="_blank" '
+                    f'rel="noopener">{escape(T["video_kanal"])}</a></p>') if kanal_url else ""
+    sub_teks = f'<p class="sub">{escape(T["video_sub"])}</p>' if otomatis else ""
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
-<h2 style="margin-bottom:36px">{escape(T['video_judul'])}</h2>
-<div class="vids{solo}">{''.join(kartu)}</div>
+<section class="sec video-sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['video_judul'])}</h2>
+{sub_teks}
+<div class="vid-isi">{utama}{manual}</div>
+{tombol_kanal}
 </div></section>
 """
 
@@ -958,7 +1113,7 @@ def koin_html(logo: str) -> str:
 
 def bagian_ticker() -> str:
     _, total = daftar_mal()
-    kata = [e["judul"] for e in K.EVENT_TIPE] + [
+    kata = [T["tk_eo"]] + [e["judul"] for e in K.EVENT_TIPE] + [
         T["tk_sejak"], T["tk_mal"].format(total=total), T["tk_konsul"]]
     himpunan = "".join(f'<span class="tk">{escape(k)}</span>' for k in kata * 2)
     durasi = max(30, len(kata) * 2 * 4)
@@ -1081,6 +1236,168 @@ def bagian_cta() -> str:
 """
 
 
+def bagian_layanan(gelap: bool = True, tautan: bool = True) -> str:
+    _, total = daftar_mal()
+    kartu = "".join(
+        f'<div class="lay-kartu"><span class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON.get(ik, IKON["cek"])}</svg></span>'
+        f'<h3>{escape(j)}</h3><p>{escape(t.replace("{n}", str(total)))}</p></div>'
+        for ik, j, t in porto_data("layanan")
+    )
+    lihat = f'<a class="lihat-semua" href="{FILE["portofolio"]}">{escape(T["lay_lihat"])} →</a>' if tautan else ""
+    kelas = "sec layanan" if gelap else "sec terang"
+    return f"""
+<section class="{kelas}"><div class="inner">
+<h2>{escape(T['lay_judul'])}</h2>
+<p class="sub">{escape(T['lay_sub'])}</p>
+<div class="lay">{kartu}</div>
+{lihat}
+</div></section>
+"""
+
+
+def kunci_jenis(e: dict) -> str:
+    j = e["judul"].lower()
+    for kata, k in (("otomotif", "otomotif"), ("automotive", "otomotif"), ("multi", "multiproduk"),
+                    ("furniture", "furniture"), ("bazaar", "bazaar"), ("bazar", "bazaar")):
+        if kata in j:
+            return k
+    return slug_teks(j)
+
+
+def item_galeri() -> list:
+    """Foto portofolio: foto jenis event (konten.py) + foto dokumentasi update event, digilir per jenis."""
+    grup: dict = {}
+    for e in K.EVENT_TIPE:
+        k = kunci_jenis(e)
+        label = (KATEGORI.get(k) or {"id": e["judul"], "en": e["judul"]})[LANG]
+        for n in e.get("foto", []):
+            besar, kecil = img_url(n), img_url(n, 640)
+            if besar and kecil:
+                grup.setdefault(k, (label, []))[1].append((aset(kecil), aset(besar), e["judul"]))
+    for u in UPDATE:
+        lokasi = f" · {u['mal']}" if u["mal"] else ""
+        for kecil, besar in u["foto"][:4]:
+            grup.setdefault(u["kat"], (u["label"][LANG], []))[1].append(
+                (aset(kecil), aset(besar), u["judul"][LANG] + lokasi))
+    daftar, putaran = [], 0
+    while len(daftar) < 36 and any(len(v[1]) > putaran for v in grup.values()):
+        for k, (label, isi) in grup.items():
+            if len(isi) > putaran and len(daftar) < 36:
+                daftar.append((k, label) + isi[putaran])
+        putaran += 1
+    return daftar
+
+
+def bagian_galeri_porto() -> str:
+    item = item_galeri()
+    if not item:
+        return ""
+    urut = []
+    for k, label, *_ in item:
+        if all(k != x for x, _ in urut):
+            urut.append((k, label))
+    chips = ""
+    if len(urut) > 1:
+        chips = f'<div class="chips pf-chips" role="group" aria-label="{escape(T["gal_filter"])}">' + (
+            f'<button class="chip pf-chip on" type="button" data-kat="semua" aria-pressed="true">{escape(T["semua"])}</button>'
+            + "".join(f'<button class="chip pf-chip" type="button" data-kat="{k}" aria-pressed="false">{escape(lb)}</button>'
+                      for k, lb in urut)
+        ) + "</div>"
+    kotak = "".join(
+        f'<figure class="pf-item" data-kat="{k}"><img class="pf-img" src="{t}" data-besar="{b_}" data-grup="pf" '
+        f'alt="{escape(ket)}" loading="lazy"><figcaption><span class="pf-tag">{escape(label)}</span>'
+        f'<span>{escape(ket)}</span></figcaption></figure>'
+        for k, label, t, b_, ket in item
+    )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['gal_judul'])}</h2>
+<p class="sub">{escape(T['gal_sub'])}</p>
+{chips}
+<div class="pf-grid">{kotak}</div>
+</div></section>
+"""
+
+
+def bagian_industri() -> str:
+    chips = "".join(f'<span class="mitra-chip">{escape(x)}</span>' for x in porto_data("industri"))
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['ind_judul'])}</h2>
+<div class="industri">{chips}</div>
+</div></section>
+"""
+
+
+def bagian_jejak() -> str:
+    nama_w = getattr(K, "NAMA_WILAYAH", {})
+    baris, total = [], 0
+    for _, grup in K.MAL:
+        for label, _, daftar in grup:
+            baris.append((nama_w.get(label, label), len(daftar)))
+            total += len(daftar)
+    if not baris:
+        return ""
+    baris.sort(key=lambda x: -x[1])
+    mx = baris[0][1] or 1
+    isi = "".join(
+        f'<div class="jb"><span class="jb-nama">{escape(n)}</span>'
+        f'<span class="jb-bar"><i style="--w:{c / mx:.3f}"></i></span><b>{c}</b></div>'
+        for n, c in baris
+    )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['jejak_judul'])}</h2>
+<p class="sub">{escape(T['jejak_sub'].format(total=total))}</p>
+<div class="jejak">{isi}</div>
+<a class="lihat-semua" href="{FILE['lokasi']}">{escape(T['jejak_peta'])} →</a>
+</div></section>
+"""
+
+
+def bagian_perjalanan() -> str:
+    _, total = daftar_mal()
+    item = "".join(
+        f'<div class="perj-item"><span class="perj-th">{escape(th)}</span><h3>{escape(j.replace("{n}", str(total)))}</h3>'
+        f'<p>{escape(t.replace("{n}", str(total)))}</p></div>'
+        for th, j, t in porto_data("perjalanan")
+    )
+    return f"""
+<section class="sec" style="padding-top:0"><div class="inner">
+<h2>{escape(T['per_judul'])}</h2>
+<div class="perj">{item}</div>
+</div></section>
+"""
+
+
+def halaman_portofolio() -> str:
+    _, total = daftar_mal()
+    n_lay = len(porto_data("layanan"))
+    n_ind = len(porto_data("industri"))
+    chips = [T["chip_eo"], T["chip_layanan"].format(n=n_lay), T["chip_lokasi"].format(n=total),
+             T["chip_industri"].format(n=n_ind)]
+    stat = statistik()
+    if UPDATE:
+        stat = stat + [(len(UPDATE), "", T["st_event_doc"])]
+    stat = stat + [(n_ind, "", T["st_industri"])]
+    item = "".join(
+        f'<div class="stat"><b data-n="{n}" data-akhiran="{escape(a)}">{n}{escape(a)}</b><span>{escape(l)}</span></div>'
+        for n, a, l in stat
+    )
+    return (
+        kepala(T["porto_judul"], T["porto_sub"], chips)
+        + f'<section class="stats" id="stat"><div class="inner">{item}</div></section>'
+        + bagian_layanan(gelap=False, tautan=False)
+        + bagian_galeri_porto()
+        + bagian_update_beranda()
+        + bagian_industri()
+        + bagian_jejak()
+        + bagian_perjalanan()
+        + bagian_video()
+        + bagian_cta()
+    )
+
+
 def halaman_home() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
     galeri = "".join(
@@ -1093,6 +1410,7 @@ def halaman_home() -> str:
     kelas_hero = "hero hero-foto" if bg else "hero"
     return f"""{kf}
 <div class="{kelas_hero}" data-partikel>{bg}<div>
+<span class="eyebrow">{escape(T['eyebrow'])}</span>
 <h1>{escape(K.HERO['judul'])}</h1>
 <p>{escape(K.HERO['deskripsi'])}</p>
 {tombol(*K.HERO['tombol_utama'], 'gold')}{tombol(*K.HERO['tombol_kedua'], 'line')}
@@ -1107,6 +1425,8 @@ def halaman_home() -> str:
 <div class="split-teks"><h2>{escape(K.PROFIL['judul'])}</h2>{paragraf(K.PROFIL['paragraf'])}</div>
 {foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}
 </div></section>
+
+{bagian_layanan(gelap=True, tautan=True)}
 
 {bagian_spesialisasi()}
 
@@ -1395,6 +1715,10 @@ def json_ld() -> str:
             "addressCountry": "ID",
         },
         "sameAs": [u for _, _, u in K.SOSMED],
+        "makesOffer": [
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": j}}
+            for _, j, _ in porto_data("layanan")
+        ],
     }
     if SITE:
         data["url"] = SITE
@@ -1422,6 +1746,7 @@ def tulis_bahasa(bahasa: str, folder: Path) -> int:
     halaman = {
         "home": (K.HERO["deskripsi"], halaman_home(), json_ld()),
         "event": (K.EVENT_DESKRIPSI, halaman_event(), ""),
+        "portofolio": (T["porto_meta"].format(total=total), halaman_portofolio(), ""),
         "lokasi": (T["lokasi_meta"].format(total=total), lokasi, ""),
         "kontak": (K.KONTAK["deskripsi"], halaman_kontak(), ""),
     }
@@ -1463,8 +1788,11 @@ def build() -> None:
     print(f"Update event: {len(UPDATE)} event, {sum(len(u['foto']) for u in UPDATE)} foto dokumentasi")
     for p in PERINGATAN:
         print("PERHATIAN:", p)
-    if V and getattr(V, "VIDEO", []):
-        print(f"Video YouTube: {len(V.VIDEO)}")
+    if V and getattr(V, "KANAL_ID", "") and getattr(V, "VIDEO_TERBARU_OTOMATIS", True):
+        print(f"Video YouTube: terbaru otomatis dari kanal {V.KANAL_ID}" +
+              (f" + {len(V.VIDEO)} video pilihan" if getattr(V, "VIDEO", []) else ""))
+    elif V and getattr(V, "VIDEO", []):
+        print(f"Video YouTube: {len(V.VIDEO)} video pilihan")
     if HILANG:
         print("Foto belum ada (tampil sebagai kotak penanda):", ", ".join(sorted(set(HILANG))))
     if "XXXX" in KID.WA_NOMOR:

@@ -1,33 +1,45 @@
 """
-VIDEO DARI KANAL YOUTUBE WRS  (tampil di Home, di bawah Galeri kegiatan)
+VIDEO DARI KANAL YOUTUBE WRS  (tampil di bagian paling bawah Home dan halaman Portofolio)
 
-Cara menambah video:
-  1. Buka video di YouTube, salin alamatnya (boleh link lengkap atau hanya kodenya).
-  2. Tambahkan satu blok { ... } di daftar VIDEO di bawah.
-  3. Jalankan  python build.py
+Ada dua cara, dan keduanya boleh dipakai bersamaan:
 
-Keterangan:
-  "id"      : link YouTube atau kode video (contoh: "4O_G2vuPlM0").
-  "judul"   : bisa teks biasa, atau {"id": "...", "en": "..."} agar ikut berganti bahasa.
-  "mulai"   : detik mulai putar (0 = dari awal).
-  "selesai" : detik berhenti (0 = sampai akhir). Isi "mulai" dan "selesai" untuk membuat
-              klip singkat dari video panjang, misalnya mulai 30 dan selesai 60 = klip 30 detik.
+1) OTOMATIS (sudah aktif): website menampilkan pemutar yang selalu memuat video TERBARU
+   dari kanal "WRS EO OFFICIAL". Setiap kali WRS mengunggah video baru ke YouTube, video
+   itu muncul sendiri di website, tanpa perlu mengedit apa pun atau menjalankan build lagi.
+   Kodenya (KANAL_ID) tidak berubah selama kanalnya sama.
 
-Kosongkan daftar ([]) kalau belum ingin menampilkan video; bagian videonya otomatis hilang.
+   Kalau mau mematikan pemutar otomatis, ubah VIDEO_TERBARU_OTOMATIS menjadi False.
+
+2) PILIHAN MANUAL (opsional): video tertentu yang ingin Anda sorot, misalnya aftermovie
+   event besar. Tambahkan satu blok { ... } di daftar VIDEO di bawah, lalu jalankan
+   python build.py (atau push ke GitHub).
+
+   "id"      : link YouTube atau kode video (contoh: "https://www.youtube.com/watch?v=XXXXXXXXXXX")
+   "judul"   : teks biasa, atau {"id": "...", "en": "..."} agar ikut berganti bahasa
+   "mulai"   : detik mulai putar (0 = dari awal)
+   "selesai" : detik berhenti (0 = sampai akhir); isi mulai dan selesai untuk membuat klip singkat
+
 Video yang pemiliknya mematikan fitur "sematkan" (embed) tidak bisa diputar di website;
-bagi video seperti itu pengunjung masih bisa klik tautan "Tonton di YouTube".
+untuk itu pengunjung masih bisa klik tautan "Tonton di YouTube".
 """
 
-VIDEO = [
-    {
-        # Ditemukan lewat pencarian di YouTube: "PT. WAHANA REZEKI SEMPURNA - AEON MALL SENTUL BOGOR,
-        # Event WRS OTOshow Juli 2022". Pastikan video ini memang ada di kanal WRS Anda dan bisa disematkan.
-        "id": "https://www.youtube.com/watch?v=4O_G2vuPlM0",
-        "judul": {
-            "id": "WRS OTOshow di AEON Mall Sentul Bogor (Juli 2022)",
-            "en": "WRS OTOshow at AEON Mall Sentul Bogor (July 2022)",
-        },
-        "mulai": 0,
-        "selesai": 0,
-    },
-]
+# Kode kanal YouTube WRS EO OFFICIAL (@wrseo3919). Diawali "UC".
+KANAL_ID = "UC9suvWOPsqNR4R4yg9ghJiw"
+
+# Tombol "Buka kanal YouTube WRS" mengarah ke sini.
+KANAL_URL = "https://www.youtube.com/@wrseo3919"
+
+# True = pemutar otomatis video terbaru kanal. False = hanya video pilihan di bawah.
+VIDEO_TERBARU_OTOMATIS = True
+
+# Video pilihan manual. Kosongkan ([]) kalau tidak diperlukan.
+# Contoh (hapus tanda # di depan untuk memakai):
+# VIDEO = [
+#     {
+#         "id": "https://www.youtube.com/watch?v=GANTI_DENGAN_KODE_VIDEO",
+#         "judul": {"id": "Aftermovie Event WRS", "en": "WRS Event Aftermovie"},
+#         "mulai": 0,
+#         "selesai": 0,
+#     },
+# ]
+VIDEO = []

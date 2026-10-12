@@ -56,9 +56,27 @@ memindahkan pengunjung ke halaman yang sama dalam bahasa lain.
 - Setelah `SITE_URL` diisi di `konten.py`, build ikut membuat tag `hreflang` dan sitemap untuk kedua bahasa.
 
 ## Video YouTube
-Video ada di bagian bawah Home, diatur di `video.py`. Cukup tempel link video dari kanal YouTube WRS.
-Isi `mulai` dan `selesai` (dalam detik) untuk menjadikannya klip singkat, misalnya mulai 30 dan selesai 60.
-Pemutar baru dimuat saat gambar diklik, jadi halaman tetap ringan. Kosongkan daftar `VIDEO` untuk menyembunyikan bagian ini.
+Video ada di bagian paling bawah Home dan di halaman Portofolio, diatur di `video.py`.
+
+- **Otomatis (bawaan):** pemutar selalu memuat video **terbaru** dari kanal "WRS EO OFFICIAL" (@wrseo3919). Begitu WRS mengunggah video baru ke YouTube, video itu muncul sendiri di website, tanpa edit dan tanpa build ulang. Caranya lewat daftar putar "upload" kanal, dari `KANAL_ID` di `video.py`. Ubah `VIDEO_TERBARU_OTOMATIS` menjadi `False` untuk mematikannya.
+- **Video pilihan (opsional):** tempel link video tertentu di daftar `VIDEO`, misalnya aftermovie event besar. Pemutarnya baru dimuat saat gambar diklik.
+
+Kalau pemutar otomatis kosong, kemungkinan kanal membatasi penyematan; pengunjung tetap bisa membuka kanal lewat tautan di bawah pemutar.
+
+## Halaman Portofolio dan layanan EO & Promotion
+Halaman **Portofolio** muncul otomatis di menu (setelah Artikel Event), dalam dua bahasa. Isinya: angka rekam jejak, enam layanan Event Organizer dan Promotion, galeri foto berfilter jenis event (klik untuk memperbesar), event terbaru, industri yang dilayani, jejak lokasi per wilayah, perjalanan WRS, dan video terbaru. Beranda juga punya bagian "Layanan Event Organizer & Promotion" dan label "Event Organizer & Promotion" di atas judul hero.
+
+- **Galeri** terisi otomatis dari foto jenis event (`EVENT_TIPE`) dan foto dokumentasi di folder `update/`. Tidak ada yang perlu diisi manual.
+- **Layanan, industri, perjalanan** punya teks bawaan di `build.py`. Untuk menggantinya, tambahkan di `konten.py` salah satu dari `LAYANAN`, `INDUSTRI`, `PERJALANAN`. Contoh:
+
+```python
+LAYANAN = {
+    "id": [("pameran", "Pameran di mal", "Penjelasan singkat."), ...],
+    "en": [("pameran", "Mall exhibitions", "Short description."), ...],
+}
+INDUSTRI = {"id": ["Otomotif", "Properti"], "en": ["Automotive", "Property"]}
+```
+Ikon yang tersedia: `pameran`, `promosi`, `space`, `bazaar`, `kamera`, `chat`, `award`, `pin`, `grafik`, `cek`, `naik`. Tulis `{n}` di teks untuk jumlah mal mitra otomatis.
 
 ## Update event mingguan (halaman Artikel Event)
 Di bagian atas halaman Artikel Event ada daftar **Update event terbaru**: tiap event punya periode, mal, kota,
