@@ -1,0 +1,92 @@
+PANDUAN PANEL ADMIN: UPDATE EVENT DAN PORTOFOLIO LANGSUNG DARI WEBSITE
+======================================================================
+
+Alamat panel:  alamat-website-Anda/admin.html
+               contoh: https://mhmdsablikmbipi-web.github.io/wrs-static/admin.html
+Tidak ada tautan ke halaman ini di menu website. Simpan alamatnya sebagai bookmark.
+
+
+A. APA ITU "LOGIN" DI PANEL INI (BACA DULU)
+-------------------------------------------
+Website WRS adalah website statis di GitHub Pages: tidak punya server dan tidak punya
+database akun. Jadi tidak ada username + password buatan kami. Yang dipakai adalah
+KUNCI AKSES GitHub (disebut "token", berawalan github_pat_).
+
+- Kunci akses = izin menulis ke repo website. Siapa pun yang memegangnya bisa mengubah isi
+  website (bukan hanya event). Perlakukan seperti kata sandi: jangan dikirim lewat grup WhatsApp,
+  jangan difoto layar, simpan di pengelola kata sandi.
+- Kunci disimpan di browser hanya selama tab terbuka. Kalau menandai "Ingat di perangkat ini",
+  kunci disimpan di browser perangkat itu sampai tombol Keluar ditekan. Jangan dicentang
+  di komputer bersama/warnet.
+- Kunci punya masa berlaku (disarankan 90 hari). Setelah habis, buat kunci baru (langkah B).
+- Kalau kunci hilang atau staf berhenti: cabut di github.com/settings/personal-access-tokens
+  (tombol Delete/Revoke). Kunci itu langsung tidak berfungsi.
+- Kalau nanti butuh akun per orang (username + password, peran admin/editor, riwayat siapa
+  mengubah apa), itu butuh layanan login sungguhan (misalnya Supabase atau Firebase).
+  Hubungi pembuat website.
+
+
+B. MEMBUAT KUNCI AKSES (dilakukan pemilik repo, sekali per 90 hari)
+-------------------------------------------------------------------
+1. Masuk ke github.com dengan akun pemilik repo website.
+2. Buka  github.com/settings/personal-access-tokens/new
+3. Token name: Admin website WRS.   Expiration: 90 days.
+4. Repository access: pilih "Only select repositories", lalu pilih repo website (wrs-static).
+5. Permissions -> Repository permissions:
+      Contents  = Read and write       (wajib)
+      Actions   = Read-only            (opsional, agar panel bisa menampilkan proses pembangunan)
+6. Klik Generate token. SALIN kodenya sekarang (hanya tampil sekali).
+7. Tempel di kolom "Kunci akses GitHub" pada admin.html, lalu klik Masuk.
+
+Catatan: tampilan GitHub bisa sedikit berbeda dari tulisan di atas; ikuti nama izin yang sama.
+Kunci "fine-grained" hanya bisa dibuat untuk repo milik akun sendiri (atau organisasi yang diikuti).
+Staf yang hanya diundang sebagai collaborator di repo milik orang lain mungkin tidak bisa membuat
+kunci jenis ini. Solusinya: pemilik repo membuatkan kunci dan memberikannya lewat cara aman,
+atau repo dipindah ke organisasi GitHub. Kunci jenis "classic" (centang repo) juga bisa dipakai
+panel ini, tetapi izinnya jauh lebih luas, jadi hindari jika bisa.
+
+
+C. MENAMBAH EVENT BARU
+----------------------
+1. Masuk -> tab Event -> tombol "+ Event baru".
+2. Isi Judul, Jenis, Mal, Kota. Kota terisi otomatis kalau mal ada di daftar.
+3. Pilih tanggal Mulai dan Selesai (kosongkan Selesai kalau hanya satu hari).
+4. Tulis deskripsi singkat. Baris kosong = paragraf baru.
+5. Tekan "Pilih foto" (atau seret foto ke kotaknya). Banyak foto sekaligus boleh.
+   Foto otomatis dikecilkan dan data lokasi (GPS) di dalamnya dihapus.
+6. Tekan "Simpan dan tayangkan". Tunggu sampai muncul "Selesai". Website tampil
+   diperbarui dalam sekitar 2-5 menit.
+
+D. MEMPERBARUI EVENT YANG SEDANG BERJALAN
+-----------------------------------------
+Di tab Event, bagian "Sedang berlangsung" menampilkan event hari ini.
+- Tambah foto dokumentasi  : tombol "Tambah foto", pilih foto, Simpan.
+- Ubah teks/tanggal/judul  : tombol "Ubah".
+- Hapus foto yang salah    : di layar Ubah, tekan tanda x pada foto (tombol jadi panah untuk membatalkan).
+- Sembunyikan sementara    : tombol "Sembunyikan" (bisa ditampilkan lagi).
+- Hapus permanen           : tombol "Hapus" (ada konfirmasi).
+Status Akan datang / Sedang berlangsung / Selesai berubah sendiri mengikuti tanggal.
+
+E. MENAMBAH PORTOFOLIO TERBARU
+------------------------------
+1. Tab Portofolio -> "+ Proyek baru".
+2. Isi Judul, Jenis, Klien/brand (opsional), Mal/lokasi, Kota, deskripsi hasil proyek.
+3. Tanggal boleh dikosongkan. Kalau diisi, dipakai untuk mengurutkan (terbaru di atas).
+4. Tambahkan foto, lalu Simpan dan tayangkan.
+Proyek tampil di bagian "Proyek terbaru" dalam Portofolio di beranda, dan fotonya ikut masuk galeri.
+Foto pertama menjadi foto sampul. Foto lain bisa diklik untuk diperbesar.
+
+
+F. JIKA ADA MASALAH
+-------------------
+- "Kunci akses ditolak"            : salah ketik, kedaluwarsa, atau sudah dicabut. Buat kunci baru (B).
+- "Tidak punya izin"               : kunci kurang izin Contents: Read and write.
+- "Repo tidak ditemukan"           : cek nama repo di "Pengaturan repo" (format pemilik/nama), dan
+                                     pastikan kunci mencakup repo itu.
+- Foto tidak mau ditambah          : simpan ulang sebagai JPG/PNG. Foto HEIC dari iPhone hanya bisa
+                                     dibaca Safari; di Chrome, ubah dulu ke JPG.
+- Proses pembangunan tidak terpantau: tidak apa-apa, perubahan tetap tersimpan. Atur izin Actions: Read-only
+                                     jika ingin melihat progresnya.
+- Perubahan belum terlihat         : tunggu 5 menit, buka website, tekan Ctrl + F5.
+- Dua orang menyimpan bersamaan    : aman; panel mengulang otomatis di atas perubahan terbaru.
+- Salah hapus                      : semua perubahan tercatat di GitHub (tab Commits) dan bisa dikembalikan.

@@ -55,10 +55,16 @@ OUT = BASE / "docs"
 IMG = OUT / "images"
 
 FOLDER_UPDATE = BASE / "update"   # satu folder per event: info.txt + foto-foto dokumentasi
+FOLDER_PORTO = BASE / "portofolio"   # satu folder per proyek portofolio terbaru: info.txt + foto
 EKSTENSI_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif"}
-FILE = {"home": "index.html", "event": "event.html", "portofolio": "portofolio.html",
-        "lokasi": "lokasi.html", "kontak": "kontak.html"}
+FILE = {"home": "index.html", "event": "event.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
+# Portofolio tidak punya halaman sendiri: menjadi bagian di beranda (id="portofolio").
+BAGIAN_BERANDA = {"portofolio": "index.html#portofolio"}
 SITE = (KID.SITE_URL.rstrip("/") + "/") if KID.SITE_URL else ""
+# Panel admin (docs/admin.html). Bisa diatur lewat konten.py: ADMIN_AKTIF = False untuk mematikan,
+# ADMIN_REPO = "pemilik/nama-repo" kalau website tidak berada di alamat github.io.
+ADMIN_AKTIF = bool(getattr(KID, "ADMIN_AKTIF", True))
+ADMIN_REPO = str(getattr(KID, "ADMIN_REPO", "mhmdsablikmbipi-web/wrs-static"))
 
 # =============================================================================
 # TEKS ANTARMUKA (di luar konten.py): label tombol, form, dan sebagainya
@@ -324,6 +330,20 @@ UI = {
         "video_lain": "Video not showing?",
     },
 }
+UI["id"].update({
+    "proyek_judul": "Proyek terbaru",
+    "proyek_sub": "Pekerjaan terbaru WRS: pameran, bazaar, dan promosi yang baru kami selesaikan bersama klien dan mal mitra.",
+    "proyek_foto": "{n} foto",
+    "st_proyek": "proyek terbaru",
+    "chip_proyek": "{n} proyek terbaru",
+})
+UI["en"].update({
+    "proyek_judul": "Latest projects",
+    "proyek_sub": "WRS's newest work: exhibitions, bazaars and promotions we recently delivered with clients and partner malls.",
+    "proyek_foto": "{n} photos",
+    "st_proyek": "latest projects",
+    "chip_proyek": "{n} latest projects",
+})
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
             "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup",
@@ -563,7 +583,7 @@ def foto(nama: str, kelas: str, alt: str = "", lazy: bool = True) -> str:
 # =============================================================================
 
 def tujuan(t: str) -> str:
-    return FILE[t[5:]] if t.startswith("?hal=") else t
+    return href_menu(t[5:]) if t.startswith("?hal=") else t
 
 
 def tombol(teks: str, t: str, gaya: str) -> str:
@@ -613,6 +633,11 @@ def versi(nama: str) -> str:
     return hashlib.md5((BASE / "assets" / nama).read_bytes()).hexdigest()[:8]
 
 
+def href_menu(kode: str) -> str:
+    """Alamat untuk satu item menu: halaman sendiri, atau bagian di beranda (Portofolio)."""
+    return BAGIAN_BERANDA.get(kode) or FILE[kode]
+
+
 def daftar_menu() -> list:
     """Menu dari konten.py. Halaman Portofolio disisipkan otomatis setelah Artikel Event
     (kecuali menu "portofolio" sudah ditulis sendiri di MENU)."""
@@ -649,7 +674,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
     label = {k: t for t, k in daftar_menu()}[kode]
     judul_penuh = NAMA if kode == "home" else f"{label} | {NAMA}"
     on = ' class="on"'
-    tautan = "".join(f'<a href="{FILE[k]}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in daftar_menu())
+    tautan = "".join(f'<a href="{href_menu(k)}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in daftar_menu())
     og = (
         f'<meta property="og:type" content="website"><meta property="og:title" content="{escape(judul_penuh)}">'
         f'<meta property="og:description" content="{escape(deskripsi)}">'
@@ -704,7 +729,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 
 def footer_html() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
-    menu = "".join(f'<a href="{FILE[k]}">{escape(t)}</a>' for t, k in daftar_menu())
+    menu = "".join(f'<a href="{href_menu(k)}">{escape(t)}</a>' for t, k in daftar_menu())
     alamat = "<br>".join(escape(x) for x in K.KONTAK["alamat"])
     telepon = "<br>".join(tautan_telepon(x) for x in K.KONTAK["telepon"])
     email = escape(K.KONTAK["email"])
@@ -732,6 +757,7 @@ def kepala(judul: str, sub: str, chips=()) -> str:
 
 PERINGATAN: list = []
 UPDATE: list = []
+PROYEK: list = []
 
 BULAN = {
     "januari": 1, "jan": 1, "january": 1, "februari": 2, "pebruari": 2, "feb": 2, "february": 2,
@@ -764,6 +790,7 @@ KUNCI_INFO = {
     "mulai": "mulai", "start": "mulai", "selesai": "selesai", "end": "selesai",
     "deskripsi": "deskripsi", "description": "deskripsi", "keterangan": "deskripsi",
     "deskripsi_en": "deskripsi_en", "description_en": "deskripsi_en",
+    "klien": "klien", "client": "klien", "brand": "klien",
 }
 
 
@@ -875,7 +902,7 @@ def format_periode(a: date, b_: date, bahasa: str) -> str:
     return f"{a.day} {n[a.month - 1]} {a.year} – {b_.day} {n[b_.month - 1]} {b_.year}"
 
 
-def simpan_foto_update(src: Path, awalan: str, nomor: int):
+def simpan_foto_update(src: Path, awalan: str, nomor: int, prefiks: str = "u"):
     """Simpan dua ukuran: kecil (kisi di halaman) dan besar (saat foto diklik)."""
     try:
         im = ImageOps.exif_transpose(Image.open(src))
@@ -883,12 +910,12 @@ def simpan_foto_update(src: Path, awalan: str, nomor: int):
         for sisi, akhir in ((640, "-k"), (1400, "")):
             x = im.copy()
             x.thumbnail((sisi, sisi))
-            nama = f"u-{awalan}-{nomor:02d}{akhir}.webp"
+            nama = f"{prefiks}-{awalan}-{nomor:02d}{akhir}.webp"
             x.convert("RGB").save(IMG / nama, "WEBP", quality=80, method=4)
             hasil.append(f"images/{nama}")
         return tuple(hasil)
     except Exception as e:
-        PERINGATAN.append(f"Foto {src.parent.name}/{src.name} tidak bisa dibaca ({type(e).__name__}); dilewati. "
+        PERINGATAN.append(f"Foto {src.parent.parent.name}/{src.parent.name}/{src.name} tidak bisa dibaca ({type(e).__name__}); dilewati. "
                           "Simpan ulang sebagai JPG atau PNG.")
         return None
 
@@ -1003,6 +1030,108 @@ def bagian_update() -> str:
 {chips}
 <div class="upd-list" data-batch="{batch}">{kartu}</div>
 <div class="upd-lagi"><button class="btn-lagi" type="button" hidden>{escape(T['lagi'])}</button></div>
+</div></section>
+"""
+
+
+# =============================================================================
+# PORTOFOLIO TERBARU: satu folder di portofolio/ = satu proyek (info.txt + foto)
+# =============================================================================
+
+def muat_proyek() -> list:
+    """Baca folder portofolio/. Mirip update/, tetapi 'periode' boleh kosong
+    (tanggal diambil dari awalan nama folder, contoh 2026-10-05_nama-proyek)."""
+    if not FOLDER_PORTO.is_dir():
+        return []
+    hasil = []
+    for folder in sorted(p for p in FOLDER_PORTO.iterdir() if p.is_dir() and not p.name.startswith(("_", "."))):
+        nama = folder.name
+        txt = sorted((f for f in folder.iterdir() if f.suffix.lower() == ".txt"), key=urut_alami)
+        if not txt:
+            PERINGATAN.append(f"Folder portofolio/{nama} dilewati: tidak ada file info.txt di dalamnya.")
+            continue
+        info = baca_info(txt[0])
+        mulai = selesai = None
+        try:
+            if info.get("periode"):
+                mulai, selesai = urai_periode(" ".join(info["periode"]))
+        except ValueError as e:
+            PERINGATAN.append(f"Portofolio {nama}: periode tidak dipakai ({e}).")
+        if mulai is None:
+            m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", nama)
+            try:
+                mulai = selesai = date(int(m.group(1)), int(m.group(2)), int(m.group(3))) if m else None
+            except ValueError:
+                mulai = selesai = None
+        judul = " ".join(info.get("judul", [])).strip() or re.sub(
+            r"^\d{4}-\d{2}-\d{2}[ _-]*", "", nama).replace("-", " ").replace("_", " ").strip().title()
+        k_mentah = " ".join(info.get("kategori", [])).strip()
+        k_norm = re.sub(r"[^a-z]", "", k_mentah.lower())
+        k_norm = ALIAS_KATEGORI.get(k_norm, k_norm) or "lainnya"
+        label = KATEGORI.get(k_norm) or {"id": k_mentah.title(), "en": k_mentah.title()}
+        awalan = slug_teks(nama)
+        fotos = []
+        berkas = sorted((f for f in folder.iterdir() if f.suffix.lower() in EKSTENSI_FOTO), key=urut_alami)
+        for i, f in enumerate(berkas, 1):
+            sudah = simpan_foto_update(f, awalan, i, "p")
+            if sudah:
+                fotos.append(sudah)
+        hasil.append({
+            "id": awalan,
+            "judul": {"id": judul, "en": " ".join(info.get("judul_en", [])).strip() or judul},
+            "kat": k_norm, "label": label,
+            "klien": " ".join(info.get("klien", [])).strip(),
+            "mal": " ".join(info.get("mal", [])).strip(), "kota": " ".join(info.get("kota", [])).strip(),
+            "mulai": mulai, "selesai": selesai,
+            "isi": {"id": info.get("deskripsi", []), "en": info.get("deskripsi_en") or info.get("deskripsi", [])},
+            "foto": fotos,
+        })
+    hasil.sort(key=lambda p: (p["mulai"] or date.min, p["id"]), reverse=True)
+    return hasil
+
+
+def kartu_proyek(p: dict) -> str:
+    judul = p["judul"][LANG]
+    grup = "pr-" + p["id"]
+    alt = judul + (" - " + p["mal"] if p["mal"] else "")
+    meta = [x for x in (p["klien"], p["mal"], p["kota"]) if x]
+    if p["mulai"]:
+        meta.append(format_periode(p["mulai"], p["selesai"], LANG))
+    foto_html = []
+    for i, (t, b_) in enumerate(p["foto"]):
+        kelas = "proyek-img" + ("" if i == 0 else (" proyek-thumb" if i <= 3 else " proyek-extra"))
+        foto_html.append(
+            f'<img class="{kelas}" src="{aset(t)}" data-besar="{aset(b_)}" data-grup="{grup}" '
+            f'alt="{escape(alt)}" loading="lazy">')
+    if foto_html:
+        cover = foto_html[0]
+        thumbs = "".join(foto_html[1:])
+        n = len(p["foto"])
+        jml = f'<span class="proyek-jml">{escape(T["proyek_foto"].format(n=n))}</span>' if n > 1 else ""
+        media = f'<div class="proyek-media">{cover}{jml}</div>'
+        strip = f'<div class="proyek-strip">{thumbs}</div>' if thumbs else ""
+    else:
+        media = f'<div class="proyek-media proyek-kosong"><span>{escape(p["label"][LANG])}</span></div>'
+        strip = ""
+    return (
+        f'<article class="proyek" id="proyek-{p["id"]}" data-kat="{p["kat"]}">{media}'
+        f'<div class="proyek-isi"><span class="upd-tag">{escape(p["label"][LANG])}</span>'
+        f'<h3>{escape(judul)}</h3>'
+        f'{"<p class=proyek-meta>" + escape(" · ".join(meta)) + "</p>" if meta else ""}'
+        f'{paragraf(p["isi"][LANG])}{strip}</div></article>'
+    )
+
+
+def bagian_proyek() -> str:
+    if not PROYEK:
+        return ""
+    maks = int(getattr(KID, "PROYEK_MAKS", 12))
+    kartu = "".join(kartu_proyek(p) for p in PROYEK[:maks])
+    return f"""
+<section class="sec" id="proyek" style="padding-top:40px;padding-bottom:20px"><div class="inner">
+<h2>{escape(T['proyek_judul'])}</h2>
+<p class="sub">{escape(T['proyek_sub'])}</p>
+<div class="proyek-grid">{kartu}</div>
 </div></section>
 """
 
@@ -1264,7 +1393,7 @@ def bagian_layanan(gelap: bool = True, tautan: bool = True) -> str:
         f'<h3>{escape(j)}</h3><p>{escape(t.replace("{n}", str(total)))}</p></div>'
         for ik, j, t in porto_data("layanan")
     )
-    lihat = f'<a class="lihat-semua" href="{FILE["portofolio"]}">{escape(T["lay_lihat"])} →</a>' if tautan else ""
+    lihat = f'<a class="lihat-semua" href="{href_menu("portofolio")}">{escape(T["lay_lihat"])} →</a>' if tautan else ""
     kelas = "sec layanan" if gelap else "sec terang"
     return f"""
 <section class="{kelas}"><div class="inner">
@@ -1300,6 +1429,11 @@ def item_galeri() -> list:
         for kecil, besar in u["foto"][:4]:
             grup.setdefault(u["kat"], (u["label"][LANG], []))[1].append(
                 (aset(kecil), aset(besar), u["judul"][LANG] + lokasi))
+    for p in PROYEK:
+        lokasi = f" · {p['mal']}" if p["mal"] else ""
+        for kecil, besar in p["foto"][:4]:
+            grup.setdefault(p["kat"], (p["label"][LANG], []))[1].append(
+                (aset(kecil), aset(besar), p["judul"][LANG] + lokasi))
     daftar, putaran = [], 0
     while len(daftar) < 36 and any(len(v[1]) > putaran for v in grup.values()):
         for k, (label, isi) in grup.items():
@@ -1391,31 +1525,29 @@ def bagian_perjalanan() -> str:
 """
 
 
-def halaman_portofolio() -> str:
+def bagian_portofolio() -> str:
+    """Portofolio sebagai bagian menonjol di beranda: pita judul gelap, lalu proyek terbaru, galeri berfilter,
+    industri, jejak wilayah, dan perjalanan WRS."""
     _, total = daftar_mal()
     n_lay = len(porto_data("layanan"))
     n_ind = len(porto_data("industri"))
     chips = [T["chip_eo"], T["chip_layanan"].format(n=n_lay), T["chip_lokasi"].format(n=total),
              T["chip_industri"].format(n=n_ind)]
-    stat = statistik()
-    if UPDATE:
-        stat = stat + [(len(UPDATE), "", T["st_event_doc"])]
-    stat = stat + [(n_ind, "", T["st_industri"])]
-    item = "".join(
-        f'<div class="stat"><b data-n="{n}" data-akhiran="{escape(a)}">{n}{escape(a)}</b><span>{escape(l)}</span></div>'
-        for n, a, l in stat
-    )
+    if PROYEK:
+        chips.append(T["chip_proyek"].format(n=len(PROYEK)))
+    baris = "".join(f'<span class="phead-chip">{escape(c)}</span>' for c in chips)
     return (
-        kepala(T["porto_judul"], T["porto_sub"], chips)
-        + f'<section class="stats" id="stat"><div class="inner">{item}</div></section>'
-        + bagian_layanan(gelap=False, tautan=False)
+        f'<section class="sec porto-kepala" id="portofolio"><div class="inner">'
+        f'<span class="eyebrow">{escape(T["menu_porto"])}</span>'
+        f'<h2>{escape(T["porto_judul"])}</h2><p class="sub">{escape(T["porto_sub"])}</p>'
+        f'<div class="phead-chips">{baris}</div></div></section>'
+        f'<div class="porto-isi">'
+        + bagian_proyek()
         + bagian_galeri_porto()
-        + bagian_update_beranda()
         + bagian_industri()
         + bagian_jejak()
         + bagian_perjalanan()
-        + bagian_video()
-        + bagian_cta()
+        + '</div>'
     )
 
 
@@ -1447,7 +1579,9 @@ def halaman_home() -> str:
 {foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}
 </div></section>
 
-{bagian_layanan(gelap=True, tautan=True)}
+{bagian_portofolio()}
+
+{bagian_layanan(gelap=True, tautan=False)}
 
 {bagian_spesialisasi()}
 
@@ -1747,6 +1881,48 @@ def json_ld() -> str:
 
 
 # =============================================================================
+# PANEL ADMIN: halaman tunggal docs/admin.html (tidak muncul di menu, tidak diindeks mesin pencari)
+# =============================================================================
+
+def halaman_admin() -> str:
+    kategori = [{"k": k, "l": v["id"]} for k, v in KATEGORI.items()]
+    mal = []
+    for _, grup in KID.MAL:
+        for label, _, daftar in grup:
+            for m in daftar:
+                mal.append({"n": m[0] if isinstance(m, tuple) else m, "k": label})
+    cfg = json.dumps({"repo": ADMIN_REPO, "kategori": kategori, "mal": mal}, ensure_ascii=False).replace("</", "<\\/")
+    csp = ("default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; "
+           "font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com; "
+           "connect-src https://api.github.com; base-uri 'none'; form-action 'none'")
+    return f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{csp}">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel Admin | {escape(NAMA)}</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/admin.css?v={versi('admin.css')}">
+</head>
+<body>
+<header class="ah"><a class="ah-brand" href="index.html"><img src="images/favicon.png" alt=""><span>Panel Admin</span></a>
+<div class="ah-kanan"><a class="lihat" href="index.html">Lihat website</a><div id="bar-user" hidden></div></div></header>
+<main id="app"><noscript><p class="kartu">Panel admin membutuhkan JavaScript. Aktifkan JavaScript di browser lalu muat ulang halaman ini.</p></noscript></main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="application/json" id="cfg">{cfg}</script>
+<script src="assets/admin.js?v={versi('admin.js')}" defer></script>
+</body>
+</html>
+"""
+
+
+# =============================================================================
 # BUILD
 # =============================================================================
 
@@ -1767,12 +1943,21 @@ def tulis_bahasa(bahasa: str, folder: Path) -> int:
     halaman = {
         "home": (K.HERO["deskripsi"], halaman_home(), json_ld()),
         "event": (K.EVENT_DESKRIPSI, halaman_event(), ""),
-        "portofolio": (T["porto_meta"].format(total=total), halaman_portofolio(), ""),
         "lokasi": (T["lokasi_meta"].format(total=total), lokasi, ""),
         "kontak": (K.KONTAK["deskripsi"], halaman_kontak(), ""),
     }
     for kode, (deskripsi, isi, ld) in halaman.items():
         (folder / FILE[kode]).write_text(kerangka(kode, deskripsi, isi, ld), encoding="utf-8")
+    # Alamat lama /portofolio.html (bookmark, Google) diarahkan ke bagian Portofolio di beranda.
+    kanon = f'<link rel="canonical" href="{alamat_halaman("home", bahasa)}">' if SITE else ""
+    (folder / "portofolio.html").write_text(
+        f'<!DOCTYPE html><html lang="{bahasa}"><head><meta charset="utf-8">'
+        f'<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f'<meta name="robots" content="noindex"><title>{escape(NAMA)}</title>{kanon}'
+        f'<meta http-equiv="refresh" content="0; url=index.html#portofolio">'
+        f'<script>location.replace("index.html#portofolio")</script></head>'
+        f'<body><p><a href="index.html#portofolio">{escape(T["menu_porto"])}</a></p></body></html>',
+        encoding="utf-8")
     return len(halaman)
 
 
@@ -1787,12 +1972,15 @@ def build() -> None:
         fav.save(IMG / "favicon.png", "PNG", optimize=True)
 
     UPDATE[:] = muat_update()
+    PROYEK[:] = muat_proyek()
     halaman = tulis_bahasa("id", OUT)
     bahasa = ["id"]
     if KEN:
         halaman += tulis_bahasa("en", OUT / "en")
         bahasa.append("en")
     pakai("id")
+    if ADMIN_AKTIF:
+        (OUT / "admin.html").write_text(halaman_admin(), encoding="utf-8")
 
     if SITE:
         urls = "".join(
@@ -1803,10 +1991,12 @@ def build() -> None:
             f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>',
             encoding="utf-8",
         )
-        (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n", encoding="utf-8")
+        (OUT / "robots.txt").write_text(
+            f"User-agent: *\nAllow: /\nDisallow: /admin.html\nSitemap: {SITE}sitemap.xml\n", encoding="utf-8")
 
     print(f"Selesai: {halaman} halaman ({', '.join(bahasa)}), {len(list(IMG.glob('*')))} file gambar -> {OUT}")
     print(f"Update event: {len(UPDATE)} event, {sum(len(u['foto']) for u in UPDATE)} foto dokumentasi")
+    print(f"Portofolio terbaru: {len(PROYEK)} proyek, {sum(len(p['foto']) for p in PROYEK)} foto")
     for p in PERINGATAN:
         print("PERHATIAN:", p)
     if V and getattr(V, "KANAL_ID", "") and getattr(V, "VIDEO_TERBARU_OTOMATIS", True):

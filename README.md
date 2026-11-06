@@ -56,7 +56,7 @@ memindahkan pengunjung ke halaman yang sama dalam bahasa lain.
 - Setelah `SITE_URL` diisi di `konten.py`, build ikut membuat tag `hreflang` dan sitemap untuk kedua bahasa.
 
 ## Video YouTube
-Video ada di bagian paling bawah Home dan di halaman Portofolio, diatur di `video.py`.
+Video ada di bagian paling bawah Home, diatur di `video.py`.
 
 - **Otomatis (bawaan):** pemutar selalu memuat video **terbaru** dari kanal "WRS EO OFFICIAL" (@wrseo3919). Begitu WRS mengunggah video baru ke YouTube, video itu muncul sendiri di website, tanpa edit dan tanpa build ulang. Caranya lewat daftar putar "upload" kanal, dari `KANAL_ID` di `video.py`. Ubah `VIDEO_TERBARU_OTOMATIS` menjadi `False` untuk mematikannya.
 - **Video pilihan (opsional):** tempel link video tertentu di daftar `VIDEO`, misalnya aftermovie event besar. Pemutarnya baru dimuat saat gambar diklik.
@@ -176,3 +176,21 @@ Yang bisa Anda atur:
 
 **Semua halaman**
 - Footer lengkap (profil singkat, menu, kontak, sosial media), tombol kembali ke atas, dan chip ringkasan di kepala setiap halaman.
+
+## Panel admin: update event dan portofolio langsung dari website
+
+Alamat: `alamat-website/admin.html` (tidak ada di menu, tidak diindeks Google). Panduan lengkap untuk staf ada di
+`update/PANDUAN-ADMIN.txt`.
+
+- "Login" memakai kunci akses GitHub (fine-grained token, izin Contents: Read and write), bukan username/password,
+  karena GitHub Pages tidak punya server. Panel berjalan di browser dan memanggil API GitHub langsung.
+- Panel membuat/mengubah folder `update/<tanggal_mal>/` (event) dan `portofolio/<tanggal_nama>/` (proyek), memuat
+  `info.txt` + foto dalam satu commit. GitHub Actions lalu membangun ulang website seperti biasa.
+- Foto dikecilkan di browser (maks 1800 px, JPEG) dan data GPS-nya terbuang.
+- Folder `portofolio/` juga bisa diisi manual lewat GitHub (lihat `portofolio/_TEMPLATE/info.txt`).
+  Hasilnya tampil di bagian "Proyek terbaru" dalam Portofolio di beranda.
+- Pengaturan opsional di `konten.py`: `ADMIN_AKTIF = False` (matikan panel), `ADMIN_REPO = "pemilik/nama"`
+  (kalau website tidak di alamat github.io), `PROYEK_MAKS = 12` (jumlah proyek tampil).
+- Keamanan: panel memakai Content-Security-Policy ketat (script hanya dari situs sendiri, koneksi hanya ke
+  api.github.com), semua teks ditulis lewat `textContent`, kunci disimpan di sessionStorage (localStorage hanya jika
+  "Ingat di perangkat ini" dicentang). Siapa pun yang memegang kunci bisa mengubah isi repo, jadi cabut kunci yang hilang.
