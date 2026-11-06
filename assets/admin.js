@@ -502,7 +502,7 @@
         h("h1", { text: jenis === "event" ? "Event" : "Portofolio terbaru" }),
         h("p", { class: "lead", text: jenis === "event"
           ? "Perbarui event yang sedang berjalan, tambah foto dokumentasi, atau buat event baru."
-          : "Tambahkan proyek terbaru beserta fotonya. Tampil di bagian Portofolio pada beranda website." })),
+          : "Tambahkan proyek terbaru beserta fotonya. Tampil di halaman Portofolio website." })),
       h("button", { class: "tb tb-emas", type: "button", text: "+ " + cfg.baru, onclick: function () { bukaEditor(jenis, null); } }));
     var isi = h("div", { class: "daftar" });
     var items = S.data[jenis].slice().sort(function (a, b) {

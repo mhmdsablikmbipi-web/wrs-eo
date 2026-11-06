@@ -44,7 +44,7 @@
   /* ---- muncul perlahan saat di-scroll + angka berjalan naik ---- */
   /* Daftar ini harus sama dengan daftar di bagian ANIMASI pada style.css */
   var REVEAL = ".stat,.split>*,.kartu-pendiri,.vm-kartu,.vm-sub,.misi li,.latar-teks,.sec>.inner>h2,.art,.kel,.cari," +
-    ".marquee,.vid,.upd,.kartu-kontak,.faq-item,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.lay-kartu,.pf-item,.industri,.jejak,.perj-item,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
+    ".marquee,.vid,.upd,.kartu-kontak,.faq-item,.spes-kartu,.alasan-kartu,.langkah,.upd-mini,.lay-kartu,.pf-item,.proyek,.industri,.jejak,.perj-item,.cta .inner>*,.kontak .cols>div,.kontak .inner>h2,.form";
 
   function hitung(kotak) {
     var b = kotak.querySelector("b[data-n]");
@@ -78,7 +78,7 @@
   }
 
   /* ---- lightbox: klik foto untuk memperbesar ---- */
-  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img,img.pf-img";
+  var PILIH_FOTO = "img.mo,img.gal-img,img.foto-about,img.potret,img.upd-img,img.pf-img,img.proyek-img";
   var semuaFoto = [].slice.call(doc.querySelectorAll(PILIH_FOTO)).filter(function (f) {
     return !f.closest("[aria-hidden='true']"); /* lewati salinan galeri yang bergerak */
   });

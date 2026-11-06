@@ -1,0 +1,20 @@
+# TEMPLATE PORTOFOLIO TERBARU
+# Cara termudah: pakai Panel Admin (alamat-website/admin.html). File ini hanya untuk yang mengisi lewat GitHub.
+# Salin folder _TEMPLATE ini, ganti namanya (contoh: 2026-10-05_bazaar-season-city), isi baris di bawah,
+# lalu masukkan foto proyek ke folder yang sama. Awalan tanggal pada nama folder dipakai untuk mengurutkan
+# (proyek terbaru tampil paling atas). Baris yang diawali tanda # diabaikan.
+
+judul: Bazaar Ramadan Season City
+kategori: bazaar
+klien: Season City
+mal: Season City
+kota: Jakarta Barat
+# periode boleh dikosongkan. Kalau diisi, contohnya: 5 Oktober sd 30 Oktober 2026
+periode:
+
+deskripsi: Tulis hasil proyek di sini: jumlah tenant, pengunjung, merek yang terlibat, atau peran WRS.
+Baris kosong membuat paragraf baru.
+
+# OPSIONAL: versi bahasa Inggris
+judul_en:
+deskripsi_en:

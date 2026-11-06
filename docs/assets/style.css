@@ -926,13 +926,3 @@ div.upd-mini-foto{display:flex;align-items:center;justify-content:center;color:v
   .proyek-grid>.proyek:only-child{flex-direction:column}
   .proyek-grid>.proyek:only-child .proyek-media{flex:none;aspect-ratio:16/10;min-height:0}
 }
-
-
-/* portofolio di beranda: pita judul gelap, isi terang di bawahnya */
-.porto-kepala{padding-bottom:56px;background:radial-gradient(circle at 85% 0%,#4b2a0b 0%,var(--espresso) 60%);color:#EBD9B4}
-.porto-kepala h2{color:var(--gold-lt)}
-.porto-kepala .sub{color:#EBD9B4}
-.porto-kepala .eyebrow{margin-bottom:16px}
-.porto-isi{padding-bottom:30px;background:var(--ivory)}
-.porto-isi>.sec:first-child{padding-top:64px!important}
-.porto-isi>.sec:not(:first-child){padding-top:48px!important}

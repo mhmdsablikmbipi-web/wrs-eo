@@ -56,7 +56,7 @@ memindahkan pengunjung ke halaman yang sama dalam bahasa lain.
 - Setelah `SITE_URL` diisi di `konten.py`, build ikut membuat tag `hreflang` dan sitemap untuk kedua bahasa.
 
 ## Video YouTube
-Video ada di bagian paling bawah Home, diatur di `video.py`.
+Video ada di bagian paling bawah Home dan di halaman Portofolio, diatur di `video.py`.
 
 - **Otomatis (bawaan):** pemutar selalu memuat video **terbaru** dari kanal "WRS EO OFFICIAL" (@wrseo3919). Begitu WRS mengunggah video baru ke YouTube, video itu muncul sendiri di website, tanpa edit dan tanpa build ulang. Caranya lewat daftar putar "upload" kanal, dari `KANAL_ID` di `video.py`. Ubah `VIDEO_TERBARU_OTOMATIS` menjadi `False` untuk mematikannya.
 - **Video pilihan (opsional):** tempel link video tertentu di daftar `VIDEO`, misalnya aftermovie event besar. Pemutarnya baru dimuat saat gambar diklik.
@@ -188,7 +188,7 @@ Alamat: `alamat-website/admin.html` (tidak ada di menu, tidak diindeks Google). 
   `info.txt` + foto dalam satu commit. GitHub Actions lalu membangun ulang website seperti biasa.
 - Foto dikecilkan di browser (maks 1800 px, JPEG) dan data GPS-nya terbuang.
 - Folder `portofolio/` juga bisa diisi manual lewat GitHub (lihat `portofolio/_TEMPLATE/info.txt`).
-  Hasilnya tampil di bagian "Proyek terbaru" dalam Portofolio di beranda.
+  Hasilnya tampil di bagian "Proyek terbaru" pada halaman Portofolio.
 - Pengaturan opsional di `konten.py`: `ADMIN_AKTIF = False` (matikan panel), `ADMIN_REPO = "pemilik/nama"`
   (kalau website tidak di alamat github.io), `PROYEK_MAKS = 12` (jumlah proyek tampil).
 - Keamanan: panel memakai Content-Security-Policy ketat (script hanya dari situs sendiri, koneksi hanya ke

@@ -9,6 +9,7 @@ on:
       - "docs/**"
       - "**.md"
       - "update/PANDUAN-STAF.txt"
+      - "update/PANDUAN-ADMIN.txt"
   workflow_dispatch:
 
 permissions:
