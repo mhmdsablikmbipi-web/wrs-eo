@@ -1,7 +1,0 @@
-# Dibuat/diubah lewat Panel Admin website. Boleh juga diedit manual di GitHub.
-judul: Season City
-kategori: otomotif
-mal: Season City
-kota: Jakarta Barat
-periode: 6 November 2026 sd 11 November 2026
-
