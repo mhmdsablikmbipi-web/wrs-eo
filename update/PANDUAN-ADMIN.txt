@@ -1,5 +1,5 @@
-PANDUAN PANEL ADMIN: UPDATE EVENT DAN PORTOFOLIO LANGSUNG DARI WEBSITE
-======================================================================
+PANDUAN PANEL ADMIN: EVENT, PORTOFOLIO, GALERI FOTO, DAN INSTAGRAM MAL
+=====================================================================
 
 Alamat panel:  alamat-website-Anda/admin.html
                contoh: https://mhmdsablikmbipi-web.github.io/wrs-static/admin.html
@@ -48,7 +48,7 @@ panel ini, tetapi izinnya jauh lebih luas, jadi hindari jika bisa.
 
 C. MENAMBAH EVENT BARU
 ----------------------
-1. Masuk -> tab Event -> tombol "+ Event baru".
+1. Masuk -> tab Event -> tombol "Event baru".
 2. Isi Judul, Jenis, Mal, Kota. Kota terisi otomatis kalau mal ada di daftar.
 3. Pilih tanggal Mulai dan Selesai (kosongkan Selesai kalau hanya satu hari).
 4. Tulis deskripsi singkat. Baris kosong = paragraf baru.
@@ -69,11 +69,11 @@ Status Akan datang / Sedang berlangsung / Selesai berubah sendiri mengikuti tang
 
 E. MENAMBAH PORTOFOLIO TERBARU
 ------------------------------
-1. Tab Portofolio -> "+ Proyek baru".
+1. Tab Portofolio -> "Proyek baru".
 2. Isi Judul, Jenis, Klien/brand (opsional), Mal/lokasi, Kota, deskripsi hasil proyek.
 3. Tanggal boleh dikosongkan. Kalau diisi, dipakai untuk mengurutkan (terbaru di atas).
 4. Tambahkan foto, lalu Simpan dan tayangkan.
-Proyek tampil di bagian "Proyek terbaru" pada halaman Portofolio, dan fotonya ikut masuk galeri.
+Proyek tampil di bagian "Proyek terbaru" dalam Portofolio di beranda, dan fotonya ikut masuk galeri.
 Foto pertama menjadi foto sampul. Foto lain bisa diklik untuk diperbesar.
 
 
@@ -90,3 +90,50 @@ F. JIKA ADA MASALAH
 - Perubahan belum terlihat         : tunggu 5 menit, buka website, tekan Ctrl + F5.
 - Dua orang menyimpan bersamaan    : aman; panel mengulang otomatis di atas perubahan terbaru.
 - Salah hapus                      : semua perubahan tercatat di GitHub (tab Commits) dan bisa dikembalikan.
+
+
+G. PANEL BARU: RINGKASAN
+------------------------
+Setelah masuk, halaman pertama adalah Ringkasan: jumlah event berlangsung, proyek portofolio,
+foto galeri, dan berapa mal yang sudah punya tautan Instagram. Ada tombol pintas (Event baru,
+Foto galeri, dst.), daftar event yang sedang berlangsung, dan kotak "Perlu perhatian"
+(mis. event yang belum punya foto). Menu tab di atas: Ringkasan, Event, Portofolio,
+Galeri kegiatan, Galeri portofolio, Instagram mal. Titik oranye pada tab = ada perubahan
+yang belum disimpan.
+
+H. GALERI KEGIATAN (foto berjalan di beranda)
+---------------------------------------------
+Tab "Galeri kegiatan".
+- Tambah foto : tekan kotak "Tambah foto" atau seret foto ke dalamnya (boleh banyak).
+- Keterangan  : isi kolom Indonesia (wajib kalau ingin ada teks) dan English (opsional).
+- Urutan      : seret kartu ke posisi lain, atau tombol panah kiri/kanan (cocok untuk HP).
+- Ganti foto  : tombol dengan ikon panah ganda pada kartu.
+- Hapus       : tombol tempat sampah. Foto lama hanya ditandai "Akan dihapus" (bisa dibatalkan
+                dengan tombol panah melengkung) sampai Anda menekan Simpan.
+- Klik foto untuk memperbesar. "Kembalikan ke foto bawaan" memakai foto asli dari konten.py.
+- Tekan "Simpan dan tayangkan" pada bilah di bagian bawah. Minimal 1 foto harus tersisa.
+Daftar disimpan di data/galeri.json; foto yang diunggah di folder galeri/kegiatan/.
+
+I. GALERI PORTOFOLIO
+--------------------
+Tab "Galeri portofolio" punya dua bagian:
+1. Foto tambahan dari admin: unggah foto sendiri, pilih Jenis (Otomotif, Furniture, dst.), isi
+   keterangan, urutkan, ganti, atau hapus. Foto ini tampil paling depan di galeri portofolio.
+2. Foto otomatis: foto dari Artikel event, Update event, dan Portofolio terbaru. Tidak bisa
+   dihapus dari sini, tetapi bisa DISEMBUNYIKAN dari galeri dengan ikon mata (dan ditampilkan
+   lagi kapan saja). Untuk menghapus permanen, ubah event/proyek asalnya di tab Event/Portofolio.
+Galeri menampilkan maksimal 60 foto. Daftar disimpan di data/galeri.json
+(foto unggahan di galeri/portofolio/).
+
+J. INSTAGRAM PER MAL (Lokasi Mal)
+---------------------------------
+Tab "Instagram mal" berisi 107 mal. Untuk tiap mal:
+1. Buka postingan proyek di Instagram WRS (@eo.wrs.id) -> tekan titik tiga -> "Salin link".
+2. Cari mal-nya (kolom cari / saring wilayah), klik namanya, tempel link di kolom.
+   Banyak link sekaligus boleh ditempel (dipisah spasi atau baris); otomatis dipecah.
+3. Panel menandai link yang valid (instagram.com/p/..., /reel/..., atau /tv/...). Simpan hanya
+   bisa ditekan kalau semua link valid. Ikon panah keluar = uji link di tab baru.
+4. Simpan dan tayangkan. Di halaman Lokasi Mal, kartu mal itu mendapat tombol
+   "Lihat di Instagram" di samping navigasi Google Maps. Ada juga saringan "Ada Instagram".
+Mal tanpa link tidak mendapat tombol. Tersimpan di data/instagram.json.
+Catatan: link harus diisi manual oleh admin karena website tidak bisa membaca Instagram.

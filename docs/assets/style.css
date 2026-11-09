@@ -926,3 +926,157 @@ div.upd-mini-foto{display:flex;align-items:center;justify-content:center;color:v
   .proyek-grid>.proyek:only-child{flex-direction:column}
   .proyek-grid>.proyek:only-child .proyek-media{flex:none;aspect-ratio:16/10;min-height:0}
 }
+
+
+/* portofolio di beranda: pita judul gelap, isi terang di bawahnya */
+.porto-kepala{padding-bottom:56px;background:radial-gradient(circle at 85% 0%,#4b2a0b 0%,var(--espresso) 60%);color:#EBD9B4}
+.porto-kepala h2{color:var(--gold-lt)}
+.porto-kepala .sub{color:#EBD9B4}
+.porto-kepala .eyebrow{margin-bottom:16px}
+.porto-isi{padding-bottom:30px;background:var(--ivory)}
+.porto-isi>.sec:first-child{padding-top:64px!important}
+.porto-isi>.sec:not(:first-child){padding-top:48px!important}
+
+
+/* kartu mal: nama (ke Google Maps) + tombol Instagram (ke postingan proyek) */
+.mal{padding:0;gap:0;overflow:hidden}
+.mal[hidden]{display:none}
+.mal:hover{background:transparent;transform:translateY(-2px)}
+.mal::after{content:none}
+.mal-nama{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:12px 14px;color:var(--espresso);text-decoration:none}
+.mal-nama::after{content:"↗";margin-left:auto;color:var(--bronze)}
+.mal-nama:hover{background:var(--gold-lt)}
+.mal-teks{min-width:0}
+.mal-ig{flex:none;align-self:stretch;display:flex;align-items:center;justify-content:center;gap:3px;min-width:46px;padding:0 12px;
+  border-left:1px solid rgba(140,90,20,.35);color:var(--maroon);text-decoration:none;font-size:.78rem;font-weight:700;
+  transition:background .15s,color .15s}
+.mal-ig svg{width:20px;height:20px}
+.mal-ig:hover,.mal-ig:focus-visible{background:linear-gradient(135deg,#F6D98A,#E8901E);color:var(--espresso)}
+.chip-ig{display:inline-flex;align-items:center;gap:7px}
+.chip-ig svg{width:16px;height:16px}
+
+
+/* ============================================================
+   BERANDA RINGKAS: lebih sedikit scroll, informasi tetap lengkap
+   ============================================================ */
+.malgrid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.p-home .sec{padding-top:52px;padding-bottom:52px}
+.p-home .sec h2{font-size:clamp(1.55rem,2.8vw,2.1rem)}
+.p-home .sub{font-size:1rem;margin-top:8px}
+.p-home .hero{min-height:min(76vh,620px);padding-top:120px;padding-bottom:64px}
+.p-home .stats{padding-top:28px;padding-bottom:28px}
+
+/* tab Tentang WRS */
+.tabs-ui{margin-top:20px}
+.tab-nav{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:26px;border-bottom:1px solid var(--garis)}
+.tab-btn{margin-bottom:-1px;padding:11px 18px;border:0;border-bottom:3px solid transparent;background:none;color:#5b4526;
+  font:inherit;font-weight:600;cursor:pointer;transition:color .15s,border-color .15s}
+.tab-btn:hover{color:var(--maroon)}
+.tab-btn.on{color:var(--espresso);border-bottom-color:var(--amber)}
+.js .tab-panel:not(.on){display:none}
+.tab-panel.on{animation:tabmuncul .35s ease}
+@keyframes tabmuncul{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tab-panel h3{margin:0 0 12px;font-size:1.35rem;font-weight:600}
+.tab-panel p{max-width:46em;margin:0 0 12px}
+.t-profil{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.t-profil .foto-about{margin:0;aspect-ratio:16/10;border-radius:18px}
+.t-pendiri{display:grid;grid-template-columns:210px 1fr;gap:34px;align-items:center}
+.t-pendiri .potret{border-radius:16px;box-shadow:none}
+.t-pendiri .jab{margin-bottom:12px;color:var(--bronze);font-weight:600}
+.t-vm .vm-sub{margin:0 0 12px;font-size:1.05rem}
+.t-vm .vm-sub+.vm-grid+.vm-sub{margin-top:22px}
+.t-vm .vm-grid{grid-template-columns:repeat(3,1fr);gap:14px}
+.t-vm .vm-kartu{padding:18px 20px}
+.t-vm .vm-kartu h3{margin:0 0 6px;font-size:1.2rem}
+.t-vm .vm-kartu p{font-size:.95rem}
+.t-vm .misi{grid-template-columns:repeat(2,1fr);gap:14px}
+.t-vm .misi li{padding:16px 18px 16px 62px;font-size:.97rem}
+.t-vm .misi li::before{left:16px;top:14px}
+.t-latar .latar-teks{margin-top:0;columns:2;column-gap:44px}
+
+/* portofolio ringkas */
+.p-home .porto-kepala{padding-top:56px;padding-bottom:40px}
+.porto-isi{padding:44px clamp(20px,6vw,96px) 40px}
+.porto-isi>.inner>.porto-blok+.porto-blok{margin-top:40px}
+.porto-h{margin:0 0 6px;font-size:1.5rem;font-weight:800}
+.porto-isi .chips{margin:14px 0 4px}
+.proyek-grid.ringkas{grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:16px}
+.ringkas .proyek-media{aspect-ratio:16/9}
+.ringkas .proyek-isi{padding:16px 18px 18px}
+.ringkas .proyek-isi h3{font-size:1.15rem;margin:8px 0 4px}
+.ringkas .proyek-isi p:not(.proyek-meta){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:.94rem}
+.proyek-grid.ringkas>.proyek:only-child{flex-direction:row}
+.proyek-grid:not(.terbuka) .proyek.lebih{display:none}
+.p-home .pf-grid{grid-template-columns:repeat(4,1fr);grid-auto-rows:140px;margin-top:14px}
+.p-home .pf-item:nth-child(7n+1){grid-column:auto;grid-row:auto}
+.p-home .pf-item:first-child{grid-column:span 2;grid-row:span 2}
+.pf-grid:not(.terbuka):not(.disaring) .pf-item.lebih{display:none}
+.buka{display:block;margin:20px auto 0;padding:10px 24px;border:1.5px solid var(--espresso);border-radius:999px;background:transparent;
+  color:var(--espresso);font:inherit;font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+.buka:hover{background:var(--espresso);color:var(--gold-lt)}
+.rekam{margin-top:36px;border:1px solid var(--garis);border-radius:18px;background:var(--kartu)}
+.rekam>summary{padding:16px 22px;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px}
+.rekam>summary::-webkit-details-marker{display:none}
+.rekam>summary::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;
+  border-radius:50%;background:var(--espresso);color:var(--gold-lt);font-weight:700;transition:transform .25s}
+.rekam[open]>summary::before{content:"–"}
+.rekam>.sec{padding:8px 22px 24px!important}
+.rekam .sec h2{font-size:1.3rem}
+
+/* layanan + jenis event dalam satu bagian */
+.lay-ringkas .lay{grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.lay-ringkas .lay-kartu{padding:18px 20px}
+.lay-ringkas .lay-kartu h3{font-size:1.1rem}
+.lay-ringkas .lay-kartu p{font-size:.92rem}
+.lay-jenis{margin:30px 0 14px;font-size:1.2rem;font-weight:600;color:var(--gold-lt)}
+.jenis-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.jenis-mini{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid rgba(217,152,43,.32);border-radius:14px;
+  background:rgba(255,247,227,.05);color:#EBD9B4;text-decoration:none;transition:border-color .2s,transform .2s}
+.jenis-mini:hover{border-color:var(--gold);transform:translateY(-2px)}
+.jenis-mini img{flex:none;width:62px;height:62px;object-fit:cover;border-radius:10px}
+.jenis-mini span{min-width:0}
+.jenis-mini b{display:block;color:var(--gold-lt);font-weight:600}
+.jenis-mini i{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-style:normal;font-size:.85rem;line-height:1.4}
+.lay-ringkas .lihat-semua{margin-top:20px}
+
+/* kenapa WRS + alur kerja */
+.kenapa .alasan{grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.kenapa .alasan-kartu{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;align-items:start;padding:16px 18px}
+.kenapa .alasan-kartu .ikon{grid-row:span 2;margin:0}
+.kenapa .alasan-kartu h3{margin:0;font-size:1.05rem}
+.kenapa .alasan-kartu p{font-size:.9rem;line-height:1.5}
+.alur-judul{margin:30px 0 0;font-size:1.2rem;font-weight:600;color:var(--bronze)}
+.kenapa .alur{margin-top:20px;gap:14px}
+.kenapa .alur::before{top:20px}
+.kenapa .langkah b{width:40px;height:40px;margin-bottom:10px;font-size:1.05rem}
+.kenapa .langkah h3{font-size:1.05rem}
+.kenapa .langkah p{font-size:.9rem;line-height:1.5}
+
+/* mitra, galeri kegiatan, video, ajakan */
+.p-home .mitra .run{margin-top:10px}
+.p-home .galeri-kegiatan h2{margin-bottom:20px!important}
+.p-home .marquee .gal{width:clamp(190px,20vw,260px)}
+.p-home .marquee .gal figcaption{font-size:.85rem}
+.vid-kolom{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr);gap:38px;align-items:center}
+.vid-kolom .vid-kanal{margin-top:16px}
+.vid-kolom .vids{margin-top:0}
+.p-home .cta{padding-top:60px;padding-bottom:60px}
+
+@media (max-width:900px){
+  .t-profil,.t-pendiri{grid-template-columns:1fr;gap:20px}
+  .t-pendiri .potret{max-width:240px}
+  .t-vm .vm-grid,.t-vm .misi,.lay-ringkas .lay,.kenapa .alasan{grid-template-columns:1fr}
+  .t-latar .latar-teks{columns:1}
+  .jenis-mini-grid{grid-template-columns:repeat(2,1fr)}
+  .vid-kolom{grid-template-columns:1fr;gap:20px}
+  .p-home .pf-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:120px}
+  .p-home .pf-item:first-child{grid-column:span 2;grid-row:span 1}
+  .kenapa .alur{grid-template-columns:repeat(2,1fr)}
+  .kenapa .alur::before{display:none}
+  .tab-btn{padding:10px 12px;font-size:.93rem}
+}
+@media (max-width:520px){
+  .jenis-mini-grid{grid-template-columns:1fr}
+  .p-home .sec{padding-top:40px;padding-bottom:40px}
+}
+@media (prefers-reduced-motion:reduce){.tab-panel.on{animation:none}}

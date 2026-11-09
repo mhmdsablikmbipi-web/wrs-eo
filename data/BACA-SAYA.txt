@@ -1,0 +1,6 @@
+Folder ini diisi otomatis oleh Panel Admin (admin.html). Boleh diedit manual di GitHub kalau perlu.
+
+galeri.json     Galeri kegiatan (beranda) dan Galeri portofolio.
+instagram.json  Tautan postingan Instagram per mal, contoh:
+                {"Season City": ["https://www.instagram.com/p/XXXX/"]}
+Hapus file ini kalau ingin kembali ke pengaturan bawaan (konten.py).

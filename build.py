@@ -56,9 +56,12 @@ IMG = OUT / "images"
 
 FOLDER_UPDATE = BASE / "update"   # satu folder per event: info.txt + foto-foto dokumentasi
 FOLDER_PORTO = BASE / "portofolio"   # satu folder per proyek portofolio terbaru: info.txt + foto
+FOLDER_DATA = BASE / "data"          # data yang diatur dari Panel Admin: galeri.json, instagram.json
+FOLDER_GALERI = BASE / "galeri"      # foto galeri yang diunggah lewat Panel Admin (kegiatan/ dan portofolio/)
 EKSTENSI_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif"}
-FILE = {"home": "index.html", "event": "event.html", "portofolio": "portofolio.html",
-        "lokasi": "lokasi.html", "kontak": "kontak.html"}
+FILE = {"home": "index.html", "event": "event.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
+# Portofolio tidak punya halaman sendiri: menjadi bagian di beranda (id="portofolio").
+BAGIAN_BERANDA = {"portofolio": "index.html#portofolio"}
 SITE = (KID.SITE_URL.rstrip("/") + "/") if KID.SITE_URL else ""
 # Panel admin (docs/admin.html). Bisa diatur lewat konten.py: ADMIN_AKTIF = False untuk mematikan,
 # ADMIN_REPO = "pemilik/nama-repo" kalau website tidak berada di alamat github.io.
@@ -334,12 +337,42 @@ UI["id"].update({
     "proyek_sub": "Pekerjaan terbaru WRS: pameran, bazaar, dan promosi yang baru kami selesaikan bersama klien dan mal mitra.",
     "proyek_foto": "{n} foto",
     "st_proyek": "proyek terbaru",
+    "chip_proyek": "{n} proyek terbaru",
+    "ig_label": "Lihat postingan Instagram WRS untuk {nama}",
+    "ig_judul": "Postingan Instagram proyek WRS",
+    "ig_saja": "Ada postingan Instagram",
+    "chip_ig": "{n} mal dengan postingan Instagram",
+    "tentang_judul": "Tentang WRS",
+    "tab_profil": "Profil",
+    "tab_pendiri": "Pendiri",
+    "tab_latar": "Latar belakang",
+    "lay_jenis": "Jenis event unggulan",
+    "lay_event_semua": "Lihat semua artikel event",
+    "foto_semua_n": "Lihat semua foto ({n})",
+    "foto_kurang": "Tampilkan lebih sedikit",
+    "proyek_semua_n": "Lihat semua proyek ({n})",
+    "rekam_judul": "Rekam jejak lengkap: industri, wilayah, dan perjalanan WRS",
 })
 UI["en"].update({
     "proyek_judul": "Latest projects",
     "proyek_sub": "WRS's newest work: exhibitions, bazaars and promotions we recently delivered with clients and partner malls.",
     "proyek_foto": "{n} photos",
     "st_proyek": "latest projects",
+    "chip_proyek": "{n} latest projects",
+    "ig_label": "See WRS Instagram post for {nama}",
+    "ig_judul": "WRS project post on Instagram",
+    "ig_saja": "Has Instagram post",
+    "chip_ig": "{n} malls with Instagram posts",
+    "tentang_judul": "About WRS",
+    "tab_profil": "Profile",
+    "tab_pendiri": "Founder",
+    "tab_latar": "Background",
+    "lay_jenis": "Signature event types",
+    "lay_event_semua": "See all event articles",
+    "foto_semua_n": "See all photos ({n})",
+    "foto_kurang": "Show fewer",
+    "proyek_semua_n": "See all projects ({n})",
+    "rekam_judul": "Full track record: industries, regions and the WRS journey",
 })
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
@@ -493,7 +526,9 @@ HILANG: list = []
 
 
 def slug(nama: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", Path(nama).stem.lower()).strip("-")
+    """Nama berkas keluaran dari nama sumber. Untuk path bertingkat (galeri/kegiatan/foto-001.jpg) folder ikut
+    dipakai supaya dua foto bernama sama di folder berbeda tidak saling menimpa."""
+    return re.sub(r"[^a-z0-9]+", "-", str(Path(nama).with_suffix("")).lower()).strip("-")
 
 
 PENGGANTI: list = []   # foto yang ditemukan dengan nama sedikit berbeda (huruf besar/kecil atau ekstensi)
@@ -580,7 +615,7 @@ def foto(nama: str, kelas: str, alt: str = "", lazy: bool = True) -> str:
 # =============================================================================
 
 def tujuan(t: str) -> str:
-    return FILE[t[5:]] if t.startswith("?hal=") else t
+    return href_menu(t[5:]) if t.startswith("?hal=") else t
 
 
 def tombol(teks: str, t: str, gaya: str) -> str:
@@ -619,6 +654,9 @@ def wa_url() -> str:
     return f"https://wa.me/{K.WA_NOMOR}?text={quote_plus(K.WA_PESAN)}"
 
 
+IKON_IG = ('<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/>'
+           '<circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.9"/>'
+           '<circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/>')
 IKON_WA = (
     "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
 )
@@ -628,6 +666,11 @@ def versi(nama: str) -> str:
     """Kode pendek dari isi file di assets/. Berubah setiap file diedit, sehingga browser
     tidak memakai style.css/app.js lama yang tersimpan (cache)."""
     return hashlib.md5((BASE / "assets" / nama).read_bytes()).hexdigest()[:8]
+
+
+def href_menu(kode: str) -> str:
+    """Alamat untuk satu item menu: halaman sendiri, atau bagian di beranda (Portofolio)."""
+    return BAGIAN_BERANDA.get(kode) or FILE[kode]
 
 
 def daftar_menu() -> list:
@@ -666,7 +709,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
     label = {k: t for t, k in daftar_menu()}[kode]
     judul_penuh = NAMA if kode == "home" else f"{label} | {NAMA}"
     on = ' class="on"'
-    tautan = "".join(f'<a href="{FILE[k]}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in daftar_menu())
+    tautan = "".join(f'<a href="{href_menu(k)}"{on if k == kode else ""}>{escape(t)}</a>' for t, k in daftar_menu())
     og = (
         f'<meta property="og:type" content="website"><meta property="og:title" content="{escape(judul_penuh)}">'
         f'<meta property="og:description" content="{escape(deskripsi)}">'
@@ -707,7 +750,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 <body data-t="{data_js}">
 <div class="progres" aria-hidden="true"></div>
 <div class="nav"><a class="brand" href="index.html"><img src="{logo}" alt="Logo {escape(NAMA)}"><span>{escape(NAMA)}</span></a><nav class="links" id="menu-utama">{tautan}</nav>{tombol_bahasa(kode)}<button class="burger" type="button" aria-label="{escape(T['buka_menu'])}" aria-expanded="false" aria-controls="menu-utama"><span></span><span></span><span></span></button></div>
-<main>
+<main class="p-{kode}">
 {isi}
 </main>
 {footer_html()}
@@ -721,7 +764,7 @@ def kerangka(kode: str, deskripsi: str, isi: str, jsonld: str = "") -> str:
 
 def footer_html() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
-    menu = "".join(f'<a href="{FILE[k]}">{escape(t)}</a>' for t, k in daftar_menu())
+    menu = "".join(f'<a href="{href_menu(k)}">{escape(t)}</a>' for t, k in daftar_menu())
     alamat = "<br>".join(escape(x) for x in K.KONTAK["alamat"])
     telepon = "<br>".join(tautan_telepon(x) for x in K.KONTAK["telepon"])
     email = escape(K.KONTAK["email"])
@@ -750,6 +793,7 @@ def kepala(judul: str, sub: str, chips=()) -> str:
 PERINGATAN: list = []
 UPDATE: list = []
 PROYEK: list = []
+IG_JUMLAH = [0]   # jumlah mal yang punya tautan Instagram (diisi daftar_mal)
 
 BULAN = {
     "januari": 1, "jan": 1, "january": 1, "februari": 2, "pebruari": 2, "feb": 2, "february": 2,
@@ -944,16 +988,17 @@ def muat_update() -> list:
         k_norm = ALIAS_KATEGORI.get(k_norm, k_norm) or "lainnya"
         label = KATEGORI.get(k_norm) or {"id": k_mentah.title(), "en": k_mentah.title()}
         awalan = slug_teks(nama)
-        fotos = []
+        fotos, srcs = [], []
         berkas = sorted((f for f in folder.iterdir() if f.suffix.lower() in EKSTENSI_FOTO), key=urut_alami)
         for i, f in enumerate(berkas, 1):
             sudah = simpan_foto_update(f, awalan, i)
             if sudah:
                 fotos.append(sudah)
+                srcs.append(f.relative_to(BASE).as_posix())
         hasil.append({
             "id": awalan,
             "judul": {"id": judul, "en": " ".join(info.get("judul_en", [])).strip() or judul},
-            "kat": k_norm, "label": label,
+            "kat": k_norm, "label": label, "src": srcs,
             "mal": " ".join(info.get("mal", [])).strip(), "kota": " ".join(info.get("kota", [])).strip(),
             "mulai": mulai, "selesai": selesai,
             "isi": {"id": info.get("deskripsi", []), "en": info.get("deskripsi_en") or info.get("deskripsi", [])},
@@ -1027,6 +1072,70 @@ def bagian_update() -> str:
 
 
 # =============================================================================
+# DATA DARI PANEL ADMIN: data/galeri.json dan data/instagram.json
+# =============================================================================
+
+IG_URL = re.compile(r"^https://(?:www\.)?instagram\.com/(?:p|reel|reels|tv)/[A-Za-z0-9_-]+/?(?:\?[^\s#]*)?$")
+GALERI: dict = {}       # isi data/galeri.json
+INSTAGRAM: dict = {}    # nama mal -> daftar tautan postingan Instagram
+
+
+def muat_json(nama: str):
+    path = FOLDER_DATA / nama
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(baca_teks(path))
+    except ValueError as e:
+        PERINGATAN.append(f"data/{nama} tidak bisa dibaca ({e}); diabaikan. Perbaiki lewat Panel Admin atau hapus file-nya.")
+        return None
+
+
+def muat_data() -> None:
+    g = muat_json("galeri.json")
+    GALERI.clear()
+    if isinstance(g, dict):
+        GALERI.update(g)
+    ig = muat_json("instagram.json")
+    INSTAGRAM.clear()
+    if isinstance(ig, dict):
+        for mal, urls in ig.items():
+            urls = [urls] if isinstance(urls, str) else (urls if isinstance(urls, list) else [])
+            bagus = []
+            for u in urls:
+                u = (u.get("url") if isinstance(u, dict) else u) or ""
+                u = str(u).strip()
+                if IG_URL.match(u):
+                    bagus.append(u)
+                elif u:
+                    PERINGATAN.append(f"Instagram untuk \"{mal}\": tautan \"{u}\" dilewati (harus berupa link postingan "
+                                      "instagram.com/p/..., /reel/... atau /tv/...).")
+            if bagus:
+                INSTAGRAM[str(mal).strip().lower()] = bagus
+
+
+def keterangan(d: dict) -> str:
+    return (d.get("ket_en") if LANG == "en" else d.get("ket")) or d.get("ket") or ""
+
+
+def galeri_kegiatan() -> list:
+    """Foto Galeri kegiatan (beranda): daftar dari data/galeri.json kalau ada, kalau tidak dari GALERI_HOME di konten.py.
+    Mengembalikan [(nama_file, keterangan)]."""
+    daftar = GALERI.get("kegiatan")
+    if isinstance(daftar, list):
+        hasil = []
+        for d in daftar:
+            if not isinstance(d, dict) or not d.get("file"):
+                continue
+            if not cari_file(str(d["file"])):
+                PERINGATAN.append(f"Galeri kegiatan: file \"{d['file']}\" tidak ditemukan; dilewati.")
+                continue
+            hasil.append((str(d["file"]), keterangan(d)))
+        return hasil
+    return list(K.GALERI_HOME)
+
+
+# =============================================================================
 # PORTOFOLIO TERBARU: satu folder di portofolio/ = satu proyek (info.txt + foto)
 # =============================================================================
 
@@ -1062,16 +1171,17 @@ def muat_proyek() -> list:
         k_norm = ALIAS_KATEGORI.get(k_norm, k_norm) or "lainnya"
         label = KATEGORI.get(k_norm) or {"id": k_mentah.title(), "en": k_mentah.title()}
         awalan = slug_teks(nama)
-        fotos = []
+        fotos, srcs = [], []
         berkas = sorted((f for f in folder.iterdir() if f.suffix.lower() in EKSTENSI_FOTO), key=urut_alami)
         for i, f in enumerate(berkas, 1):
             sudah = simpan_foto_update(f, awalan, i, "p")
             if sudah:
                 fotos.append(sudah)
+                srcs.append(f.relative_to(BASE).as_posix())
         hasil.append({
             "id": awalan,
             "judul": {"id": judul, "en": " ".join(info.get("judul_en", [])).strip() or judul},
-            "kat": k_norm, "label": label,
+            "kat": k_norm, "label": label, "src": srcs,
             "klien": " ".join(info.get("klien", [])).strip(),
             "mal": " ".join(info.get("mal", [])).strip(), "kota": " ".join(info.get("kota", [])).strip(),
             "mulai": mulai, "selesai": selesai,
@@ -1082,7 +1192,7 @@ def muat_proyek() -> list:
     return hasil
 
 
-def kartu_proyek(p: dict) -> str:
+def kartu_proyek(p: dict, ringkas: bool = False, lebih: bool = False) -> str:
     judul = p["judul"][LANG]
     grup = "pr-" + p["id"]
     alt = judul + (" - " + p["mal"] if p["mal"] else "")
@@ -1091,7 +1201,7 @@ def kartu_proyek(p: dict) -> str:
         meta.append(format_periode(p["mulai"], p["selesai"], LANG))
     foto_html = []
     for i, (t, b_) in enumerate(p["foto"]):
-        kelas = "proyek-img" + ("" if i == 0 else (" proyek-thumb" if i <= 3 else " proyek-extra"))
+        kelas = "proyek-img" + ("" if i == 0 else (" proyek-thumb" if i <= 3 and not ringkas else " proyek-extra"))
         foto_html.append(
             f'<img class="{kelas}" src="{aset(t)}" data-besar="{aset(b_)}" data-grup="{grup}" '
             f'alt="{escape(alt)}" loading="lazy">')
@@ -1106,7 +1216,7 @@ def kartu_proyek(p: dict) -> str:
         media = f'<div class="proyek-media proyek-kosong"><span>{escape(p["label"][LANG])}</span></div>'
         strip = ""
     return (
-        f'<article class="proyek" id="proyek-{p["id"]}" data-kat="{p["kat"]}">{media}'
+        f'<article class="proyek{" lebih" if lebih else ""}" id="proyek-{p["id"]}" data-kat="{p["kat"]}">{media}'
         f'<div class="proyek-isi"><span class="upd-tag">{escape(p["label"][LANG])}</span>'
         f'<h3>{escape(judul)}</h3>'
         f'{"<p class=proyek-meta>" + escape(" · ".join(meta)) + "</p>" if meta else ""}'
@@ -1170,7 +1280,7 @@ def kartu_video(v: dict) -> str:
     )
 
 
-def bagian_video() -> str:
+def bagian_video(ringkas: bool = False) -> str:
     """Pemutar yang selalu memuat video TERBARU kanal YouTube WRS (lewat daftar putar "upload" kanal),
     ditambah video pilihan manual dari video.py (opsional)."""
     kanal = getattr(V, "KANAL_ID", "").strip() if V else ""
@@ -1202,6 +1312,13 @@ def bagian_video() -> str:
     tombol_kanal = (f'<p class="vid-kanal"><a class="btn gold" href="{escape(kanal_url)}" target="_blank" '
                     f'rel="noopener">{escape(T["video_kanal"])}</a></p>') if kanal_url else ""
     sub_teks = f'<p class="sub">{escape(T["video_sub"])}</p>' if otomatis else ""
+    if ringkas:
+        return f"""
+<section class="sec video-sec video-ringkas" style="padding-top:0"><div class="inner vid-kolom">
+<div class="vid-teks"><h2>{escape(T['video_judul'])}</h2>{sub_teks}{tombol_kanal}</div>
+<div class="vid-isi">{utama}{manual}</div>
+</div></section>
+"""
     return f"""
 <section class="sec video-sec" style="padding-top:0"><div class="inner">
 <h2>{escape(T['video_judul'])}</h2>
@@ -1222,7 +1339,7 @@ def bagian_video() -> str:
 
 def hero_foto() -> tuple:
     """Latar hero: foto-foto bergantian (crossfade) dengan gerak zoom pelan."""
-    nama = getattr(K, "HERO_FOTO", None) or [f for f, _ in K.GALERI_HOME[:5]]
+    nama = getattr(K, "HERO_FOTO", None) or [f for f, _ in galeri_kegiatan()[:5]]
     urls = [u for u in (img_url(n, 1600) for n in nama) if u]
     if not urls:
         return "", ""
@@ -1305,7 +1422,7 @@ def bagian_update_beranda() -> str:
             f'{" · " + escape(lokasi) if lokasi else ""}</p></span></a>'
         )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['upd_judul'])}</h2>
 <p class="sub">{escape(T['upd_home_sub'])}</p>
 <div class="upd-mini-grid" data-n="{len(kartu)}">{''.join(kartu)}</div>
@@ -1385,7 +1502,7 @@ def bagian_layanan(gelap: bool = True, tautan: bool = True) -> str:
         f'<h3>{escape(j)}</h3><p>{escape(t.replace("{n}", str(total)))}</p></div>'
         for ik, j, t in porto_data("layanan")
     )
-    lihat = f'<a class="lihat-semua" href="{FILE["portofolio"]}">{escape(T["lay_lihat"])} →</a>' if tautan else ""
+    lihat = f'<a class="lihat-semua" href="{href_menu("portofolio")}">{escape(T["lay_lihat"])} →</a>' if tautan else ""
     kelas = "sec layanan" if gelap else "sec terang"
     return f"""
 <section class="{kelas}"><div class="inner">
@@ -1406,30 +1523,60 @@ def kunci_jenis(e: dict) -> str:
     return slug_teks(j)
 
 
+def sumber_foto_jenis() -> list:
+    """Foto jenis event dari konten.py sebagai kandidat galeri: [(src_repo, kat, label_id, label_en, judul_id, judul_en)]."""
+    hasil = []
+    for e in KID.EVENT_TIPE:
+        k = kunci_jenis(e)
+        lab = KATEGORI.get(k) or {"id": e["judul"], "en": e["judul"]}
+        for n in e.get("foto", []):
+            f = cari_file(n)
+            if f:
+                hasil.append((f.relative_to(BASE).as_posix(), k, lab["id"], lab["en"], e["judul"], n))
+    return hasil
+
+
 def item_galeri() -> list:
-    """Foto portofolio: foto jenis event (konten.py) + foto dokumentasi update event, digilir per jenis."""
+    """Foto galeri portofolio. Urutan: foto tambahan dari Panel Admin, lalu foto jenis event (konten.py) dan
+    dokumentasi event/proyek yang digilir per jenis. Foto yang disembunyikan lewat Panel Admin dilewati."""
+    pf = GALERI.get("portofolio") if isinstance(GALERI.get("portofolio"), dict) else {}
+    sembunyi = {str(x) for x in pf.get("sembunyi", []) if isinstance(x, str)}
+    maks = int(getattr(KID, "GALERI_MAKS", 60))
+    depan = []
+    for d in pf.get("tambah", []) if isinstance(pf.get("tambah"), list) else []:
+        if not isinstance(d, dict) or not d.get("file"):
+            continue
+        besar, kecil = img_url(str(d["file"])), img_url(str(d["file"]), 640)
+        if not (besar and kecil):
+            PERINGATAN.append(f"Galeri portofolio: file \"{d['file']}\" tidak ditemukan; dilewati.")
+            continue
+        k = re.sub(r"[^a-z]", "", str(d.get("kat", "")).lower()) or "lainnya"
+        k = ALIAS_KATEGORI.get(k, k)
+        label = (KATEGORI.get(k) or {"id": k.title(), "en": k.title()})[LANG]
+        depan.append((k, label, aset(kecil), aset(besar), keterangan(d) or label))
     grup: dict = {}
     for e in K.EVENT_TIPE:
         k = kunci_jenis(e)
         label = (KATEGORI.get(k) or {"id": e["judul"], "en": e["judul"]})[LANG]
         for n in e.get("foto", []):
+            f = cari_file(n)
+            if f and f.relative_to(BASE).as_posix() in sembunyi:
+                continue
             besar, kecil = img_url(n), img_url(n, 640)
             if besar and kecil:
                 grup.setdefault(k, (label, []))[1].append((aset(kecil), aset(besar), e["judul"]))
-    for u in UPDATE:
-        lokasi = f" · {u['mal']}" if u["mal"] else ""
-        for kecil, besar in u["foto"][:4]:
-            grup.setdefault(u["kat"], (u["label"][LANG], []))[1].append(
-                (aset(kecil), aset(besar), u["judul"][LANG] + lokasi))
-    for p in PROYEK:
-        lokasi = f" · {p['mal']}" if p["mal"] else ""
-        for kecil, besar in p["foto"][:4]:
-            grup.setdefault(p["kat"], (p["label"][LANG], []))[1].append(
-                (aset(kecil), aset(besar), p["judul"][LANG] + lokasi))
-    daftar, putaran = [], 0
-    while len(daftar) < 36 and any(len(v[1]) > putaran for v in grup.values()):
+    for sumber in (UPDATE, PROYEK):
+        for u in sumber:
+            lokasi = f" · {u['mal']}" if u["mal"] else ""
+            for (kecil, besar), src in zip(u["foto"], u["src"]):
+                if src in sembunyi:
+                    continue
+                grup.setdefault(u["kat"], (u["label"][LANG], []))[1].append(
+                    (aset(kecil), aset(besar), u["judul"][LANG] + lokasi))
+    daftar, putaran = list(depan), 0
+    while len(daftar) < maks and any(len(v[1]) > putaran for v in grup.values()):
         for k, (label, isi) in grup.items():
-            if len(isi) > putaran and len(daftar) < 36:
+            if len(isi) > putaran and len(daftar) < maks:
                 daftar.append((k, label) + isi[putaran])
         putaran += 1
     return daftar
@@ -1517,47 +1664,156 @@ def bagian_perjalanan() -> str:
 """
 
 
-def halaman_portofolio() -> str:
+def tombol_buka(untuk: str, teks_buka: str, teks_tutup: str) -> str:
+    return (f'<button class="buka" type="button" data-untuk="{untuk}" data-buka="{escape(teks_buka)}" '
+            f'data-tutup="{escape(teks_tutup)}" aria-expanded="false" aria-controls="{untuk}">{escape(teks_buka)}</button>')
+
+
+def tab_ui(kode: str, tabs: list) -> str:
+    """Tab yang tetap terbaca tanpa JavaScript (semua panel tampil); dengan JS hanya satu panel yang terbuka."""
+    nav, panel = [], []
+    for i, (k, label, isi) in enumerate(tabs):
+        on = i == 0
+        nav.append(
+            f'<button class="tab-btn{" on" if on else ""}" type="button" role="tab" id="tb-{kode}-{k}" '
+            f'aria-controls="tp-{kode}-{k}" aria-selected="{"true" if on else "false"}" tabindex="{0 if on else -1}">'
+            f'{escape(label)}</button>')
+        panel.append(
+            f'<div class="tab-panel{" on" if on else ""}" role="tabpanel" id="tp-{kode}-{k}" '
+            f'aria-labelledby="tb-{kode}-{k}">{isi}</div>')
+    return f'<div class="tabs-ui"><div class="tab-nav" role="tablist">{"".join(nav)}</div>{"".join(panel)}</div>'
+
+
+def bagian_tentang() -> str:
+    visi = "".join(f'<div class="vm-kartu"><h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for j, t in K.VISI)
+    misi = "".join(f"<li>{escape(m)}</li>" for m in K.MISI)
+    profil = (f'<div class="t-profil"><div class="split-teks"><h3>{escape(K.PROFIL["judul"])}</h3>{paragraf(K.PROFIL["paragraf"])}</div>'
+              f'{foto(K.PROFIL["foto"], "foto-about", K.PROFIL["judul"])}</div>')
+    pendiri = (f'<div class="t-pendiri">{foto(K.PENDIRI["foto"], "potret", K.PENDIRI["nama"])}'
+               f'<div><h3>{escape(K.PENDIRI["nama"])}</h3><p class="jab">{escape(K.PENDIRI["jabatan"])}</p>'
+               f'{paragraf(K.PENDIRI["cerita"])}</div></div>')
+    vm = (f'<div class="t-vm"><h3 class="vm-sub">{escape(T["visi"])}</h3><div class="vm-grid">{visi}</div>'
+          f'<h3 class="vm-sub">{escape(T["misi"])}</h3><ul class="misi">{misi}</ul></div>')
+    latar = f'<div class="t-latar"><h3>{escape(K.LATAR["judul"])}</h3><div class="latar-teks">{paragraf(K.LATAR["paragraf"])}</div></div>'
+    tabs = tab_ui("tentang", [("profil", T["tab_profil"], profil), ("pendiri", T["tab_pendiri"], pendiri),
+                              ("visimisi", T["visi_misi"], vm), ("latar", T["tab_latar"], latar)])
+    return f'<section class="sec tentang" id="tentang"><div class="inner"><h2>{escape(T["tentang_judul"])}</h2>{tabs}</div></section>'
+
+
+def bagian_portofolio() -> str:
+    """Portofolio di beranda, versi ringkas: pita judul gelap, 3 proyek terbaru, galeri 8 foto, dan rekam jejak
+    yang dibuka di tempat. Semua perluasan terjadi di halaman yang sama (tanpa pindah halaman)."""
     _, total = daftar_mal()
     n_lay = len(porto_data("layanan"))
     n_ind = len(porto_data("industri"))
     chips = [T["chip_eo"], T["chip_layanan"].format(n=n_lay), T["chip_lokasi"].format(n=total),
              T["chip_industri"].format(n=n_ind)]
-    stat = statistik()
-    if UPDATE:
-        stat = stat + [(len(UPDATE), "", T["st_event_doc"])]
     if PROYEK:
-        stat = stat + [(len(PROYEK), "", T["st_proyek"])]
-    stat = stat + [(n_ind, "", T["st_industri"])]
-    item = "".join(
-        f'<div class="stat"><b data-n="{n}" data-akhiran="{escape(a)}">{n}{escape(a)}</b><span>{escape(l)}</span></div>'
-        for n, a, l in stat
-    )
-    return (
-        kepala(T["porto_judul"], T["porto_sub"], chips)
-        + f'<section class="stats" id="stat"><div class="inner">{item}</div></section>'
-        + bagian_proyek()
-        + bagian_layanan(gelap=False, tautan=False)
-        + bagian_galeri_porto()
-        + bagian_update_beranda()
-        + bagian_industri()
-        + bagian_jejak()
-        + bagian_perjalanan()
-        + bagian_video()
-        + bagian_cta()
-    )
+        chips.append(T["chip_proyek"].format(n=len(PROYEK)))
+    baris = "".join(f'<span class="phead-chip">{escape(c)}</span>' for c in chips)
+    kepala_html = (
+        f'<section class="sec porto-kepala" id="portofolio"><div class="inner">'
+        f'<span class="eyebrow">{escape(T["menu_porto"])}</span>'
+        f'<h2>{escape(T["porto_judul"])}</h2><p class="sub">{escape(T["porto_sub"])}</p>'
+        f'<div class="phead-chips">{baris}</div></div></section>')
+    blok = []
+    if PROYEK:
+        awal = int(getattr(KID, "PROYEK_AWAL", 3))
+        maks = int(getattr(KID, "PROYEK_MAKS", 12))
+        kartu = "".join(kartu_proyek(p, True, i >= awal) for i, p in enumerate(PROYEK[:maks]))
+        lebih = ""
+        if len(PROYEK[:maks]) > awal:
+            lebih = tombol_buka("proyek-grid", T["proyek_semua_n"].format(n=len(PROYEK[:maks])), T["foto_kurang"])
+        blok.append(
+            f'<div class="porto-blok"><h3 class="porto-h">{escape(T["proyek_judul"])}</h3>'
+            f'<div class="proyek-grid ringkas" id="proyek-grid">{kartu}</div>{lebih}</div>')
+    item = item_galeri()
+    if item:
+        urut = []
+        for k, label, *_ in item:
+            if all(k != x for x, _ in urut):
+                urut.append((k, label))
+        chips_g = ""
+        if len(urut) > 1:
+            chips_g = f'<div class="chips pf-chips" role="group" aria-label="{escape(T["gal_filter"])}">' + (
+                f'<button class="chip pf-chip on" type="button" data-kat="semua" aria-pressed="true">{escape(T["semua"])}</button>'
+                + "".join(f'<button class="chip pf-chip" type="button" data-kat="{k}" aria-pressed="false">{escape(lb)}</button>'
+                          for k, lb in urut)) + "</div>"
+        awal_g = int(getattr(KID, "GALERI_AWAL", 9))
+        kotak = "".join(
+            f'<figure class="pf-item{" lebih" if i >= awal_g else ""}" data-kat="{k}"><img class="pf-img" src="{t}" data-besar="{b_}" '
+            f'data-grup="pf" alt="{escape(ket)}" loading="lazy"><figcaption><span class="pf-tag">{escape(label)}</span>'
+            f'<span>{escape(ket)}</span></figcaption></figure>'
+            for i, (k, label, t, b_, ket) in enumerate(item))
+        lebih_g = tombol_buka("pf-grid", T["foto_semua_n"].format(n=len(item)), T["foto_kurang"]) if len(item) > awal_g else ""
+        blok.append(
+            f'<div class="porto-blok"><h3 class="porto-h">{escape(T["gal_judul"])}</h3>{chips_g}'
+            f'<div class="pf-grid" id="pf-grid">{kotak}</div>{lebih_g}</div>')
+    blok.append(
+        f'<details class="rekam"><summary>{escape(T["rekam_judul"])}</summary>'
+        + bagian_industri() + bagian_jejak() + bagian_perjalanan() + '</details>')
+    return kepala_html + f'<div class="porto-isi"><div class="inner">{"".join(blok)}</div></div>'
+
+
+def bagian_layanan_ringkas() -> str:
+    _, total = daftar_mal()
+    kartu = "".join(
+        f'<div class="lay-kartu"><span class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON.get(ik, IKON["cek"])}</svg></span>'
+        f'<h3>{escape(j)}</h3><p>{escape(t.replace("{n}", str(total)))}</p></div>'
+        for ik, j, t in porto_data("layanan"))
+    jenis = []
+    for e in K.EVENT_TIPE:
+        url = img_url(e["foto"][0], 640) if e.get("foto") else ""
+        gambar = f'<img src="{aset(url)}" alt="" loading="lazy">' if url else ""
+        jenis.append(f'<a class="jenis-mini" href="event.html#{slug(e["judul"])}">{gambar}'
+                     f'<span><b>{escape(e["judul"])}</b><i>{escape(e["lead"])}</i></span></a>')
+    return f"""
+<section class="sec layanan lay-ringkas"><div class="inner">
+<h2>{escape(T['lay_judul'])}</h2>
+<p class="sub">{escape(T['lay_sub'])}</p>
+<div class="lay">{kartu}</div>
+<h3 class="lay-jenis">{escape(T['lay_jenis'])}</h3>
+<div class="jenis-mini-grid">{''.join(jenis)}</div>
+<a class="lihat-semua" href="event.html">{escape(T['lay_event_semua'])} →</a>
+</div></section>
+"""
+
+
+def bagian_kenapa() -> str:
+    data = getattr(K, "ALASAN", None) or BERANDA[LANG]["alasan"]
+    alasan = "".join(
+        f'<div class="alasan-kartu"><span class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON.get(ik, IKON["cek"])}</svg></span>'
+        f'<h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for ik, j, t in data)
+    alur_d = getattr(K, "ALUR", None) or BERANDA[LANG]["alur"]
+    langkah = "".join(f'<div class="langkah"><b>{i}</b><h3>{escape(j)}</h3><p>{escape(t)}</p></div>'
+                      for i, (j, t) in enumerate(alur_d, 1))
+    return f"""
+<section class="sec kenapa"><div class="inner">
+<h2>{escape(T['alasan_judul'])}</h2>
+<div class="alasan">{alasan}</div>
+<h3 class="alur-judul">{escape(T['alur_judul'])}</h3>
+<div class="alur">{langkah}</div>
+</div></section>
+"""
 
 
 def halaman_home() -> str:
     logo = aset(img_url(K.PERUSAHAAN["logo"], 512))
+    kegiatan = galeri_kegiatan()
     galeri = "".join(
         f'<figure class="gal">{foto(f, "gal-img", ket, lazy=False)}<figcaption>{escape(ket)}</figcaption></figure>'
-        for f, ket in K.GALERI_HOME
+        for f, ket in kegiatan
     )
-    visi = "".join(f'<div class="vm-kartu"><h3>{escape(j)}</h3><p>{escape(t)}</p></div>' for j, t in K.VISI)
-    misi = "".join(f"<li>{escape(m)}</li>" for m in K.MISI)
     bg, kf = hero_foto()
     kelas_hero = "hero hero-foto" if bg else "hero"
+    galeri_html = ""
+    if kegiatan:
+        galeri_html = f"""<section class="sec galeri-kegiatan" style="padding-top:0"><div class="inner">
+<h2>{escape(K.GALERI_JUDUL)}</h2>
+<div class="marquee" style="--dur:{max(len(kegiatan), 1) * K.GALERI_DETIK}s">
+<div class="track"><div class="set">{galeri}</div><div class="set" aria-hidden="true">{galeri}</div></div>
+</div>
+</div></section>"""
     return f"""{kf}
 <div class="{kelas_hero}" data-partikel>{bg}<div>
 <span class="eyebrow">{escape(T['eyebrow'])}</span>
@@ -1571,51 +1827,20 @@ def halaman_home() -> str:
 
 {bagian_statistik()}
 
-<section class="sec profil"><div class="inner split">
-<div class="split-teks"><h2>{escape(K.PROFIL['judul'])}</h2>{paragraf(K.PROFIL['paragraf'])}</div>
-{foto(K.PROFIL['foto'], 'foto-about', K.PROFIL['judul'])}
-</div></section>
+{bagian_tentang()}
 
-{bagian_layanan(gelap=True, tautan=True)}
+{bagian_portofolio()}
 
-{bagian_spesialisasi()}
+{bagian_layanan_ringkas()}
 
 {bagian_update_beranda()}
 
-{bagian_alasan()}
-
-{bagian_alur()}
-
-<section class="sec" style="padding-top:0"><div class="inner">
-<div class="pendiri kartu-pendiri">
-{foto(K.PENDIRI['foto'], 'potret', K.PENDIRI['nama'])}
-<div><h2>{escape(K.PENDIRI['nama'])}</h2>
-<p class="jab">{escape(K.PENDIRI['jabatan'])}</p>{paragraf(K.PENDIRI['cerita'])}</div>
-</div>
-</div></section>
-
-<section class="sec visimisi"><div class="inner">
-<h2>{escape(T['visi_misi'])}</h2>
-<h3 class="vm-sub">{escape(T['visi'])}</h3>
-<div class="vm-grid">{visi}</div>
-<h3 class="vm-sub">{escape(T['misi'])}</h3>
-<ul class="misi">{misi}</ul>
-</div></section>
-
-<section class="sec latar"><div class="inner">
-<h2>{escape(K.LATAR['judul'])}</h2>
-<div class="latar-teks">{paragraf(K.LATAR['paragraf'])}</div>
-</div></section>
+{bagian_kenapa()}
 
 {bagian_mitra()}
 
-<section class="sec" style="padding-top:0"><div class="inner">
-<h2 style="margin-bottom:36px">{escape(K.GALERI_JUDUL)}</h2>
-<div class="marquee" style="--dur:{len(K.GALERI_HOME) * K.GALERI_DETIK}s">
-<div class="track"><div class="set">{galeri}</div><div class="set" aria-hidden="true">{galeri}</div></div>
-</div>
-</div></section>
-{bagian_video()}
+{galeri_html}
+{bagian_video(True)}
 {bagian_cta()}"""
 
 
@@ -1663,7 +1888,7 @@ def area_mal(nama: str, q: str, label: str):
 
 def daftar_mal() -> tuple:
     nama_wilayah = getattr(K, "NAMA_WILAYAH", {})  # terjemahan nama wilayah (opsional)
-    total, hasil, area_pakai = 0, [], {}
+    total, hasil, area_pakai, n_ig_total = 0, [], {}, 0
     for idx, (wilayah, grup) in enumerate(K.MAL):
         w_tampil = nama_wilayah.get(wilayah, wilayah)
         kelompok = []
@@ -1680,9 +1905,21 @@ def daftar_mal() -> tuple:
                     if ak not in area_grup:
                         area_grup.append(ak)
                 cari = f"{nama} {l_tampil} {w_tampil} {label} {wilayah}".lower()
+                ig = INSTAGRAM.get(nama.strip().lower(), [])
+                if ig:
+                    n_ig_total += 1
+                tombol_ig = "".join(
+                    f'<a class="mal-ig" href="{escape(u)}" target="_blank" rel="noopener" '
+                    f'aria-label="{escape(T["ig_label"].format(nama=nama) + (f" ({i})" if len(ig) > 1 else ""))}" '
+                    f'title="{escape(T["ig_judul"])}"><svg viewBox="0 0 24 24" aria-hidden="true">{IKON_IG}</svg>'
+                    f'{f"<b>{i}</b>" if len(ig) > 1 else ""}</a>'
+                    for i, u in enumerate(ig[:4], 1)
+                )
                 kartu.append(
-                    f'<a class="mal" href="{escape(url)}" target="_blank" rel="noopener" data-cari="{escape(cari)}" '
-                    f'data-area="{ak or ""}" data-wil="w{idx}"><span class="no">{total:02d}</span>{escape(nama)}</a>'
+                    f'<div class="mal" data-cari="{escape(cari)}" data-area="{ak or ""}" data-wil="w{idx}" '
+                    f'data-nama="{escape(nama)}" data-ig="{1 if ig else 0}">'
+                    f'<a class="mal-nama" href="{escape(url)}" target="_blank" rel="noopener">'
+                    f'<span class="no">{total:02d}</span><span class="mal-teks">{escape(nama)}</span></a>{tombol_ig}</div>'
                 )
             ke_peta = ""
             if area_grup:
@@ -1693,6 +1930,7 @@ def daftar_mal() -> tuple:
                 f'<div class="malgrid">{"".join(kartu)}</div></div>'
             )
         hasil.append(f'<div class="wilayah"><h2 class="wil">{escape(w_tampil)}</h2>{"".join(kelompok)}</div>')
+    IG_JUMLAH[0] = n_ig_total
     AREA_DATA[:] = [
         {"k": k, "n": PT.AREA[k][0 if LANG == "id" else 1], "lat": PT.AREA[k][2], "lng": PT.AREA[k][3]}
         for k in PT.AREA if k in area_pakai
@@ -1744,13 +1982,18 @@ def halaman_lokasi() -> tuple:
     chips = [T["chip_lokasi"].format(n=total)]
     if n_area:
         chips.append(T["chip_area"].format(n=n_area))
+    if IG_JUMLAH[0]:
+        chips.append(T["chip_ig"].format(n=IG_JUMLAH[0]))
+    chip_ig = (f'<button class="chip chip-ig" type="button" aria-pressed="false">'
+               f'<svg viewBox="0 0 24 24" aria-hidden="true">{IKON_IG}</svg>{escape(T["ig_saja"])} ({IG_JUMLAH[0]})</button>'
+               if IG_JUMLAH[0] else "")
     isi = kepala(T["lokasi_judul"], T["lokasi_sub"].format(total=total), chips) + f"""
 <section class="sec" style="padding-top:36px"><div class="inner">
 {peta}
 <div class="cari" data-total="{total}">
 <label for="cari">{escape(T['cari_label'])}</label>
 <input id="cari" type="search" placeholder="{escape(T['cari_hint'])}" autocomplete="off">
-<div class="chips" role="group">{chips_wil}</div>
+<div class="chips" role="group">{chips_wil}{chip_ig}</div>
 <p class="jumlah" id="jumlah" aria-live="polite">{escape(T['jumlah'].format(total=total))}</p>
 </div>
 {daftar}
@@ -1886,7 +2129,15 @@ def halaman_admin() -> str:
         for label, _, daftar in grup:
             for m in daftar:
                 mal.append({"n": m[0] if isinstance(m, tuple) else m, "k": label})
-    cfg = json.dumps({"repo": ADMIN_REPO, "kategori": kategori, "mal": mal}, ensure_ascii=False).replace("</", "<\\/")
+    kegiatan_awal = []
+    for (nama_f, ket_id), (_, ket_en) in zip(KID.GALERI_HOME, (KEN or KID).GALERI_HOME):
+        f = cari_file(nama_f)
+        if f:
+            kegiatan_awal.append({"file": f.relative_to(BASE).as_posix(), "ket": ket_id, "ket_en": ket_en})
+    porto_konten = [{"src": src, "kat": k, "judul": j} for src, k, _, _, j, _ in sumber_foto_jenis()]
+    cfg = json.dumps({"repo": ADMIN_REPO, "kategori": kategori, "mal": mal, "kegiatan_awal": kegiatan_awal,
+                      "porto_konten": porto_konten, "galeri_maks": int(getattr(KID, "GALERI_MAKS", 60))},
+                     ensure_ascii=False).replace("</", "<\\/")
     csp = ("default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; "
            "font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com; "
            "connect-src https://api.github.com; base-uri 'none'; form-action 'none'")
@@ -1938,12 +2189,21 @@ def tulis_bahasa(bahasa: str, folder: Path) -> int:
     halaman = {
         "home": (K.HERO["deskripsi"], halaman_home(), json_ld()),
         "event": (K.EVENT_DESKRIPSI, halaman_event(), ""),
-        "portofolio": (T["porto_meta"].format(total=total), halaman_portofolio(), ""),
         "lokasi": (T["lokasi_meta"].format(total=total), lokasi, ""),
         "kontak": (K.KONTAK["deskripsi"], halaman_kontak(), ""),
     }
     for kode, (deskripsi, isi, ld) in halaman.items():
         (folder / FILE[kode]).write_text(kerangka(kode, deskripsi, isi, ld), encoding="utf-8")
+    # Alamat lama /portofolio.html (bookmark, Google) diarahkan ke bagian Portofolio di beranda.
+    kanon = f'<link rel="canonical" href="{alamat_halaman("home", bahasa)}">' if SITE else ""
+    (folder / "portofolio.html").write_text(
+        f'<!DOCTYPE html><html lang="{bahasa}"><head><meta charset="utf-8">'
+        f'<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f'<meta name="robots" content="noindex"><title>{escape(NAMA)}</title>{kanon}'
+        f'<meta http-equiv="refresh" content="0; url=index.html#portofolio">'
+        f'<script>location.replace("index.html#portofolio")</script></head>'
+        f'<body><p><a href="index.html#portofolio">{escape(T["menu_porto"])}</a></p></body></html>',
+        encoding="utf-8")
     return len(halaman)
 
 
@@ -1957,6 +2217,7 @@ def build() -> None:
         fav.thumbnail((192, 192))
         fav.save(IMG / "favicon.png", "PNG", optimize=True)
 
+    muat_data()
     UPDATE[:] = muat_update()
     PROYEK[:] = muat_proyek()
     halaman = tulis_bahasa("id", OUT)

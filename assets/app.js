@@ -224,9 +224,46 @@
           x.setAttribute("aria-pressed", x === c ? "true" : "false");
         });
         kotakPf.forEach(function (k) { k.hidden = !(kat === "semua" || k.getAttribute("data-kat") === kat); });
+        var gridPf = doc.getElementById("pf-grid");
+        if (gridPf) gridPf.classList.toggle("disaring", kat !== "semua");
       });
     });
   }
+
+  /* ---- tab (Tentang WRS): klik atau panah kiri/kanan ---- */
+  doc.querySelectorAll(".tabs-ui").forEach(function (u) {
+    var tombolT = [].slice.call(u.querySelectorAll(".tab-btn"));
+    var panelT = [].slice.call(u.querySelectorAll(".tab-panel"));
+    function pilih(i, fokus) {
+      tombolT.forEach(function (t, n) {
+        t.classList.toggle("on", n === i);
+        t.setAttribute("aria-selected", n === i ? "true" : "false");
+        t.tabIndex = n === i ? 0 : -1;
+      });
+      panelT.forEach(function (p, n) { p.classList.toggle("on", n === i); });
+      if (fokus) tombolT[i].focus();
+    }
+    tombolT.forEach(function (t, i) {
+      t.addEventListener("click", function () { pilih(i, false); });
+      t.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") { e.preventDefault(); pilih((i + 1) % tombolT.length, true); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); pilih((i - 1 + tombolT.length) % tombolT.length, true); }
+        else if (e.key === "Home") { e.preventDefault(); pilih(0, true); }
+        else if (e.key === "End") { e.preventDefault(); pilih(tombolT.length - 1, true); }
+      });
+    });
+  });
+
+  /* ---- tombol "lihat semua": membuka daftar di tempat ---- */
+  doc.querySelectorAll(".buka").forEach(function (t) {
+    t.addEventListener("click", function () {
+      var tujuan = doc.getElementById(t.getAttribute("data-untuk"));
+      if (!tujuan) return;
+      var buka = tujuan.classList.toggle("terbuka");
+      t.setAttribute("aria-expanded", buka ? "true" : "false");
+      t.textContent = t.getAttribute(buka ? "data-tutup" : "data-buka");
+    });
+  });
 
   /* ---- video YouTube: pemutar baru dimuat saat gambar diklik ---- */
   doc.addEventListener("click", function (e) {
@@ -503,21 +540,22 @@
     var total = parseInt(cari.parentNode.getAttribute("data-total"), 10) || 0;
     var jumlah = doc.getElementById("jumlah");
     var kosong = doc.getElementById("kosong");
-    var wil = "semua";
+    var wil = "semua", igSaja = false;
     var terapkan = function (animasi) {
       var q = cari.value.trim().toLowerCase(), tampil = 0, perArea = {};
       doc.querySelectorAll(".mal").forEach(function (a) {
-        var ok = (!q || a.getAttribute("data-cari").indexOf(q) !== -1) && (wil === "semua" || a.getAttribute("data-wil") === wil);
+        var ok = (!q || a.getAttribute("data-cari").indexOf(q) !== -1) && (wil === "semua" || a.getAttribute("data-wil") === wil) &&
+          (!igSaja || a.getAttribute("data-ig") === "1");
         a.hidden = !ok;
         if (!ok) return;
         tampil++;
         var k = a.getAttribute("data-area");
-        if (k) (perArea[k] = perArea[k] || []).push({ nama: a.lastChild.textContent, url: a.href });
+        if (k) (perArea[k] = perArea[k] || []).push({ nama: a.getAttribute("data-nama"), url: a.querySelector(".mal-nama").href });
       });
       doc.querySelectorAll(".kel").forEach(function (k) { k.hidden = !k.querySelector(".mal:not([hidden])"); });
       doc.querySelectorAll(".wilayah").forEach(function (w) { w.hidden = !w.querySelector(".kel:not([hidden])"); });
       kosong.hidden = tampil > 0;
-      jumlah.textContent = (q || wil !== "semua") ? isi(T.jumlah_saring, { n: tampil, total: total }) : isi(T.jumlah, { total: total });
+      jumlah.textContent = (q || wil !== "semua" || igSaja) ? isi(T.jumlah_saring, { n: tampil, total: total }) : isi(T.jumlah, { total: total });
       if (petaApi) petaApi.perbarui(perArea, animasi);
     };
     cari.addEventListener("input", function () { terapkan(true); });
@@ -531,6 +569,15 @@
         terapkan(true);
       });
     });
+    var chipIg = doc.querySelector(".chip-ig");
+    if (chipIg) {
+      chipIg.addEventListener("click", function () {
+        igSaja = !igSaja;
+        chipIg.classList.toggle("on", igSaja);
+        chipIg.setAttribute("aria-pressed", igSaja ? "true" : "false");
+        terapkan(true);
+      });
+    }
     terapkan(false);
   }
 
