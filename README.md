@@ -196,7 +196,7 @@ Alamat: `alamat-website/admin.html` (tidak ada di menu, tidak diindeks Google). 
   Tautan valid (p, reel, tv) menjadi tombol "Lihat di Instagram" di kartu mal pada halaman Lokasi Mal, plus saringan
   "Ada Instagram". Tautan tidak valid dilewati dengan peringatan saat build.
 - Folder `portofolio/` juga bisa diisi manual lewat GitHub (lihat `portofolio/_TEMPLATE/info.txt`).
-  Hasilnya tampil di bagian "Proyek terbaru" dalam Portofolio di beranda.
+  Hasilnya tampil di bagian "Proyek terbaru" pada halaman Portofolio (portofolio.html).
 - Pengaturan opsional di `konten.py`: `ADMIN_AKTIF = False` (matikan panel), `ADMIN_REPO = "pemilik/nama"`
   (kalau website tidak di alamat github.io), `PROYEK_MAKS = 12` (jumlah proyek tampil).
 - Keamanan: panel memakai Content-Security-Policy ketat (script hanya dari situs sendiri, koneksi hanya ke

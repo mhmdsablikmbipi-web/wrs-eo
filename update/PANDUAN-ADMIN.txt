@@ -73,7 +73,7 @@ E. MENAMBAH PORTOFOLIO TERBARU
 2. Isi Judul, Jenis, Klien/brand (opsional), Mal/lokasi, Kota, deskripsi hasil proyek.
 3. Tanggal boleh dikosongkan. Kalau diisi, dipakai untuk mengurutkan (terbaru di atas).
 4. Tambahkan foto, lalu Simpan dan tayangkan.
-Proyek tampil di bagian "Proyek terbaru" dalam Portofolio di beranda, dan fotonya ikut masuk galeri.
+Proyek tampil di bagian "Proyek terbaru" pada halaman Portofolio (portofolio.html), dan fotonya ikut masuk galeri.
 Foto pertama menjadi foto sampul. Foto lain bisa diklik untuk diperbesar.
 
 

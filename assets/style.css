@@ -1080,3 +1080,10 @@ div.upd-mini-foto{display:flex;align-items:center;justify-content:center;color:v
   .p-home .sec{padding-top:40px;padding-bottom:40px}
 }
 @media (prefers-reduced-motion:reduce){.tab-panel.on{animation:none}}
+
+/* Cuplikan portofolio di beranda (halaman lengkap ada di portofolio.html) */
+.porto-cuplik{background:var(--ivory)}
+.porto-cuplik .pf-grid{margin-top:18px}
+.porto-tombol{display:inline-flex;margin-top:22px}
+.p-portofolio .pf-grid{margin-top:20px}
+.p-portofolio .proyek-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}

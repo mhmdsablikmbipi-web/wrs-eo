@@ -1228,7 +1228,7 @@
     }
     var stat = h("div", { class: "stat-grid" },
       kartuStat("event", jalan.length, "Event berlangsung", akan.length ? akan.length + " akan datang" : "Tidak ada yang akan datang", "event"),
-      kartuStat("proyek", proyek.length, "Proyek portofolio", "Tampil di beranda", "proyek"),
+      kartuStat("proyek", proyek.length, "Proyek portofolio", "Tampil di halaman Portofolio", "proyek"),
       kartuStat("kegiatan", S.draf.kegiatan.filter(function (x) { return !x.hapus; }).length, "Foto galeri kegiatan", "Berjalan di beranda", "kegiatan"),
       kartuStat("ig", igN, "Mal dengan Instagram", "dari " + CFG.mal.length + " mal", "ig"));
 
@@ -1287,7 +1287,7 @@
     var jenis = S.tab, cfg = JENIS[jenis];
     var kepala = kepalaBagian(jenis === "event" ? "Event" : "Portofolio terbaru",
       jenis === "event" ? "Perbarui event yang sedang berjalan, tambah foto dokumentasi, atau buat event baru."
-        : "Tambahkan proyek terbaru beserta fotonya. Tampil di bagian Portofolio pada beranda website.",
+        : "Tambahkan proyek terbaru beserta fotonya. Tampil di halaman Portofolio website.",
       tb(cfg.baru, "tb-emas", "tambah", function () { bukaEditor(jenis, null); }));
     var cari = h("div", { class: "cari" }, ikon("cari"),
       h("input", { type: "text", placeholder: "Cari judul, mal, atau kota…", "aria-label": "Cari", oninput: function (ev) { q = ev.target.value.trim().toLowerCase(); render(); } }));
@@ -1414,7 +1414,7 @@
       hitO.textContent = "Galeri menampilkan maksimal " + CFG.galeri_maks + " foto. Foto otomatis berasal dari Artikel event, Update event, dan Portofolio terbaru. Untuk menghapus permanen, ubah event/proyek terkait.";
     }
     var node = h("div", { class: "gal" },
-      kepalaBagian("Galeri portofolio", "Atur foto di bagian Portofolio pada beranda: tambah foto sendiri, ubah keterangan, urutkan, hapus, atau sembunyikan foto otomatis."),
+      kepalaBagian("Galeri portofolio", "Atur foto di halaman Portofolio (cuplikannya juga tampil di beranda): tambah foto sendiri, ubah keterangan, urutkan, hapus, atau sembunyikan foto otomatis."),
       h("h2", { class: "sub-h", text: "Foto tambahan dari admin" }), zona, hitT, gridT,
       h("h2", { class: "sub-h", text: "Foto otomatis" }), chips, hitO, gridO);
     segarT(); segarO();

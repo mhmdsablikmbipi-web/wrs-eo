@@ -59,9 +59,8 @@ FOLDER_PORTO = BASE / "portofolio"   # satu folder per proyek portofolio terbaru
 FOLDER_DATA = BASE / "data"          # data yang diatur dari Panel Admin: galeri.json, instagram.json
 FOLDER_GALERI = BASE / "galeri"      # foto galeri yang diunggah lewat Panel Admin (kegiatan/ dan portofolio/)
 EKSTENSI_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif"}
-FILE = {"home": "index.html", "event": "event.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
-# Portofolio tidak punya halaman sendiri: menjadi bagian di beranda (id="portofolio").
-BAGIAN_BERANDA = {"portofolio": "index.html#portofolio"}
+FILE = {"home": "index.html", "event": "event.html", "portofolio": "portofolio.html", "lokasi": "lokasi.html", "kontak": "kontak.html"}
+BAGIAN_BERANDA: dict = {}   # (tidak dipakai lagi) Portofolio punya halaman sendiri: portofolio.html
 SITE = (KID.SITE_URL.rstrip("/") + "/") if KID.SITE_URL else ""
 # Panel admin (docs/admin.html). Bisa diatur lewat konten.py: ADMIN_AKTIF = False untuk mematikan,
 # ADMIN_REPO = "pemilik/nama-repo" kalau website tidak berada di alamat github.io.
@@ -349,6 +348,8 @@ UI["id"].update({
     "lay_jenis": "Jenis event unggulan",
     "lay_event_semua": "Lihat semua artikel event",
     "foto_semua_n": "Lihat semua foto ({n})",
+    "porto_home_sub": "Pameran, bazaar, dan promosi terbaru yang kami kerjakan bersama mal mitra.",
+    "lihat_porto": "Lihat portofolio lengkap",
     "foto_kurang": "Tampilkan lebih sedikit",
     "proyek_semua_n": "Lihat semua proyek ({n})",
     "rekam_judul": "Rekam jejak lengkap: industri, wilayah, dan perjalanan WRS",
@@ -370,6 +371,8 @@ UI["en"].update({
     "lay_jenis": "Signature event types",
     "lay_event_semua": "See all event articles",
     "foto_semua_n": "See all photos ({n})",
+    "porto_home_sub": "Our latest exhibitions, bazaars and promotions with partner malls.",
+    "lihat_porto": "See the full portfolio",
     "foto_kurang": "Show fewer",
     "proyek_semua_n": "See all projects ({n})",
     "rekam_judul": "Full track record: industries, regions and the WRS journey",
@@ -1701,58 +1704,34 @@ def bagian_tentang() -> str:
 
 
 def bagian_portofolio() -> str:
-    """Portofolio di beranda, versi ringkas: pita judul gelap, 3 proyek terbaru, galeri 8 foto, dan rekam jejak
-    yang dibuka di tempat. Semua perluasan terjadi di halaman yang sama (tanpa pindah halaman)."""
+    """Cuplikan Portofolio di beranda: beberapa foto terbaru + tombol ke halaman Portofolio (portofolio.html)."""
+    item = item_galeri()[:5]
+    if not item:
+        return ""
+    kotak = "".join(
+        f'<figure class="pf-item" data-kat="{k}"><img class="pf-img" src="{t}" data-besar="{b_}" data-grup="pf-home" '
+        f'alt="{escape(ket)}" loading="lazy"><figcaption><span class="pf-tag">{escape(label)}</span>'
+        f'<span>{escape(ket)}</span></figcaption></figure>'
+        for k, label, t, b_, ket in item)
+    return f"""
+<section class="sec porto-cuplik" id="portofolio"><div class="inner">
+<h2>{escape(T['menu_porto'])}</h2>
+<p class="sub">{escape(T['porto_home_sub'])}</p>
+<div class="pf-grid" id="pf-grid-home">{kotak}</div>
+<a class="btn gold porto-tombol" href="{FILE['portofolio']}">{escape(T['lihat_porto'])} →</a>
+</div></section>
+"""
+
+
+def halaman_portofolio() -> str:
+    """Halaman Portofolio sendiri: proyek terbaru, galeri foto, industri, jangkauan wilayah, dan perjalanan WRS."""
     _, total = daftar_mal()
-    n_lay = len(porto_data("layanan"))
-    n_ind = len(porto_data("industri"))
-    chips = [T["chip_eo"], T["chip_layanan"].format(n=n_lay), T["chip_lokasi"].format(n=total),
-             T["chip_industri"].format(n=n_ind)]
+    chips = [T["chip_eo"], T["chip_layanan"].format(n=len(porto_data("layanan"))), T["chip_lokasi"].format(n=total),
+             T["chip_industri"].format(n=len(porto_data("industri")))]
     if PROYEK:
         chips.append(T["chip_proyek"].format(n=len(PROYEK)))
-    baris = "".join(f'<span class="phead-chip">{escape(c)}</span>' for c in chips)
-    kepala_html = (
-        f'<section class="sec porto-kepala" id="portofolio"><div class="inner">'
-        f'<span class="eyebrow">{escape(T["menu_porto"])}</span>'
-        f'<h2>{escape(T["porto_judul"])}</h2><p class="sub">{escape(T["porto_sub"])}</p>'
-        f'<div class="phead-chips">{baris}</div></div></section>')
-    blok = []
-    if PROYEK:
-        awal = int(getattr(KID, "PROYEK_AWAL", 3))
-        maks = int(getattr(KID, "PROYEK_MAKS", 12))
-        kartu = "".join(kartu_proyek(p, True, i >= awal) for i, p in enumerate(PROYEK[:maks]))
-        lebih = ""
-        if len(PROYEK[:maks]) > awal:
-            lebih = tombol_buka("proyek-grid", T["proyek_semua_n"].format(n=len(PROYEK[:maks])), T["foto_kurang"])
-        blok.append(
-            f'<div class="porto-blok"><h3 class="porto-h">{escape(T["proyek_judul"])}</h3>'
-            f'<div class="proyek-grid ringkas" id="proyek-grid">{kartu}</div>{lebih}</div>')
-    item = item_galeri()
-    if item:
-        urut = []
-        for k, label, *_ in item:
-            if all(k != x for x, _ in urut):
-                urut.append((k, label))
-        chips_g = ""
-        if len(urut) > 1:
-            chips_g = f'<div class="chips pf-chips" role="group" aria-label="{escape(T["gal_filter"])}">' + (
-                f'<button class="chip pf-chip on" type="button" data-kat="semua" aria-pressed="true">{escape(T["semua"])}</button>'
-                + "".join(f'<button class="chip pf-chip" type="button" data-kat="{k}" aria-pressed="false">{escape(lb)}</button>'
-                          for k, lb in urut)) + "</div>"
-        awal_g = int(getattr(KID, "GALERI_AWAL", 9))
-        kotak = "".join(
-            f'<figure class="pf-item{" lebih" if i >= awal_g else ""}" data-kat="{k}"><img class="pf-img" src="{t}" data-besar="{b_}" '
-            f'data-grup="pf" alt="{escape(ket)}" loading="lazy"><figcaption><span class="pf-tag">{escape(label)}</span>'
-            f'<span>{escape(ket)}</span></figcaption></figure>'
-            for i, (k, label, t, b_, ket) in enumerate(item))
-        lebih_g = tombol_buka("pf-grid", T["foto_semua_n"].format(n=len(item)), T["foto_kurang"]) if len(item) > awal_g else ""
-        blok.append(
-            f'<div class="porto-blok"><h3 class="porto-h">{escape(T["gal_judul"])}</h3>{chips_g}'
-            f'<div class="pf-grid" id="pf-grid">{kotak}</div>{lebih_g}</div>')
-    blok.append(
-        f'<details class="rekam"><summary>{escape(T["rekam_judul"])}</summary>'
-        + bagian_industri() + bagian_jejak() + bagian_perjalanan() + '</details>')
-    return kepala_html + f'<div class="porto-isi"><div class="inner">{"".join(blok)}</div></div>'
+    return (kepala(T["porto_judul"], T["porto_sub"], chips) + bagian_proyek() + bagian_galeri_porto()
+            + bagian_layanan(True, False) + bagian_industri() + bagian_jejak() + bagian_perjalanan() + bagian_cta())
 
 
 def bagian_layanan_ringkas() -> str:
@@ -2189,21 +2168,12 @@ def tulis_bahasa(bahasa: str, folder: Path) -> int:
     halaman = {
         "home": (K.HERO["deskripsi"], halaman_home(), json_ld()),
         "event": (K.EVENT_DESKRIPSI, halaman_event(), ""),
+        "portofolio": (T["porto_sub"], halaman_portofolio(), ""),
         "lokasi": (T["lokasi_meta"].format(total=total), lokasi, ""),
         "kontak": (K.KONTAK["deskripsi"], halaman_kontak(), ""),
     }
     for kode, (deskripsi, isi, ld) in halaman.items():
         (folder / FILE[kode]).write_text(kerangka(kode, deskripsi, isi, ld), encoding="utf-8")
-    # Alamat lama /portofolio.html (bookmark, Google) diarahkan ke bagian Portofolio di beranda.
-    kanon = f'<link rel="canonical" href="{alamat_halaman("home", bahasa)}">' if SITE else ""
-    (folder / "portofolio.html").write_text(
-        f'<!DOCTYPE html><html lang="{bahasa}"><head><meta charset="utf-8">'
-        f'<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f'<meta name="robots" content="noindex"><title>{escape(NAMA)}</title>{kanon}'
-        f'<meta http-equiv="refresh" content="0; url=index.html#portofolio">'
-        f'<script>location.replace("index.html#portofolio")</script></head>'
-        f'<body><p><a href="index.html#portofolio">{escape(T["menu_porto"])}</a></p></body></html>',
-        encoding="utf-8")
     return len(halaman)
 
 
