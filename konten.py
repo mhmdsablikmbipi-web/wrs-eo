@@ -231,7 +231,7 @@ KONTAK = {
 
 # Sosial media: (nama, teks yang tampil, link)
 SOSMED = [
-    ("Youtube", "wrs eo official", "https://www.youtube.com/@wrseo3919"),
+    ("YouTube", "wrs eo official", "https://www.youtube.com/@wrseo3919"),
     ("Instagram", "@eo.wrs.id", "https://www.instagram.com/eo.wrs.id"),
     ("TikTok", "@wrs.eo", "https://www.tiktok.com/@wrs.eo"),
 ]

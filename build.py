@@ -1031,7 +1031,7 @@ def kartu_update(u: dict, hari: date) -> str:
             f'<button class="upd-lebih" type="button" data-n="{n}" aria-expanded="false">'
             f'{escape(T["foto_lihat"].format(n=n))}</button>' if n > batas else ""
         )
-        galeri = f'<div class="upd-foto" data-n="{min(n, 3)}">{foto_html}</div>{lebih}'
+        galeri = f'<div class="upd-foto" data-n="{2 if min(n, batas) == 4 else min(n, 3)}">{foto_html}</div>{lebih}'
     else:
         galeri = f'<p class="upd-kosong">{escape(T["foto_segera"])}</p>'
     return (
@@ -1064,7 +1064,7 @@ def bagian_update() -> str:
     batch = int(getattr(KID, "UPDATE_PER_HALAMAN", 6))
     kartu = "".join(kartu_update(u, hari) for u in UPDATE)
     return f"""
-<section class="sec" style="padding-top:40px;padding-bottom:20px"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['upd_judul'])}</h2>
 <p class="upd-sub">{escape(T['upd_sub'])}</p>
 {chips}
@@ -1233,7 +1233,7 @@ def bagian_proyek() -> str:
     maks = int(getattr(KID, "PROYEK_MAKS", 12))
     kartu = "".join(kartu_proyek(p) for p in PROYEK[:maks])
     return f"""
-<section class="sec" id="proyek" style="padding-top:40px;padding-bottom:20px"><div class="inner">
+<section class="sec" id="proyek"><div class="inner">
 <h2>{escape(T['proyek_judul'])}</h2>
 <p class="sub">{escape(T['proyek_sub'])}</p>
 <div class="proyek-grid">{kartu}</div>
@@ -1317,13 +1317,13 @@ def bagian_video(ringkas: bool = False) -> str:
     sub_teks = f'<p class="sub">{escape(T["video_sub"])}</p>' if otomatis else ""
     if ringkas:
         return f"""
-<section class="sec video-sec video-ringkas" style="padding-top:0"><div class="inner vid-kolom">
+<section class="sec video-sec video-ringkas"><div class="inner vid-kolom">
 <div class="vid-teks"><h2>{escape(T['video_judul'])}</h2>{sub_teks}{tombol_kanal}</div>
 <div class="vid-isi">{utama}{manual}</div>
 </div></section>
 """
     return f"""
-<section class="sec video-sec" style="padding-top:0"><div class="inner">
+<section class="sec video-sec"><div class="inner">
 <h2>{escape(T['video_judul'])}</h2>
 {sub_teks}
 <div class="vid-isi">{utama}{manual}</div>
@@ -1442,7 +1442,7 @@ def bagian_alasan() -> str:
         for ik, j, t in data
     )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['alasan_judul'])}</h2>
 <div class="alasan">{kartu}</div>
 </div></section>
@@ -1456,7 +1456,7 @@ def bagian_alur() -> str:
         for i, (j, t) in enumerate(data, 1)
     )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['alur_judul'])}</h2>
 <div class="alur">{langkah}</div>
 </div></section>
@@ -1479,7 +1479,7 @@ def bagian_mitra() -> str:
             f'<div class="run-set">{chips}</div><div class="run-set">{chips}</div></div></div>'
         )
     return f"""
-<section class="sec mitra" style="padding-top:0"><div class="inner">
+<section class="sec mitra"><div class="inner">
 <h2>{escape(T['mitra_judul'])}</h2>
 </div>
 {''.join(rows)}
@@ -1607,7 +1607,7 @@ def bagian_galeri_porto() -> str:
         for k, label, t, b_, ket in item
     )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['gal_judul'])}</h2>
 <p class="sub">{escape(T['gal_sub'])}</p>
 {chips}
@@ -1619,7 +1619,7 @@ def bagian_galeri_porto() -> str:
 def bagian_industri() -> str:
     chips = "".join(f'<span class="mitra-chip">{escape(x)}</span>' for x in porto_data("industri"))
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['ind_judul'])}</h2>
 <div class="industri">{chips}</div>
 </div></section>
@@ -1643,7 +1643,7 @@ def bagian_jejak() -> str:
         for n, c in baris
     )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['jejak_judul'])}</h2>
 <p class="sub">{escape(T['jejak_sub'].format(total=total))}</p>
 <div class="jejak">{isi}</div>
@@ -1660,7 +1660,7 @@ def bagian_perjalanan() -> str:
         for th, j, t in porto_data("perjalanan")
     )
     return f"""
-<section class="sec" style="padding-top:0"><div class="inner">
+<section class="sec"><div class="inner">
 <h2>{escape(T['per_judul'])}</h2>
 <div class="perj">{item}</div>
 </div></section>
@@ -1787,7 +1787,7 @@ def halaman_home() -> str:
     kelas_hero = "hero hero-foto" if bg else "hero"
     galeri_html = ""
     if kegiatan:
-        galeri_html = f"""<section class="sec galeri-kegiatan" style="padding-top:0"><div class="inner">
+        galeri_html = f"""<section class="sec galeri-kegiatan"><div class="inner">
 <h2>{escape(K.GALERI_JUDUL)}</h2>
 <div class="marquee" style="--dur:{max(len(kegiatan), 1) * K.GALERI_DETIK}s">
 <div class="track"><div class="set">{galeri}</div><div class="set" aria-hidden="true">{galeri}</div></div>
@@ -1845,8 +1845,8 @@ def halaman_event() -> str:
         chips.insert(0, T["chip_update"].format(n=len(UPDATE)))
     chips.append(T["chip_berkala"])
     return kepala(K.EVENT_JUDUL, K.EVENT_DESKRIPSI, chips) + bagian_update() + (
-        f'<section class="sec" style="padding-top:{20 if UPDATE else 40}px"><div class="inner">'
-        f'<h2 style="margin-bottom:8px">{escape(T["jenis_judul"])}</h2>'
+        f'<section class="sec"><div class="inner">'
+        f'<h2>{escape(T["jenis_judul"])}</h2>'
         f'<div class="jenis"><nav class="jenis-nav" aria-label="{escape(T["jenis_nav"])}">{navigasi}</nav>'
         f'<div class="jenis-isi">{artikel}</div></div></div></section>'
     )
@@ -1967,7 +1967,7 @@ def halaman_lokasi() -> tuple:
                f'<svg viewBox="0 0 24 24" aria-hidden="true">{IKON_IG}</svg>{escape(T["ig_saja"])} ({IG_JUMLAH[0]})</button>'
                if IG_JUMLAH[0] else "")
     isi = kepala(T["lokasi_judul"], T["lokasi_sub"].format(total=total), chips) + f"""
-<section class="sec" style="padding-top:36px"><div class="inner">
+<section class="sec"><div class="inner">
 {peta}
 <div class="cari" data-total="{total}">
 <label for="cari">{escape(T['cari_label'])}</label>
@@ -2037,7 +2037,7 @@ def halaman_kontak() -> str:
         for i, o in enumerate(T["opsi"])
     )
     kartu = f"""
-<section class="sec kartu-sec" style="padding-bottom:0"><div class="inner kartu-grid">
+<section class="sec kartu-sec"><div class="inner kartu-grid">
 <div class="kartu-kontak utama">{ikon_svg('chat')}<h3>WhatsApp</h3><p>{escape(T['k_wa_sub'])}</p>
 <p class="besar">{escape(rapikan_nomor(K.WA_NOMOR))}</p>{tombol(T['btn_wa'], wa_url(), 'wa')}</div>
 <div class="kartu-kontak">{ikon_svg('telp')}<h3>{escape(T['k_telp'])}</h3>{telp}</div>
@@ -2049,7 +2049,7 @@ def halaman_kontak() -> str:
 </div></section>
 """
     return kepala(K.KONTAK["judul"], K.KONTAK["deskripsi"], [T["chip_gratis"], T["chip_wa"]]) + kartu + f"""
-<section class="kontak" style="margin-top:80px"><div class="inner cols">
+<section class="kontak"><div class="inner cols">
 <div>
 <h2>{escape(T['form_judul'])}</h2>
 <p class="form-sub">{escape(T['form_sub'])}</p>

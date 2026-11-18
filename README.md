@@ -202,3 +202,21 @@ Alamat: `alamat-website/admin.html` (tidak ada di menu, tidak diindeks Google). 
 - Keamanan: panel memakai Content-Security-Policy ketat (script hanya dari situs sendiri, koneksi hanya ke
   api.github.com), semua teks ditulis lewat `textContent`, kunci disimpan di sessionStorage (localStorage hanya jika
   "Ingat di perangkat ini" dicentang). Siapa pun yang memegang kunci bisa mengubah isi repo, jadi cabut kunci yang hilang.
+
+## Sistem desain (konsistensi seluruh halaman)
+
+Semua halaman memakai satu set aturan yang tertulis di bagian paling atas dan paling bawah `assets/style.css`
+(cari tulisan `SISTEM DESAIN`). Untuk mengubah tampilan di seluruh website, cukup ubah nilai di blok `:root` paling atas.
+
+| Hal | Aturan |
+| --- | --- |
+| Font | Fraunces untuk judul, Instrument Sans untuk isi. Tidak ada font lain. |
+| Judul bagian (h2) | `--t-h2`, sama di semua halaman |
+| Judul kartu (h3) | `--t-h3` (1.15rem) |
+| Isi teks / isi kartu / keterangan | 1rem / .95rem / .85rem |
+| Jarak antar bagian | `--sec-y`, judul ke isi `--gap-head` |
+| Sudut | 12px (tile kecil), 16px (foto), 20px (kartu) |
+| Foto kartu dan galeri | rasio 4:3, `object-fit: cover`, tanpa bayangan diam |
+
+Aturan penulisan: jangan memberi `style="padding..."` atau `style="margin..."` langsung di `build.py`.
+Atur jarak lewat CSS supaya halaman baru otomatis ikut irama yang sama.
