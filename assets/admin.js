@@ -793,12 +793,22 @@
     return true;
   }
 
+  // hanya proses "Bangun website" (build.yml); proses lain seperti "pages build and deployment" tidak dihitung sebagai build
+  function larianBangun(r) {
+    return (r.workflow_runs || []).filter(function (x) { return /bangun/i.test(x.name || ""); });
+  }
+
   async function pantau(sha, lBangun, lTayang, ket) {
     var mulai = Date.now(), run = null;
     while (Date.now() - mulai < 8 * 60000) {
       await tunggu(4000);
-      var r = await gh("/repos/" + S.repo + "/actions/runs?head_sha=" + sha + "&per_page=10");
-      run = (r.workflow_runs || [])[0] || null;
+      var r = await gh("/repos/" + S.repo + "/actions/runs?head_sha=" + sha + "&per_page=20");
+      run = larianBangun(r)[0] || null;
+      if (run && run.status === "completed" && run.conclusion === "cancelled") {
+        // dibatalkan karena ada simpanan yang lebih baru: yang terbaru sudah mencakup perubahan ini, jadi ikuti yang itu
+        var rb = await gh("/repos/" + S.repo + "/actions/runs?branch=" + enc(S.branch) + "&per_page=20");
+        run = larianBangun(rb)[0] || run;
+      }
       if (run && run.status === "completed") break;
       if (run) ket.textContent = "Membangun halaman website…";
     }
@@ -820,7 +830,7 @@
       var pages = (r2.workflow_runs || []).filter(function (x) {
         return /pages/i.test(x.name || "") && new Date(x.created_at).getTime() >= new Date(run.updated_at).getTime() - 30000;
       })[0];
-      if (pages && pages.status === "completed") {
+      if (pages && pages.status === "completed" && pages.conclusion !== "cancelled") {
         lTayang.className = pages.conclusion === "success" ? "ok" : "gagal";
         ket.textContent = pages.conclusion === "success" ? "Selesai. Buka halaman website dan tekan Ctrl + F5 untuk melihat hasilnya." : "Penayangan gagal. Coba lagi beberapa menit lagi.";
         return;
@@ -1210,8 +1220,8 @@
     var jam = new Date().getHours();
     var salam = jam < 11 ? "Selamat pagi" : jam < 15 ? "Selamat siang" : jam < 18 ? "Selamat sore" : "Selamat malam";
 
-    gh("/repos/" + S.repo + "/actions/runs?branch=" + enc(S.branch) + "&per_page=5").then(function (r) {
-      var run = (r.workflow_runs || [])[0];
+    gh("/repos/" + S.repo + "/actions/runs?branch=" + enc(S.branch) + "&per_page=20").then(function (r) {
+      var run = larianBangun(r).filter(function (x) { return x.conclusion !== "cancelled"; })[0];
       if (!run) return;
       chip.hidden = false;
       if (run.status !== "completed") { chip.className = "chip-bangun jalan"; chip.textContent = "Website sedang diperbarui…"; }
