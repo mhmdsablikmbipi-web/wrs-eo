@@ -108,6 +108,10 @@ Isi `info.txt`:
 - Setelah `python build.py`, pesan `PERHATIAN:` di layar menjelaskan folder yang dilewati dan alasannya.
 - Panduan untuk staf (bahasa awam) ada di `update/PANDUAN-STAF.txt`.
 - Opsional di `konten.py`: `UPDATE_PER_HALAMAN = 6` (jumlah event per tampilan) dan `UPDATE_FOTO_TAMPIL = 6` (foto yang langsung tampil per event).
+- **Banyak event (tampilan ringkas otomatis):** bila jumlah event lebih dari `UPDATE_RINGKAS_MULAI` (bawaan 8), daftar berubah menjadi satu baris per event
+  (foto kecil, judul, tanggal, mal, status). Baris diklik untuk membuka deskripsi dan foto. Pengunjung juga mendapat kolom cari (judul, mal, kota)
+  dan saringan status (Sedang berlangsung, Akan datang, Selesai) di samping saringan jenis event. Tidak ada batas jumlah event di kode.
+  Pengaturan opsional di `konten.py`: `UPDATE_RINGKAS_MULAI = 8`, `UPDATE_PER_HALAMAN_RINGKAS = 15` (baris per tampilan), `UPDATE_TERBUKA = 0` (jumlah baris terbaru yang langsung terbuka).
 
 ### Staf mengunggah lewat GitHub, website memperbarui diri
 File `.github/workflows/build.yml` menjalankan `python build.py` otomatis setiap ada perubahan di repository

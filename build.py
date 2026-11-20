@@ -122,6 +122,11 @@ UI = {
         "st_jalan": "Sedang berlangsung",
         "st_selesai": "Selesai",
         "lagi": "Tampilkan event sebelumnya",
+        "cari": "Cari event atau nama mal…",
+        "cari_label": "Cari event",
+        "hasil": "Menampilkan {a} dari {b} event",
+        "kosong_cari": "Tidak ada event yang cocok. Coba kata kunci atau saringan lain.",
+        "filter_status": "Saring berdasarkan status",
         "foto_lihat": "Lihat semua foto ({n})",
         "foto_tutup": "Tampilkan lebih sedikit",
         "foto_segera": "Foto dokumentasi segera hadir.",
@@ -251,6 +256,11 @@ UI = {
         "st_jalan": "Ongoing",
         "st_selesai": "Finished",
         "lagi": "Show earlier events",
+        "cari": "Search events or mall names…",
+        "cari_label": "Search events",
+        "hasil": "Showing {a} of {b} events",
+        "kosong_cari": "No matching events. Try another keyword or filter.",
+        "filter_status": "Filter by status",
         "foto_lihat": "See all photos ({n})",
         "foto_tutup": "Show fewer",
         "foto_segera": "Photo documentation coming soon.",
@@ -379,7 +389,7 @@ UI["en"].update({
 })
 # Bagian UI yang dikirim ke JavaScript (lightbox, pencarian mal, form WhatsApp)
 KUNCI_JS = ["lb_tutup", "lb_sebelum", "lb_sesudah", "lb_label", "jumlah", "jumlah_saring",
-            "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup",
+            "wa_awal", "wa_dari", "wa_butuh", "st_akan", "st_jalan", "st_selesai", "foto_lihat", "foto_tutup", "hasil",
             "disalin", "mengirim", "wa_manual", "n_mal", "peta_gagal"]
 
 # Ikon (gaya garis) untuk bagian "Kenapa memilih WRS"
@@ -1015,7 +1025,7 @@ def status_update(u: dict, hari: date) -> str:
     return "akan" if hari < u["mulai"] else ("selesai" if hari > u["selesai"] else "jalan")
 
 
-def kartu_update(u: dict, hari: date) -> str:
+def kartu_update(u: dict, hari: date, ringkas: bool = False, terbuka: bool = False) -> str:
     judul = u["judul"][LANG]
     lokasi = " · ".join(x for x in (u["mal"], u["kota"]) if x)
     st = status_update(u, hari)
@@ -1034,6 +1044,22 @@ def kartu_update(u: dict, hari: date) -> str:
         galeri = f'<div class="upd-foto" data-n="{2 if min(n, batas) == 4 else min(n, 3)}">{foto_html}</div>{lebih}'
     else:
         galeri = f'<p class="upd-kosong">{escape(T["foto_segera"])}</p>'
+    periode = format_periode(u["mulai"], u["selesai"], LANG)
+    if ringkas:
+        # satu baris per event; foto dan deskripsi baru dimuat saat baris dibuka (foto di dalam <details> yang tertutup tidak diunduh)
+        cari = " ".join((judul, u["mal"], u["kota"], u["label"][LANG], periode)).lower()
+        th = (f'<img class="upd-th" src="{aset(u["foto"][0][0])}" alt="" loading="lazy">' if u["foto"]
+              else '<span class="upd-th kosong" aria-hidden="true"></span>')
+        return (
+            f'<details class="upd upd-r" id="update-{u["id"]}" data-kat="{u["kat"]}" data-status="{st}" '
+            f'data-mulai="{u["mulai"].isoformat()}" data-selesai="{u["selesai"].isoformat()}" '
+            f'data-cari="{escape(cari)}"{" open" if terbuka else ""}>'
+            f'<summary class="upd-s">{th}<span class="upd-s-teks"><h3 class="upd-s-judul">{escape(judul)}</h3>'
+            f'<span class="upd-s-meta">{escape(periode)}{" · " + escape(lokasi) if lokasi else ""}</span></span>'
+            f'<span class="badge st-{st}">{escape(T["st_" + st])}</span><span class="upd-s-panah" aria-hidden="true"></span></summary>'
+            f'<div class="upd-isi"><div class="upd-kepala"><span class="upd-tag">{escape(u["label"][LANG])}</span></div>'
+            f'{paragraf(u["isi"][LANG])}{galeri}</div></details>'
+        )
     return (
         f'<article class="upd" id="update-{u["id"]}" data-kat="{u["kat"]}" data-status="{st}" '
         f'data-mulai="{u["mulai"].isoformat()}" data-selesai="{u["selesai"].isoformat()}">'
@@ -1061,14 +1087,33 @@ def bagian_update() -> str:
             + "".join(f'<button class="chip" type="button" data-kat="{k}" aria-pressed="false">{escape(lb)}</button>'
                       for k, lb in urut)
         ) + "</div>"
-    batch = int(getattr(KID, "UPDATE_PER_HALAMAN", 6))
-    kartu = "".join(kartu_update(u, hari) for u in UPDATE)
+    ringkas = len(UPDATE) > int(getattr(KID, "UPDATE_RINGKAS_MULAI", 8))
+    terbuka_n = int(getattr(KID, "UPDATE_TERBUKA", 0))
+    if ringkas:
+        batch = int(getattr(KID, "UPDATE_PER_HALAMAN_RINGKAS", 15))
+        kartu = "".join(kartu_update(u, hari, True, i < terbuka_n) for i, u in enumerate(UPDATE))
+        status_chip = (
+            '<div class="chips chips-st" role="group" aria-label="' + escape(T["filter_status"]) + '">'
+            f'<button class="chip on" type="button" data-st="semua" aria-pressed="true">{escape(T["semua"])}</button>'
+            + "".join(f'<button class="chip" type="button" data-st="{k}" aria-pressed="false">{escape(T["st_" + k])}</button>'
+                      for k in ("jalan", "akan", "selesai"))
+            + "</div>")
+        alat = (
+            f'<div class="upd-tools"><input class="upd-cari" type="search" placeholder="{escape(T["cari"])}" '
+            f'aria-label="{escape(T["cari_label"])}" autocomplete="off">{status_chip}</div>{chips}'
+            '<p class="upd-hasil" aria-live="polite"></p>'
+            f'<p class="upd-kosong-cari" hidden>{escape(T["kosong_cari"])}</p>')
+        chips = ""
+    else:
+        batch = int(getattr(KID, "UPDATE_PER_HALAMAN", 6))
+        kartu = "".join(kartu_update(u, hari) for u in UPDATE)
+        alat = chips
     return f"""
 <section class="sec"><div class="inner">
 <h2>{escape(T['upd_judul'])}</h2>
 <p class="upd-sub">{escape(T['upd_sub'])}</p>
-{chips}
-<div class="upd-list" data-batch="{batch}">{kartu}</div>
+{alat}
+<div class="upd-list{' ringkas' if ringkas else ''}" data-batch="{batch}">{kartu}</div>
 <div class="upd-lagi"><button class="btn-lagi" type="button" hidden>{escape(T['lagi'])}</button></div>
 </div></section>
 """

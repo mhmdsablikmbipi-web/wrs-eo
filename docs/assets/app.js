@@ -183,26 +183,65 @@
     });
     var daftarUpd = doc.querySelector(".upd-list");
     var batch = parseInt(daftarUpd.getAttribute("data-batch"), 10) || 6;
-    var tampilN = batch, kat = "semua", tombolLagi = doc.querySelector(".btn-lagi");
+    var tampilN = batch, kat = "semua", stFilter = "semua", q = "", tombolLagi = doc.querySelector(".btn-lagi");
+    var infoUpd = doc.querySelector(".upd-hasil"), kosongUpd = doc.querySelector(".upd-kosong-cari");
+    var cocokUpd = function () {
+      return kartuUpd.filter(function (k) {
+        return (kat === "semua" || k.getAttribute("data-kat") === kat) &&
+               (stFilter === "semua" || k.getAttribute("data-status") === stFilter) &&
+               (!q || (k.getAttribute("data-cari") || "").indexOf(q) > -1);
+      });
+    };
     var terapkan = function () {
-      var cocok = kartuUpd.filter(function (k) { return kat === "semua" || k.getAttribute("data-kat") === kat; });
+      var cocok = cocokUpd();
       kartuUpd.forEach(function (k) { k.hidden = true; });
       cocok.forEach(function (k, i) { k.hidden = i >= tampilN; });
       tombolLagi.hidden = cocok.length <= tampilN;
+      if (infoUpd) infoUpd.textContent = cocok.length ? isi(T.hasil, { a: Math.min(tampilN, cocok.length), b: cocok.length }) : "";
+      if (kosongUpd) kosongUpd.hidden = cocok.length > 0;
     };
-    doc.querySelectorAll(".chip").forEach(function (c) {
-      c.addEventListener("click", function () {
-        doc.querySelectorAll(".chip").forEach(function (x) {
-          x.classList.toggle("on", x === c);
-          x.setAttribute("aria-pressed", x === c ? "true" : "false");
+    var pasangChip = function (selector, simpan) {
+      doc.querySelectorAll(selector).forEach(function (c) {
+        c.addEventListener("click", function () {
+          c.parentNode.querySelectorAll(".chip").forEach(function (x) {
+            x.classList.toggle("on", x === c);
+            x.setAttribute("aria-pressed", x === c ? "true" : "false");
+          });
+          simpan(c);
+          tampilN = batch;
+          terapkan();
         });
-        kat = c.getAttribute("data-kat");
-        tampilN = batch;
-        terapkan();
       });
+    };
+    pasangChip(".chips:not(.chips-st) .chip", function (c) { kat = c.getAttribute("data-kat"); });
+    pasangChip(".chips-st .chip", function (c) { stFilter = c.getAttribute("data-st"); });
+    var kotakCari = doc.querySelector(".upd-cari");
+    if (kotakCari) kotakCari.addEventListener("input", function () {
+      q = kotakCari.value.trim().toLowerCase();
+      tampilN = batch;
+      terapkan();
     });
     tombolLagi.addEventListener("click", function () { tampilN += batch; terapkan(); });
     terapkan();
+    /* tautan langsung (#update-...) dari beranda: tampilkan dan buka event yang dituju */
+    var bukaDariHash = function () {
+      var id = decodeURIComponent((location.hash || "").slice(1));
+      var tujuan = id && doc.getElementById(id);
+      if (!tujuan || kartuUpd.indexOf(tujuan) < 0) return;
+      kat = "semua"; stFilter = "semua"; q = "";
+      if (kotakCari) kotakCari.value = "";
+      doc.querySelectorAll(".chips .chip").forEach(function (x) {
+        var semua = x.getAttribute("data-kat") === "semua" || x.getAttribute("data-st") === "semua";
+        x.classList.toggle("on", semua);
+        x.setAttribute("aria-pressed", semua ? "true" : "false");
+      });
+      tampilN = Math.max(tampilN, kartuUpd.indexOf(tujuan) + 1);
+      terapkan();
+      if (tujuan.tagName === "DETAILS") tujuan.open = true;
+      tujuan.scrollIntoView({ block: "start" });
+    };
+    bukaDariHash();
+    window.addEventListener("hashchange", bukaDariHash);
     doc.querySelectorAll(".upd-lebih").forEach(function (t) {
       t.addEventListener("click", function () {
         var buka = t.closest(".upd").classList.toggle("open");
