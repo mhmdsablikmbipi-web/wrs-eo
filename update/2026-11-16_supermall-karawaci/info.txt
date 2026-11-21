@@ -1,0 +1,7 @@
+# Dibuat/diubah lewat Panel Admin website. Boleh juga diedit manual di GitHub.
+judul: Pameran Otomotif Supermal Karawaci
+kategori: otomotif
+mal: Supermall Karawaci
+kota: Tangerang
+periode: 16 November 2026 sd 22 November 2026
+
